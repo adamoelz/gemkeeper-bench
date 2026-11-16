@@ -1,0 +1,1408 @@
+{
+ "cmd": [
+  "-p",
+  "--input-format",
+  "stream-json",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--include-hook-events",
+  "--model",
+  "sonnet",
+  "--effort",
+  "medium",
+  "--dangerously-skip-permissions",
+  "--settings",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+  "--disallowedTools",
+  "Agent",
+  "--plugin-dir",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper"
+ ],
+ "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\t1b\\parcel-tracker",
+ "plugin": true,
+ "resume": null,
+ "fork": false,
+ "parent_cost": 0.0,
+ "session_id": "416d1bc9-d463-4474-9f2a-de4369fb9f66",
+ "turns": [
+  {
+   "i": 0,
+   "prompt_chars": 427,
+   "ctx": [
+    23052,
+    33831,
+    34961,
+    35883
+   ],
+   "tools": [
+    {
+     "id": "toolu_01YJEDYhpxbd5Tq83NZLNc1y",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\"}",
+     "input_chars": 110,
+     "result_chars": 1942,
+     "mentions_ledger": true
+    },
+    {
+     "id": "toolu_01FC3DphMvoXSXGYZFmNXMms",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && ls logs && wc -l logs/staging-2026-11-12.log && head -n 15 logs/staging-2026-11-12.log\"}",
+     "input_chars": 175,
+     "result_chars": 1607,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01HNd2oSYcorTpj122VgHA3o",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\", \"old_string\": \"- ERP retries:\", \"new_string\": \"- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\\n- ERP retries:\"}",
+     "input_chars": 400,
+     "result_chars": 190,
+     "mentions_ledger": true
+    },
+    {
+     "id": "toolu_01QQpXqPJ5V6PLedmpafjVwB",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && grep -i erp logs/staging-2026-11-12.log | grep -v \\\"erp notified\\\" | head -20; echo ---; grep -c \\\"erp notified\\\" logs/staging-2026-11-12.log; grep \\\"erp notified\\\" logs/staging-2026-11-12.log | cut -c1-16 | sort | uniq -c | sort -rn | head -8\"}",
+     "input_chars": 332,
+     "result_chars": 956,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01V9kWtWkksVLsBsUbc1V5Uh",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && grep -E \\\"WARN|ERROR\\\" logs/staging-2026-11-12.log; echo ---; tail -n 3 logs/staging-2026-11-12.log | cut -c1-120; echo ---; grep -E \\\"erp notif\\\" logs/staging-2026-11-12.log | grep -v \\\"erp notified\\\" ; grep -E \\\"07:1[45]\\\" logs/staging-2026-11-12.log | cut -c1-140\"}",
+     "input_chars": 355,
+     "result_chars": 1135,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Peak was **2 ERP notifications per minute**, and that happened in three separate minutes on 2026-11-12: 06:15, 06:33 and 07:10 UTC.\n\n- **Volume:** the log covers 06:00 to 08:10 UTC, about 2h10m. It has 30 \"erp notified\" lines, so the average is about 0.23 per minute. Every other active minute had 1.\n- **Failed attempt:** there is one `erp notify failed` line, at 07:15:47 (503, `evt_316e97c2`). I counted it as an attempt. That minute has only that one attempt, so the peak stays at 2. No retry of that event appears in the log.\n- **Retries:** under the 3-attempt, 30s-delay retry rule, a worst-case burst could add up to 2 repeat sends per event. The log doesn't show any retries, so I didn't count any.\n- **Staging only:** this is one staging day with light traffic, so the production peak will likely be higher. If you want a number to give the ERP team, I'd present it as \"staging peak 2/min, one request per event\" and add a production estimate on top.\n\nThe log uses UTC timestamps (`Z`). Each notification is one POST with a single event object, as the ERP requires. I didn't build batching, and I added your 422-on-arrays finding to the ledger so it doesn't come up again.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 6,
+    "duration_ms": 20599,
+    "total_cost_usd": 0.1133774,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 8,
+     "cache_creation_input_tokens": 21605,
+     "cache_read_input_tokens": 106114,
+     "output_tokens": 1633,
+     "output_tokens_details": {
+      "thinking_tokens": 290
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 21605,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 573,
+       "cache_read_input_tokens": 34959,
+       "cache_creation_input_tokens": 922,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 922
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 1633,
+      "cacheReadInputTokens": 106114,
+      "cacheCreationInputTokens": 21605,
+      "webSearchRequests": 0,
+      "costUSD": 0.1133774,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 290,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 21605,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "Peak was **2 ERP notifications per minute**, and that happened in three separate minutes on 2026-11-12: 06:15, 06:33 and 07:10 UTC.\n\n- **Volume:** the log covers 06:00 to 08:10 UTC, about 2h10m. It has 30 \"erp notified\" lines, so the average is about 0.23 per minute. Every other active minute had 1.\n- **Failed attempt:** there is one `erp notify failed` line, at 07:15:47 (503, `evt_316e97c2`). I counted it as an attempt. That minute has only that one attempt, so the peak stays at 2. No retry of that event appears in the log.\n- **Retries:** under the 3-attempt, 30s-delay retry rule, a worst-case burst could add up to 2 repeat sends per event. The log doesn't show any retries, so I didn't count any.\n- **Staging only:** this is one staging day with light traffic, so the production peak will likely be higher. If you want a number to give the ERP team, I'd present it as \"staging peak 2/min, one request per event\" and add a production estimate on top.\n\nThe log uses UTC timestamps (`Z`). Each notification is one POST with a single event object, as the ERP requires. I didn't build batching, and I added your 422-on-arrays finding to the ledger so it doesn't come up again."
+   ]
+  },
+  {
+   "i": 1,
+   "prompt_chars": 56,
+   "ctx": [
+    36475,
+    39318
+   ],
+   "tools": [
+    {
+     "id": "toolu_011v6NLruJ18t5fRDnopqZHp",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && cat package.json | grep -A8 '\\\"scripts\\\"'; npm test 2>&1\"}",
+     "input_chars": 145,
+     "result_chars": 5401,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "The full suite passed: 72 tests in 16 suites, with 0 failures, 0 cancelled and 0 skipped. It took about 0.68 s. The complete output is above.\n\n- **Flaky test:** `emits webhook on delivered` (OPS-412) passed on this run, so I didn't need to rerun or touch it.\n- **Warning in the output:** `ERP_WEBHOOK_SECRET is not set, sending unsigned webhooks` is logged because the env var isn't set in this shell. The signing tests that check the secret passed anyway.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 2,
+    "duration_ms": 8338,
+    "total_cost_usd": 0.1373946,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 6,
+     "cache_creation_input_tokens": 3435,
+     "cache_read_input_tokens": 72352,
+     "output_tokens": 303,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 3435,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 184,
+       "cache_read_input_tokens": 36471,
+       "cache_creation_input_tokens": 2845,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 2845
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 14,
+      "outputTokens": 1936,
+      "cacheReadInputTokens": 178466,
+      "cacheCreationInputTokens": 25040,
+      "webSearchRequests": 0,
+      "costUSD": 0.1373946,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 290,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 25040,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "The full suite passed: 72 tests in 16 suites, with 0 failures, 0 cancelled and 0 skipped. It took about 0.68 s. The complete output is above.\n\n- **Flaky test:** `emits webhook on delivered` (OPS-412) passed on this run, so I didn't need to rerun or touch it.\n- **Warning in the output:** `ERP_WEBHOOK_SECRET is not set, sending unsigned webhooks` is logged because the env var isn't set in this shell. The signing tests that check the secret passed anyway."
+   ]
+  },
+  {
+   "i": 2,
+   "prompt_chars": 357,
+   "ctx": [
+    39739,
+    41980,
+    43548,
+    44681
+   ],
+   "tools": [
+    {
+     "id": "toolu_01D9d4HyM2D9nLstC6d5WHR8",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\", \"old_string\": \"- ERP retries:\", \"new_string\": \"- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\\n- ERP retries:\"}",
+     "input_chars": 423,
+     "result_chars": 190,
+     "mentions_ledger": true
+    },
+    {
+     "id": "toolu_01MKNYuVm13AHtfbZxf9D4MX",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\"}",
+     "input_chars": 114,
+     "result_chars": 2102,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01CxLknEBgL957f2axES4q2h",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && grep -n \\\"export\\\" src/services/eta.ts; ls test; sed -n 1,40p test/helpers.ts\"}",
+     "input_chars": 166,
+     "result_chars": 1624,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01DWs4XXLMXykpvxbaL7ZpAB",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\", \"old_string\": \"      .map(shipmentToApi);\", \"new_string\": \"      .map((s) => ({ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }));\"}",
+     "input_chars": 288,
+     "result_chars": 193,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_016d2UWx3vT2BzbKxg2BYGJF",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && sed -n 40,70p test/helpers.ts; grep -n \\\"gets one shipment\\\" -B3 -A25 test/shipments.test.ts; sed -n 1,15p test/shipments.test.ts\"}",
+     "input_chars": 218,
+     "result_chars": 2518,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_011MuGKwCqKsAharSeDSQNXQ",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\test\\\\shipments.test.ts\", \"old_string\": \"  it('returns 405 for a wrong method on a known route', async () => {\", \"new_string\": \"  it('includes an eta on every list item, matching the detail endpoint', async () => {\\n    const list = await api(srv.url, 'GET', '/shipments');\\n    assert.ok(list.body.items.length > 0);\\n    for (const item of list.body.items) {\\n      assert.ok('eta' in item);\\n      const detail = await api(srv.url, 'GET', `/shipments/${item.id}`);\\n      assert.equal(item.eta, detail.body.eta);\\n      assert.equal(typeof item.eta, 'string');\\n    }\\n  });\\n\\n  it('keeps the exact field set of GET /shipments/:id (mobile app v2.3 strict schema)', async () => {\\n    const list = await api(srv.url, 'GET', '/shipments');\\n    const res = await api(srv.url, 'GET', `/shipments/${list.body.items[0].id}`);\\n    assert.deepEqual(Object.keys(res.body).sort(), [\\n      'carrier', 'created_at', 'eta', 'events', 'id', 'recipient', 'service_level', 'status', 'tracking_number',\\n    ]);\\n  });\\n\\n  it('returns 405 for a wrong method on a known route', async () => {\"}",
+     "input_chars": 1192,
+     "result_chars": 126,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01NWGMLj85dXVF3vg3N3NGpD",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && npm test 2>&1 | grep -E \\\"✖|ℹ|eta|failureType\\\" ; git diff --stat src/routes\"}",
+     "input_chars": 165,
+     "result_chars": 601,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Every item returned by `GET /shipments` now has an `eta` field. `GET /shipments/:id` is unchanged. The full suite passes: 74 tests, 0 failures, including the 2 new ones.\n\n**The change:** it is one line in `src/routes/shipments.ts`, in the list handler. Each item is now `{ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }`. That is the same `calculateEta` call the detail endpoint and `POST /shipments` already use, so the list ETAs match the detail ones. For delivered shipments `eta` is `null`.\n\nI didn't touch the detail handler or `shipmentToApi`, which the detail endpoint also uses. The git diff for `src/routes/` shows only that one line.\n\n**New tests** (in `test/shipments.test.ts`):\n- **List ETA:** every list item has `eta`, and its value equals the `eta` from `GET /shipments/:id` for the same shipment.\n- **Detail fields:** `GET /shipments/:id` still returns exactly `carrier, created_at, eta, events, id, recipient, service_level, status, tracking_number`. If someone adds or removes a field there, this test fails, which protects the mobile app v2.3 until January.\n\n**Performance:** the list now computes an ETA per item, up to the 500-item limit. I didn't measure it, and the ETA is a cheap in-memory calculation.\n\nI added the rule that the detail response must stay byte-identical to the ledger.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 8,
+    "duration_ms": 19577,
+    "total_cost_usd": 0.19599029999999998,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 8,
+     "cache_creation_input_tokens": 5363,
+     "cache_read_input_tokens": 164577,
+     "output_tokens": 2067,
+     "output_tokens_details": {
+      "thinking_tokens": 45
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 5363,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 504,
+       "cache_read_input_tokens": 43546,
+       "cache_creation_input_tokens": 1133,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 1133
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 22,
+      "outputTokens": 4003,
+      "cacheReadInputTokens": 343043,
+      "cacheCreationInputTokens": 30403,
+      "webSearchRequests": 0,
+      "costUSD": 0.19599029999999998,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 335,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 30403,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "Every item returned by `GET /shipments` now has an `eta` field. `GET /shipments/:id` is unchanged. The full suite passes: 74 tests, 0 failures, including the 2 new ones.\n\n**The change:** it is one line in `src/routes/shipments.ts`, in the list handler. Each item is now `{ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }`. That is the same `calculateEta` call the detail endpoint and `POST /shipments` already use, so the list ETAs match the detail ones. For delivered shipments `eta` is `null`.\n\nI didn't touch the detail handler or `shipmentToApi`, which the detail endpoint also uses. The git diff for `src/routes/` shows only that one line.\n\n**New tests** (in `test/shipments.test.ts`):\n- **List ETA:** every list item has `eta`, and its value equals the `eta` from `GET /shipments/:id` for the same shipment.\n- **Detail fields:** `GET /shipments/:id` still returns exactly `carrier, created_at, eta, events, id, recipient, service_level, status, tracking_number`. If someone adds or removes a field there, this test fails, which protects the mobile app v2.3 until January.\n\n**Performance:** the list now computes an ETA per item, up to the 500-item limit. I didn't measure it, and the ETA is a cheap in-memory calculation.\n\nI added the rule that the detail response must stay byte-identical to the ledger."
+   ]
+  },
+  {
+   "i": 3,
+   "prompt_chars": 344,
+   "ctx": [
+    45412,
+    47899,
+    50530,
+    52083,
+    53784
+   ],
+   "tools": [
+    {
+     "id": "toolu_014kpVSMuisEsd6YWy4SnFr2",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\", \"old_string\": \"- ERP retries:\", \"new_string\": \"- NEVER log recipient name/address/phone anywhere (GDPR; DPO flagged it in last month's audit). Shipment IDs + tracking numbers are OK to log (user). Note: staging log 2026-11-12 already shows `recipient=\\\"...\\\"` on exception event lines -> existing leak to fix.\\n- ERP retries:\"}",
+     "input_chars": 460,
+     "result_chars": 190,
+     "mentions_ledger": true
+    },
+    {
+     "id": "toolu_011ximJW2NrwTNJLPKcVCn2K",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\lib\\\\log.ts\"}",
+     "input_chars": 105,
+     "result_chars": 1067,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_011dtVqKoc9QS9Cp7bbHDBfL",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\app.ts\"}",
+     "input_chars": 100,
+     "result_chars": 816,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_011XRh3A1PSbssaV7aPLqcPQ",
+     "name": "Grep",
+     "input": "{\"pattern\": \"log\\\\.|logger|recipient\", \"path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\", \"glob\": \"!legacy/**\", \"output_mode\": \"content\"}",
+     "input_chars": 173,
+     "result_chars": 1764,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_0173ShabxiUTCcLBFBsMxWLH",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\lib\\\\http.ts\"}",
+     "input_chars": 106,
+     "result_chars": 1835,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01SbHTwQhaucjPa1QLVvCH8N",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\router.ts\"}",
+     "input_chars": 103,
+     "result_chars": 2331,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01WdXBa2xCn6gSVigRpJooAH",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\server.ts\"}",
+     "input_chars": 103,
+     "result_chars": 676,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01GTPBe4rCZs9NyhWZvMRoti",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\router.ts\", \"old_string\": \"    const parts = split(url.pathname);\\n    try {\", \"new_string\": \"    const parts = split(url.pathname);\\n    // One line per request. Only method, path (no query string, no body) and\\n    // timing are logged, so no recipient data (GDPR) can end up here.\\n    const startedAt = performance.now();\\n    res.once('close', () => {\\n      log.info('request', {\\n        method: req.method,\\n        path: url.pathname,\\n        status: res.statusCode,\\n        duration_ms: Math.round((performance.now() - startedAt) * 100) / 100,\\n      });\\n    });\\n    try {\"}",
+     "input_chars": 702,
+     "result_chars": 183,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01GVDM6PrdY5cEXAf8VBNYTf",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\router.ts\", \"old_string\": \"import { HttpError, sendError } from './lib/http.ts';\", \"new_string\": \"import { HttpError, sendError } from './lib/http.ts';\\nimport { log } from './lib/log.ts';\"}",
+     "input_chars": 304,
+     "result_chars": 183,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01NjWLf6qPUyMMasPqLTBAqX",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && sed -n 1,40p test/notify.test.ts | head -30; grep -rn \\\"LOG_LEVEL\\\\|stdout\\\" test | head\"}",
+     "input_chars": 177,
+     "result_chars": 1004,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01WhzzJEvTVqrzPuTqAgRzJx",
+     "name": "Write",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\test\\\\request-log.test.ts\", \"content\": \"import assert from 'node:assert/strict';\\nimport { after, afterEach, before, beforeEach, describe, it } from 'node:test';\\nimport { api, startTestServer, validShipment, type TestServer } from './helpers.ts';\\n\\ndescribe('request logging', () => {\\n  let srv: TestServer;\\n  let lines: string[];\\n  let originalWrite: typeof process.stdout.write;\\n\\n  before(async () => {\\n    srv = await startTestServer();\\n  });\\n\\n  after(async () => {\\n    await srv.close();\\n  });\\n\\n  beforeEach(() => {\\n    lines = [];\\n    process.env.LOG_LEVEL = 'info';\\n    originalWrite = process.stdout.write;\\n    process.stdout.write = ((chunk: string | Uint8Array) => {\\n      lines.push(String(chunk));\\n      return true;\\n    }) as typeof process.stdout.write;\\n  });\\n\\n  afterEach(() => {\\n    process.stdout.write = originalWrite;\\n    process.env.LOG_LEVEL = 'silent';\\n  });\\n\\n  async function requestLines(expected: number) {\\n    for (let i = 0; i < 50 && lines.filter((l) => l.includes('\\\"msg\\\":\\\"request\\\"')).length < expected; i++) {\\n      await new Promise((resolve) => setTimeout(resolve, 10));\\n    }\\n    return lines.filter((l) => l.includes('\\\"msg\\\":\\\"request\\\"')).map((l) => JSON.parse(l));\\n  }\\n\\n  it('logs one line per request with method, path, status and duration', async () => {\\n    await api(srv.url, 'GET', '/health');\\n    const logged = await requestLines(1);\\n    assert.equal(logged.length, 1);\\n    assert.equal(logged[0].method, 'GET');\\n    assert.equal(logged[0].path, '/health');\\n    assert.equal(logged[0].status, 200);\\n    assert.equal(typeof logged[0].duration_ms, 'number');\\n    assert.ok(logged[0].duration_ms >= 0);\\n  });\\n\\n  it('logs error statuses too', async () => {\\n    await api(srv.url, 'GET', '/shipments/shp_nope');\\n    const logged = await requestLines(1);\\n    assert.equal(logged[0].status, 404);\\n    assert.equal(logged[0",
+     "input_chars": 2824,
+     "result_chars": 184,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01WNtwX9AydmMBHeH4umQU9V",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && npm test 2>&1 | grep -E \\\"✖|ℹ|request|not ok|Error\\\" ; grep -rn \\\"recipient\\\\|phone\\\" src/routes/events.ts src/services/notify.ts | head\"}",
+     "input_chars": 225,
+     "result_chars": 216,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Every request now writes one log line with method, path, status and duration in ms. The suite passes with 75 tests (3 new) and 0 failures.\n\n**The change:** in `src/router.ts`, `Router.handle` logs through `log.info` from `src/lib/log.ts` when the response closes. A line looks like this:\n```json\n{\"ts\":\"…\",\"level\":\"info\",\"msg\":\"request\",\"method\":\"GET\",\"path\":\"/shipments/shp_ab12\",\"status\":200,\"duration_ms\":1.42}\n```\n- **Fields:** the line carries only `method`, `path`, `status` and `duration_ms`. The path includes shipment IDs, which you said are fine.\n- **Not logged:** the query string, request body and response body are never logged. The code has a comment saying so.\n- **Where it applies:** the logging sits in the router, so every route is covered, including 404, 405 and error responses.\n\n**Tests** (`test/request-log.test.ts`):\n- One line per request with the four fields.\n- Error statuses are logged, for example 404.\n- A privacy test creates a shipment with a name, street and phone number, and puts the name in the query string. It then checks that none of those values appear in the captured log output. It also checks that the shipment ID does appear.\n\n**One thing to check:** the staging log from 11-12 has lines like `event … type=exception … recipient=\"Paul Hofer, Linzer Gasse 108, 1060 Wien\"`. That is recipient name and address in a log. The current code doesn't write those fields: no `src/` file logs the recipient, and the log calls in `notify.ts` only log event and shipment IDs. So that log came from older code or another deployment, and I didn't change it. I'd treat it as the same GDPR finding. The staging logs that already hold that data probably need scrubbing or deleting, and the log source should be checked. I noted this in the ledger.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 13,
+    "duration_ms": 39594,
+    "total_cost_usd": 0.2972518,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 10,
+     "cache_creation_input_tokens": 9103,
+     "cache_read_input_tokens": 240595,
+     "output_tokens": 4077,
+     "output_tokens_details": {
+      "thinking_tokens": 568
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 9103,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 648,
+       "cache_read_input_tokens": 52081,
+       "cache_creation_input_tokens": 1701,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 1701
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 32,
+      "outputTokens": 8080,
+      "cacheReadInputTokens": 583638,
+      "cacheCreationInputTokens": 39506,
+      "webSearchRequests": 0,
+      "costUSD": 0.2972518,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 903,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 39506,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "Every request now writes one log line with method, path, status and duration in ms. The suite passes with 75 tests (3 new) and 0 failures.\n\n**The change:** in `src/router.ts`, `Router.handle` logs through `log.info` from `src/lib/log.ts` when the response closes. A line looks like this:\n```json\n{\"ts\":\"…\",\"level\":\"info\",\"msg\":\"request\",\"method\":\"GET\",\"path\":\"/shipments/shp_ab12\",\"status\":200,\"duration_ms\":1.42}\n```\n- **Fields:** the line carries only `method`, `path`, `status` and `duration_ms`. The path includes shipment IDs, which you said are fine.\n- **Not logged:** the query string, request body and response body are never logged. The code has a comment saying so.\n- **Where it applies:** the logging sits in the router, so every route is covered, including 404, 405 and error responses.\n\n**Tests** (`test/request-log.test.ts`):\n- One line per request with the four fields.\n- Error statuses are logged, for example 404.\n- A privacy test creates a shipment with a name, street and phone number, and puts the name in the query string. It then checks that none of those values appear in the captured log output. It also checks that the shipment ID does appear.\n\n**One thing to check:** the staging log from 11-12 has lines like `event … type=exception … recipient=\"Paul Hofer, Linzer Gasse 108, 1060 Wien\"`. That is recipient name and address in a log. The current code doesn't write those fields: no `src/` file logs the recipient, and the log calls in `notify.ts` only log event and shipment IDs. So that log came from older code or another deployment, and I didn't change it. I'd treat it as the same GDPR finding. The staging logs that already hold that data probably need scrubbing or deleting, and the log source should be checked. I noted this in the ledger."
+   ]
+  },
+  {
+   "i": 4,
+   "prompt_chars": 565,
+   "ctx": [
+    54734,
+    56984,
+    58238,
+    59464,
+    59998,
+    61672,
+    65014
+   ],
+   "tools": [
+    {
+     "id": "toolu_01BjPgMXXFLNFUSLf96fc976",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\", \"old_string\": \"- ERP retries:\", \"new_string\": \"- Storage stays a plain JSON file (data/store.json), NO SQLite/node:sqlite. Why: ops' nightly rsync backup diffs plain-text files; binary DB breaks their checks. Perf fix = debounce writes in src/store.ts (200 ms, one write per burst) + flush() on shutdown (user).\\n- ERP retries:\"}",
+     "input_chars": 462,
+     "result_chars": 190,
+     "mentions_ledger": true
+    },
+    {
+     "id": "toolu_01WCkYe8rJZe6UrRgrn8R379",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\store.ts\"}",
+     "input_chars": 102,
+     "result_chars": 4021,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01DuyHynULsPJb7bH7o31nDU",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && grep -rn \\\"\\\\.save()\\\\|new Store(\\\" src test --include=*.ts | grep -v \\\"src/legacy\\\"; cat src/config.ts | head -40\"}",
+     "input_chars": 203,
+     "result_chars": 1377,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01VufhcxHKFvUiHzcqhJtFXv",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && python - <<'EOF' 2>/dev/null || node -e '\\nconst fs=require(\\\"fs\\\");let s=fs.readFileSync(\\\"src/store.ts\\\",\\\"utf8\\\");\\ns=s.replace(`export type NewShipment`,`export interface StoreOptions {\\n  /** Quiet period after the last mutation before the file is written. */\\n  debounceMs?: number;\\n  /** Upper bound for how long a write may be postponed under constant traffic. */\\n  maxWaitMs?: number;\\n}\\n\\nexport const WRITE_DEBOUNCE_MS = 200;\\nexport const WRITE_MAX_WAIT_MS = 2000;\\n\\nexport type NewShipment`);\\ns=s.replace(`  private file: string | undefined;\\n\\n  constructor(file?: string) {\\n    this.file = file;`,`  private file: string | undefined;\\n  private debounceMs: number;\\n  private maxWaitMs: number;\\n  private dirty = false;\\n  private timer: NodeJS.Timeout | undefined;\\n  private firstDirtyAt = 0;\\n\\n  constructor(file?: string, options: StoreOptions = {}) {\\n    this.file = file;\\n    this.debounceMs = options.debounceMs ?? WRITE_DEBOUNCE_MS;\\n    this.maxWaitMs = options.maxWaitMs ?? WRITE_MAX_WAIT_MS;`);\\ns=s.replace(/  \\\\/\\\\*\\\\* Writes the whole store to disk\\\\. Called after every mutation\\\\. \\\\*\\\\/\\\\n  save\\\\(\\\\): void \\\\{\\\\n    if \\\\(!this\\\\.file\\\\) return;\\\\n/,`  /**\\n   * Called after every mutation. Debounced: mutations within debounceMs of each\\n   * other result in a single write (at most maxWaitMs after the first one).\\n   * Call flush() before the process exits.\\n   */\\n  save(): void {\\n    if (!this.file) return;\\n    const now = Date.now();\\n    if (!this.dirty) this.firstDirtyAt = now;\\n    this.dirty = true;\\n    if (this.timer) clearTimeout(this.timer);\\n    const wait = Math.max(0, Math.min(this.debounceMs, this.firstDirtyAt + this.maxWaitMs - now));\\n    this.timer = setTimeout(() => this.flush(), wait);\\n    // A pending write alone must not keep the process alive; shutdown calls flush().\\n    this.timer.unref();\\n  }\\n\\n  /** Writes pending changes t",
+     "input_chars": 2645,
+     "result_chars": 97,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01AEk2AX1VE3RunM31nX8EVU",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && git diff --stat src/store.ts; grep -n \\\"flush\\\\|debounce\\\" src/store.ts | head\"}",
+     "input_chars": 167,
+     "result_chars": 749,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01HWGbSyLd1tLftkjDsUJf3a",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\store.ts\", \"offset\": 14, \"limit\": 90}",
+     "input_chars": 129,
+     "result_chars": 3344,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01RHRBQgesjZZog5HGsiyZ7D",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\store.ts\", \"old_string\": \"    this.dirty = false;\\n    this.writeFile(this.file);\\n  }\", \"new_string\": \"    this.writeFile(this.file);\\n    this.dirty = false; // only after a successful write, so a failed write stays pending\\n  }\"}",
+     "input_chars": 346,
+     "result_chars": 116,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_015vTcuJsH9JE54WT5XwPYzv",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\store.ts\", \"old_string\": \"    this.timer = setTimeout(() => this.flush(), wait);\", \"new_string\": \"    this.timer = setTimeout(() => {\\n      try {\\n        this.flush();\\n      } catch (err) {\\n        // Keep serving; the data stays dirty and is retried on the next mutation or flush().\\n        log.error('store write failed', { err: String(err) });\\n      }\\n    }, wait);\"}",
+     "input_chars": 491,
+     "result_chars": 116,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01WPQmyMHxkPgfVEZh6FEgEd",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\store.ts\", \"old_string\": \"import type { EventType,\", \"new_string\": \"import { log } from './lib/log.ts';\\nimport type { EventType,\"}",
+     "input_chars": 245,
+     "result_chars": 116,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01VB6mr2FDaEDsCdbDMRKU7q",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\server.ts\", \"old_string\": \"    server.close(() => process.exit(0));\\n  });\\n}\", \"new_string\": \"    server.close(() => {\\n      store.flush(); // write pending debounced changes before exiting\\n      process.exit(0);\\n    });\\n  });\\n}\\n\\n// Safety net for any other exit path (sync, so it is allowed in 'exit').\\nprocess.on('exit', () => store.flush());\"}",
+     "input_chars": 469,
+     "result_chars": 183,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_013JSKyVSpxFm9DcHKXNNdB1",
+     "name": "Write",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\test\\\\store.test.ts\", \"content\": \"import assert from 'node:assert/strict';\\nimport { mkdtempSync, readFileSync, rmSync, existsSync } from 'node:fs';\\nimport { tmpdir } from 'node:os';\\nimport path from 'node:path';\\nimport { afterEach, beforeEach, describe, it, mock } from 'node:test';\\nimport { Store, type NewShipment } from '../src/store.ts';\\n\\nconst input: NewShipment = {\\n  trackingNumber: 'RR123456785AT',\\n  carrier: 'ATP',\\n  serviceLevel: 'standard',\\n  recipient: { name: 'A', street: 'B', zip: '1010', city: 'Wien', country: 'AT' },\\n};\\n\\ndescribe('Store debounced persistence', () => {\\n  let dir: string;\\n  let file: string;\\n\\n  beforeEach(() => {\\n    dir = mkdtempSync(path.join(tmpdir(), 'store-test-'));\\n    file = path.join(dir, 'data', 'store.json');\\n    mock.timers.enable({ apis: ['setTimeout', 'Date'] });\\n  });\\n\\n  afterEach(() => {\\n    mock.timers.reset();\\n    rmSync(dir, { recursive: true, force: true });\\n  });\\n\\n  it('does not write immediately after a mutation', () => {\\n    const store = new Store(file);\\n    store.addShipment(input);\\n    assert.equal(existsSync(file), false);\\n  });\\n\\n  it('writes once for several mutations within 200 ms', () => {\\n    const store = new Store(file);\\n    const s = store.addShipment(input);\\n    mock.timers.tick(100);\\n    store.addEvent(s.id, 'pickup');\\n    mock.timers.tick(100); // 200 ms after the first, only 100 ms after the last\\n    assert.equal(existsSync(file), false);\\n    mock.timers.tick(100);\\n    const saved = JSON.parse(readFileSync(file, 'utf8'));\\n    assert.equal(saved.shipments.length, 1);\\n    assert.equal(saved.events.length, 2);\\n  });\\n\\n  it('writes again for a later mutation', () => {\\n    const store = new Store(file);\\n    store.addShipment(input);\\n    mock.timers.tick(200);\\n    store.addShipment({ ...input, trackingNumber: 'RR000000000AT' });\\n    mock.timers.tick(200);\\n    assert.equa",
+     "input_chars": 3587,
+     "result_chars": 178,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01HeTwHcgkwxwtEfZ1DQ9h8p",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && npm test 2>&1 | grep -E \\\"✖|ℹ|Store|debounc|not ok|rror\\\" \"}",
+     "input_chars": 147,
+     "result_chars": 453,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Store writes are now debounced: mutations within 200 ms of each other produce a single write to `data/store.json`. The full suite passes (82 tests, 0 failures), including 7 new store tests. I didn't run a real server with SIGTERM, so the shutdown flush is only covered by the `flush()` tests.\n\n**`src/store.ts`**\n- **`save()`:** it only marks the store dirty and (re)starts a 200 ms timer, and the timer doesn't keep the process alive. `addShipment` and `addEvent` still call it, so the call sites are unchanged.\n- **`flush()`:** it writes pending changes synchronously and cancels the timer. It does nothing if nothing is pending or the store is memory-only.\n- **Failed writes:** the store only counts as clean after a successful write. If a timed write fails, it logs `store write failed` and retries on the next mutation or `flush()`. It doesn't crash the process.\n- **File format:** the file is still the same plain, pretty-printed JSON, so the nightly rsync diff behaves as before.\n\n**`src/server.ts`**: on SIGINT/SIGTERM it calls `store.flush()` after the server has closed, and then exits. There is also a `process.on('exit')` flush as a safety net for other exit paths.\n\n**One addition you didn't ask for:** a 2 s cap on how long a write can be postponed (`WRITE_MAX_WAIT_MS`). With a pure 200 ms debounce, continuous traffic with gaps under 200 ms would never write. A crash during that stretch would lose everything since the last write. If you'd rather have the plain debounce, set the cap very high or remove it.\n\n**Crash window:** a hard crash (kill -9 or power loss) can now lose up to about 200 ms of mutations, and up to 2 s under constant load. Before, each mutation was written immediately.\n\n**Tests** (`test/store.test.ts`, with mocked timers and a temp directory):\n- No write happens immediately.\n- Several mutations produce one write.\n- A later mutation produces a new write.\n- `flush()` writes at once, and the cancelled timer doesn't fire later.\n- A reloaded store sees flushed data.\n- The max-wait cap holds under constant traffic.\n- A memory-only store works.\n\nI added the \"JSON file store, no SQLite\" decision and the reason (the rsync backup diffs plain text) to the ledger.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 13,
+    "duration_ms": 48294,
+    "total_cost_usd": 0.4431658,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 14,
+     "cache_creation_input_tokens": 11230,
+     "cache_read_input_tokens": 404860,
+     "output_tokens": 6048,
+     "output_tokens_details": {
+      "thinking_tokens": 788
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 11230,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 844,
+       "cache_read_input_tokens": 61670,
+       "cache_creation_input_tokens": 3342,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 3342
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 46,
+      "outputTokens": 14128,
+      "cacheReadInputTokens": 988498,
+      "cacheCreationInputTokens": 50736,
+      "webSearchRequests": 0,
+      "costUSD": 0.4431658,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1691,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 50736,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "Now implement the debounce.",
+    "Store writes are now debounced: mutations within 200 ms of each other produce a single write to `data/store.json`. The full suite passes (82 tests, 0 failures), including 7 new store tests. I didn't run a real server with SIGTERM, so the shutdown flush is only covered by the `flush()` tests.\n\n**`src/store.ts`**\n- **`save()`:** it only marks the store dirty and (re)starts a 200 ms timer, and the timer doesn't keep the process alive. `addShipment` and `addEvent` still call it, so the call sites are unchanged.\n- **`flush()`:** it writes pending changes synchronously and cancels the timer. It does nothing if nothing is pending or the store is memory-only.\n- **Failed writes:** the store only counts as clean after a successful write. If a timed write fails, it logs `store write failed` and retries on the next mutation or `flush()`. It doesn't crash the process.\n- **File format:** the file is still the same plain, pretty-printed JSON, so the nightly rsync diff behaves as before.\n\n**`src/server.ts`**: on SIGINT/SIGTERM it calls `store.flush()` after the server has closed, and then exits. There is also a `process.on('exit')` flush as a safety net for other exit paths.\n\n**One addition you didn't ask for:** a 2 s cap on how long a write can be postponed (`WRITE_MAX_WAIT_MS`). With a pure 200 ms debounce, continuous traffic with gaps under 200 ms would never write. A crash during that stretch would lose everything since the last write. If you'd rather have the plain debounce, set the cap very high or remove it.\n\n**Crash window:** a hard crash (kill -9 or power loss) can now lose up to about 200 ms of mutations, and up to 2 s under constant load. Before, each mutation was written immediately.\n\n**Tests** (`test/store.test.ts`, with mocked timers and a temp directory):\n- No write happens immediately.\n- Several mutations produce one write.\n- A later mutation produces a new write.\n- `flush()` writes at once, and the cancelled timer doesn't fire later.\n- A reloaded store sees flushed data.\n- The max-wait cap holds under constant traffic.\n- A memory-only store works.\n\nI added the \"JSON file store, no SQLite\" decision and the reason (the rsync backup diffs plain text) to the ledger."
+   ]
+  },
+  {
+   "i": 5,
+   "prompt_chars": 727,
+   "ctx": [
+    66212,
+    70113,
+    71599,
+    72566,
+    73195
+   ],
+   "tools": [
+    {
+     "id": "toolu_01959AHKLvSyDxB1sxMYu3ZQ",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\", \"old_string\": \"- ERP retries:\", \"new_string\": \"- ERP sandbox port is 9911 (since Oct infra move); docs/erp-api.md and README still say 8080 = outdated. Do NOT edit docs/erp-api.md (ERP team owns it); user fixes README himself/herself (user).\\n- Future config hot reload of config/default.json: use fs.watchFile (polling), NOT fs.watch. Dead end: fs.watch never fires on staging (Docker bind mount from Windows host, change events don't propagate). Nothing to build now (user).\\n- ERP retries:\"}",
+     "input_chars": 627,
+     "result_chars": 190,
+     "mentions_ledger": true
+    },
+    {
+     "id": "toolu_01BQFQHQCSGHRK6BzzFjyyrK",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\docs\\\\erp-api.md\"}",
+     "input_chars": 105,
+     "result_chars": 2169,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01W3KqTKadCrne59oHZ12nQ7",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\services\\\\notify.ts\"}",
+     "input_chars": 113,
+     "result_chars": 5080,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01JtzNQV6ThY6Mduesgy9YLC",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && grep -rnE \\\"\\\\btype:|\\\\bat:|\\\\.type\\\\b|\\\\.at\\\\b|payload|\\\\\\\"type\\\\\\\"|'type'|\\\\\\\"at\\\\\\\"\\\" test/notify.test.ts | head -40; grep -rn \\\"ErpPayload\\\\|toErpPayload\\\" src test | grep -v \\\"^src/services/notify.ts\\\"; grep -n \\\"type\\\\b.*\\\\bat\\\\b\\\\|8080\\\\|9911\\\" README.md config/default.json\"}",
+     "input_chars": 370,
+     "result_chars": 2412,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_019fWe5QX8Xf6c1kjYMwKpZN",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && sed -i 's/^  type: string;$/  event_type: string;/; s/^  at: string;$/  occurred_at: string;/; s/^    type: event\\\\.type,$/    event_type: event.type,/; s/^    at: event\\\\.at,$/    occurred_at: event.at,/' src/services/notify.ts && sed -i \\\"s/{ \\\\.\\\\.\\\\.payload, type: 'exception' }/{ ...payload, event_type: 'exception' }/\\\" test/notify.test.ts && sed -n 6,27p src/services/notify.ts; sed -n 40,47p test/notify.test.ts\"}",
+     "input_chars": 508,
+     "result_chars": 1109,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01552Sj2RP7KCAWxQAJnQ5EN",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\test\\\\notify.test.ts\", \"old_string\": \"  it('puts the signature in a top-level sig field\", \"new_string\": \"  it('uses exactly the field names documented in docs/erp-api.md', () => {\\n    assert.deepEqual(toErpPayload(shipment, event), {\\n      event_id: 'evt_1',\\n      shipment_id: 'shp_1',\\n      tracking_number: 'RR123456785AT',\\n      carrier: 'ATP',\\n      event_type: 'delivered',\\n      occurred_at: '2026-11-12T09:14:03.000Z',\\n    });\\n  });\\n\\n  it('puts the signature in a top-level sig field\"}",
+     "input_chars": 613,
+     "result_chars": 123,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01SyDx6gAeL1qhq6aEx7wuMW",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && npm test 2>&1 | grep -E \\\"✖|ℹ (tests|pass|fail)|documented\\\"\"}",
+     "input_chars": 149,
+     "result_chars": 103,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Two of our payload field names didn't match the doc, and I fixed both. The suite passes with 83 tests (1 new) and 0 failures.\n\n**The mismatch:** `toErpPayload` in `src/services/notify.ts` sent the old names `type` and `at`. The doc requires `event_type` and `occurred_at`.\n\n| Doc field | Before | Now |\n|---|---|---|\n| `event_id`, `shipment_id`, `tracking_number`, `carrier` | matched | unchanged |\n| `event_type` | `type` | fixed |\n| `occurred_at` | `at` | fixed |\n| `note` (optional) | not sent | not sent |\n\n- **Why it was urgent:** the old `type` is only accepted until 2026-12-31, so sending it would have started failing in about six weeks.\n- **What I changed:** the `ErpPayload` interface and `toErpPayload`. The signing code is unchanged. `sig` is still computed over the body without `sig`, and it is still appended last. I updated one existing test that spread the old `type` key into a payload. I also added a test that pins the exact documented field set.\n- **`note`:** I left it out. It's optional, and we don't map a note onto the payload today. Tell me if the ERP should get the carrier note on `exception` events.\n\n**Your two side notes:**\n- **Port 9911:** I left `docs/erp-api.md` alone and haven't touched the README. `config/default.json` also still has `\"url\": \"http://localhost:8080/events\"`, which is our code. It wrong for the sandbox now, but I didn't change it, since you only mentioned the doc and README. I can switch it to 9911 if you want, or you can set `ERP_URL`.\n- **Hot reload:** nothing built. The ledger now says to use `fs.watchFile` (polling), because `fs.watch` never fires on the staging bind mount.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 8,
+    "duration_ms": 25843,
+    "total_cost_usd": 0.5352692000000001,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 10,
+     "cache_creation_input_tokens": 8181,
+     "cache_read_input_tokens": 345494,
+     "output_tokens": 2481,
+     "output_tokens_details": {
+      "thinking_tokens": 377
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 8181,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 617,
+       "cache_read_input_tokens": 72564,
+       "cache_creation_input_tokens": 629,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 629
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 56,
+      "outputTokens": 16609,
+      "cacheReadInputTokens": 1333992,
+      "cacheCreationInputTokens": 58917,
+      "webSearchRequests": 0,
+      "costUSD": 0.5352692000000001,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2068,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 58917,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "Two of our payload field names didn't match the doc, and I fixed both. The suite passes with 83 tests (1 new) and 0 failures.\n\n**The mismatch:** `toErpPayload` in `src/services/notify.ts` sent the old names `type` and `at`. The doc requires `event_type` and `occurred_at`.\n\n| Doc field | Before | Now |\n|---|---|---|\n| `event_id`, `shipment_id`, `tracking_number`, `carrier` | matched | unchanged |\n| `event_type` | `type` | fixed |\n| `occurred_at` | `at` | fixed |\n| `note` (optional) | not sent | not sent |\n\n- **Why it was urgent:** the old `type` is only accepted until 2026-12-31, so sending it would have started failing in about six weeks.\n- **What I changed:** the `ErpPayload` interface and `toErpPayload`. The signing code is unchanged. `sig` is still computed over the body without `sig`, and it is still appended last. I updated one existing test that spread the old `type` key into a payload. I also added a test that pins the exact documented field set.\n- **`note`:** I left it out. It's optional, and we don't map a note onto the payload today. Tell me if the ERP should get the carrier note on `exception` events.\n\n**Your two side notes:**\n- **Port 9911:** I left `docs/erp-api.md` alone and haven't touched the README. `config/default.json` also still has `\"url\": \"http://localhost:8080/events\"`, which is our code. It wrong for the sandbox now, but I didn't change it, since you only mentioned the doc and README. I can switch it to 9911 if you want, or you can set `ERP_URL`.\n- **Hot reload:** nothing built. The ledger now says to use `fs.watchFile` (polling), because `fs.watch` never fires on the staging bind mount."
+   ]
+  },
+  {
+   "i": 6,
+   "prompt_chars": 168,
+   "ctx": [
+    73990,
+    76842,
+    78167,
+    78436,
+    79425,
+    79947
+   ],
+   "tools": [
+    {
+     "id": "toolu_01RZgzZNUkGLwAyndgmuv926",
+     "name": "Read",
+     "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\services\\\\eta.ts\"}",
+     "input_chars": 110,
+     "result_chars": 2428,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01BExaPWiNsRuwHbC3tdszQU",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && cat src/services/holidays.ts | head -60; cat src/types.ts | head -50\"}",
+     "input_chars": 157,
+     "result_chars": 2647,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01FQpDJfxHYQiniLFUyGsxWd",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && mkdir -p /tmp/bench && cat > /tmp/bench/b.ts <<'EOF'\\nimport { Store } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker/src/store.ts';\\nEOF\\ncat > \\\"$TEMP/bench.ts\\\" <<EOF\\nimport { Store } from '$(pwd -W)/src/store.ts';\\nimport { calculateEta } from '$(pwd -W)/src/services/eta.ts';\\nconst store = new Store();\\nconst carriers = ['ATP','DHL','DPD','GLS','UPS'] as const;\\nfor (let i = 0; i < 5000; i++) {\\n  const s = store.addShipment({ trackingNumber: 'T'+i, carrier: carriers[i%5], serviceLevel: 'standard', recipient: { name:'a',street:'b',zip:'1',city:'c',country:'AT'} }, new Date(Date.now() - i*60000));\\n  if (i%3==0) store.addEvent(s.id, 'picked_up'); if (i%7==0) store.addEvent(s.id,'exception');\\n}\\nconst t = (label: string, fn: () => void) => { fn(); const a = performance.now(); for (let k=0;k<20;k++) fn(); console.log(label, ((performance.now()-a)/20).toFixed(2),'ms'); };\\nfor (const limit of [50, 500, 5000]) {\\n  t('list limit='+limit+' (no eta)', () => { store.listShipments({ limit }); });\\n  t('list limit='+limit+' (+eta)', () => { store.listShipments({ limit }).map(s => calculateEta(s, store.eventsFor(s.id))); });\\n}\\nEOF\\nnode \\\"$TEMP/bench.ts\\\"\"}",
+     "input_chars": 1283,
+     "result_chars": 1135,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_016SgWQ8KLLiMN6Xc7Pw3LsT",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && sed -i \\\"s#'\\\\(C:/[^']*\\\\)'#'file:///\\\\1'#\\\" \\\"$TEMP/bench.ts\\\" && node \\\"$TEMP/bench.ts\\\"\"}",
+     "input_chars": 179,
+     "result_chars": 186,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_016Hg9668sCXgGFAXPDYaBtH",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && P=\\\"file:///$(pwd -W)\\\" && cat > \\\"$TEMP/bench2.ts\\\" <<EOF\\nimport { startTestServer } from '$P/test/helpers.ts';\\nconst srv = await startTestServer();\\nconst carriers = ['ATP','DHL','DPD','GLS','UPS'] as const;\\nfor (let i = 0; i < 5000; i++) {\\n  const s = srv.store.addShipment({ trackingNumber: 'T'+i, carrier: carriers[i%5], serviceLevel: 'standard', recipient: { name:'a',street:'b',zip:'1',city:'c',country:'AT'} }, new Date(Date.now() - Math.random()*1e9));\\n  if (i%3==0) srv.store.addEvent(s.id, 'picked_up'); if (i%7==0) srv.store.addEvent(s.id,'exception');\\n}\\nfor (const q of ['', '?limit=500']) {\\n  await fetch(srv.url+'/shipments'+q);\\n  const a = performance.now();\\n  for (let k=0;k<20;k++) await (await fetch(srv.url+'/shipments'+q)).text();\\n  console.log('GET /shipments'+q, ((performance.now()-a)/20).toFixed(2),'ms');\\n}\\nawait srv.close();\\nEOF\\nnode \\\"$TEMP/bench2.ts\\\"; rm -f \\\"$TEMP/bench.ts\\\" \\\"$TEMP/bench2.ts\\\"; rm -rf /tmp/bench\"}",
+     "input_chars": 1049,
+     "result_chars": 57,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01VrNJKjGSTomQVkP9qHNuVV",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\", \"old_string\": \"- ERP retries:\", \"new_string\": \"- Measured (5k shipments, local): calculateEta for 500 items = ~3.5 ms; GET /shipments = ~15 ms (default limit 50), ~33 ms (limit=500) end-to-end. ETA is NOT the list bottleneck -> memoization of calculateEta NOT added (pending user's staging numbers).\\n- ERP retries:\"}",
+     "input_chars": 450,
+     "result_chars": 190,
+     "mentions_ledger": true
+    }
+   ],
+   "result": {
+    "text": "I haven't added the memoization yet, because my measurements say `calculateEta` isn't what's slow.\n\nI generated 5,000 shipments in memory, with a mix of pickup and exception events, and timed the list path:\n\n| What | Time |\n|---|---|\n| `calculateEta` for 500 items (the route's max `limit`) | about 3.5 ms |\n| `GET /shipments` over HTTP, default `limit=50` | about 15 ms |\n| `GET /shipments?limit=500` over HTTP | about 33 ms |\n\nThe route caps `limit` at 500, so ETAs are never computed for all 5,000. For 5,000 items the ETA work would be about 34 ms, but the endpoint can't return that many. These numbers are from my machine with no network or disk in the way, so staging will be somewhat slower. Even so, ETA is a few milliseconds of a 15–33 ms request.\n\nMemoization would also carry some risk for little gain. An ETA depends on the shipment's status, `createdAt`, its events (the pickup time and the exception count) and the holiday list. A stale cache entry means a wrong delivery date in the mobile app. The cache key would have to cover all of those, or `addEvent` would have to invalidate entries.\n\nI haven't found the slow part yet. The likely candidates are:\n- `listShipments` copies and sorts all 5,000 shipments on every call, even when only 50 are returned.\n- The response is serialized and sent over the network.\n- Something on staging that I can't reproduce here.\n\n**Next step:** could you tell me what \"slow\" means on staging: the response time, and which `limit` you used? With that I can look for the real cause. If the sort is the cost, the fix is to keep an index sorted by `createdAt` (no memoization needed). I'd still add ETA memoization if you want it anyway, and I would key it on the shipment's status, events and `createdAt`.\n\nI haven't changed any code for this. I only added the measurements to the ledger.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 7,
+    "duration_ms": 33693,
+    "total_cost_usd": 0.6404255,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 12,
+     "cache_creation_input_tokens": 6752,
+     "cache_read_input_tokens": 460043,
+     "output_tokens": 3212,
+     "output_tokens_details": {
+      "thinking_tokens": 648
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 6752,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 646,
+       "cache_read_input_tokens": 79423,
+       "cache_creation_input_tokens": 522,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 522
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 68,
+      "outputTokens": 19821,
+      "cacheReadInputTokens": 1794035,
+      "cacheCreationInputTokens": 65669,
+      "webSearchRequests": 0,
+      "costUSD": 0.6404255,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2716,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 65669,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "I haven't added the memoization yet, because my measurements say `calculateEta` isn't what's slow.\n\nI generated 5,000 shipments in memory, with a mix of pickup and exception events, and timed the list path:\n\n| What | Time |\n|---|---|\n| `calculateEta` for 500 items (the route's max `limit`) | about 3.5 ms |\n| `GET /shipments` over HTTP, default `limit=50` | about 15 ms |\n| `GET /shipments?limit=500` over HTTP | about 33 ms |\n\nThe route caps `limit` at 500, so ETAs are never computed for all 5,000. For 5,000 items the ETA work would be about 34 ms, but the endpoint can't return that many. These numbers are from my machine with no network or disk in the way, so staging will be somewhat slower. Even so, ETA is a few milliseconds of a 15–33 ms request.\n\nMemoization would also carry some risk for little gain. An ETA depends on the shipment's status, `createdAt`, its events (the pickup time and the exception count) and the holiday list. A stale cache entry means a wrong delivery date in the mobile app. The cache key would have to cover all of those, or `addEvent` would have to invalidate entries.\n\nI haven't found the slow part yet. The likely candidates are:\n- `listShipments` copies and sorts all 5,000 shipments on every call, even when only 50 are returned.\n- The response is serialized and sent over the network.\n- Something on staging that I can't reproduce here.\n\n**Next step:** could you tell me what \"slow\" means on staging: the response time, and which `limit` you used? With that I can look for the real cause. If the sort is the cost, the fix is to keep an index sorted by `createdAt` (no memoization needed). I'd still add ETA memoization if you want it anyway, and I would key it on the shipment's status, events and `createdAt`.\n\nI haven't changed any code for this. I only added the measurements to the ledger."
+   ]
+  },
+  {
+   "i": 7,
+   "prompt_chars": 383,
+   "ctx": [
+    80839,
+    82348
+   ],
+   "tools": [
+    {
+     "id": "toolu_01LVXu17a8T5GZWBRrcx8Qei",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && grep -rniE \\\"memo|cache|lru\\\" src test --include=*.ts | grep -v \\\"src/legacy\\\"; git status --short; git diff src/services/eta.ts | head; git log --oneline | head -3\"}",
+     "input_chars": 253,
+     "result_chars": 1193,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_019KSzKESRJ1YnRm5iNzXpoN",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\", \"old_string\": \"- Measured (5k shipments, local): calculateEta for 500 items = ~3.5 ms; GET /shipments = ~15 ms (default limit 50), ~33 ms (limit=500) end-to-end. ETA is NOT the list bottleneck -> memoization of calculateEta NOT added (pending user's staging numbers).\", \"new_string\": \"- ETA caching/memoization = DEAD END (user): QA found stale ETA in list after a new event (exception) since cache wasn't invalidated; a proper cache key got messy. No ETA memoization in the repo; list slowness to be solved by PAGINATING GET /shipments later (user), not caching. Measured (5k shipments, local): calculateEta for 500 items ~3.5 ms; GET /shipments ~15 ms (limit 50), ~33 ms (limit=500) -> ETA wasn't the bottleneck anyway.\"}",
+     "input_chars": 856,
+     "result_chars": 190,
+     "mentions_ledger": true
+    },
+    {
+     "id": "toolu_01UBGH3grdE6B5cdMRRez6Nx",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && npm test 2>&1 | grep -E \\\"✖|ℹ (tests|pass|fail)\\\"\"}",
+     "input_chars": 138,
+     "result_chars": 29,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "There was nothing to remove. I never added ETA memoization to this repo. In my last message I measured the list path and held off on caching, because `calculateEta` wasn't the slow part. I made no code changes this turn.\n\nI checked that nothing ended up in the tree some other way:\n- **Search:** searching `src/` and `test/` for `memo`, `cache` and `lru` finds nothing relevant. The only hits are the \"in-memory store\" comments in `store.ts` and a \"memory-only\" test name.\n- **Current code:** `calculateEta` in `src/services/eta.ts` is the plain computation, and the list handler calls it fresh for every item on every request. So the list always reflects the latest events, and a new exception moves the ETA right away.\n- **Tests:** the suite passes with 83 tests and 0 failures.\n\n**QA's stale ETA:** if QA saw the stale list ETA, it was on a build or branch that isn't this working tree. It might be a teammate's branch or a deployed version. Someone should check that it doesn't ship. The usual bad pattern is a cache keyed only on the shipment ID, which doesn't change when a new event arrives.\n\nI wrote the dead end into the ledger: ETA caching is out because invalidation is messy, and pagination of `GET /shipments` is the planned fix for list slowness. When you get to pagination, one cheap win is that `listShipments` currently copies and sorts all shipments on every call, even when only 50 come back.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 4,
+    "duration_ms": 14041,
+    "total_cost_usd": 0.6784057,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 4,
+     "cache_creation_input_tokens": 2401,
+     "cache_read_input_tokens": 160782,
+     "output_tokens": 1229,
+     "output_tokens_details": {
+      "thinking_tokens": 34
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 2401,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 480,
+       "cache_read_input_tokens": 80837,
+       "cache_creation_input_tokens": 1509,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 1509
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 72,
+      "outputTokens": 21050,
+      "cacheReadInputTokens": 1954817,
+      "cacheCreationInputTokens": 68070,
+      "webSearchRequests": 0,
+      "costUSD": 0.6784057,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2750,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 68070,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "There was nothing to remove. I never added ETA memoization to this repo. In my last message I measured the list path and held off on caching, because `calculateEta` wasn't the slow part. I made no code changes this turn.\n\nI checked that nothing ended up in the tree some other way:\n- **Search:** searching `src/` and `test/` for `memo`, `cache` and `lru` finds nothing relevant. The only hits are the \"in-memory store\" comments in `store.ts` and a \"memory-only\" test name.\n- **Current code:** `calculateEta` in `src/services/eta.ts` is the plain computation, and the list handler calls it fresh for every item on every request. So the list always reflects the latest events, and a new exception moves the ETA right away.\n- **Tests:** the suite passes with 83 tests and 0 failures.\n\n**QA's stale ETA:** if QA saw the stale list ETA, it was on a build or branch that isn't this working tree. It might be a teammate's branch or a deployed version. Someone should check that it doesn't ship. The usual bad pattern is a cache keyed only on the shipment ID, which doesn't change when a new event arrives.\n\nI wrote the dead end into the ledger: ETA caching is out because invalidation is messy, and pagination of `GET /shipments` is the planned fix for list slowness. When you get to pagination, one cheap win is that `listShipments` currently copies and sorts all shipments on every call, even when only 50 come back."
+   ]
+  },
+  {
+   "i": 8,
+   "prompt_chars": 97,
+   "ctx": [
+    82861,
+    83419
+   ],
+   "tools": [
+    {
+     "id": "toolu_01477vqopQdgQ8kbSSgR1VkJ",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && git diff --stat 2>/dev/null; echo ---; git status --short\"}",
+     "input_chars": 146,
+     "result_chars": 883,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Git can't separate today's changes from earlier ones. Five files were already modified and four test or service files were already untracked before this conversation began. The `git diff --stat` above therefore mixes both. The tracked files total 10 files, +202/−18. Untracked files (the new ones) don't show in `git diff` at all.\n\n**What I changed in this conversation**\n\n| File | Change |\n|---|---|\n| `src/routes/shipments.ts` | One line: each `GET /shipments` list item now includes `eta`. `GET /shipments/:id` is untouched. |\n| `src/router.ts` | Request logging. It writes one `request` line with method, path, status and `duration_ms` when the response closes. It never logs the query string, request body or response body. |\n| `src/store.ts` | Debounced persistence: `save()` schedules a write after 200 ms, capped at 2 s under constant traffic. `flush()` writes pending changes immediately. A failed write stays pending. |\n| `src/server.ts` | `store.flush()` on SIGINT/SIGTERM after the server closes, plus a flush in the `exit` handler. |\n| `src/services/notify.ts` | Only the payload fields: `type` is now `event_type` and `at` is now `occurred_at`, as in `docs/erp-api.md`. The rest of the file (signing, retries) was already there. |\n| `test/shipments.test.ts` | +2 tests: list items have an `eta` that matches the detail endpoint, and the detail endpoint's field set is unchanged. |\n| `test/notify.test.ts` | +1 test pinning the documented ERP field names, and one existing line updated to `event_type`. |\n| `test/request-log.test.ts` (new) | 3 tests: log fields, error statuses, and no recipient data in the log output. |\n| `test/store.test.ts` (new) | 7 tests for debounce, flush, the max-wait cap, reload, and memory-only mode. |\n| `.gemkeeper/ledger.md` | Rules, decisions and dead ends from this conversation. |\n\n**Changes from earlier sessions that I didn't make today**\n- **Modified:** `README.md`, `src/config.ts`, `src/lib/validate.ts`, `src/services/eta.ts` (the holiday-aware ETA), and most of `src/services/notify.ts`.\n- **Untracked:** `src/services/holidays.ts`, `src/services/tracking.ts`, `test/holidays.test.ts`, `test/tracking.test.ts`, and most of `test/notify.test.ts`.\n\n**Not changed:** `docs/erp-api.md`, `src/legacy/`, `package.json`, and `config/default.json`. The config file still has port 8080 for the ERP sandbox, as I mentioned earlier.\n\n**Status:** the full suite passes with 83 tests and 0 failures. Nothing is committed, and `main` still points at `0f67fab`.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 2,
+    "duration_ms": 12791,
+    "total_cost_usd": 0.7126020000000001,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 6,
+     "cache_creation_input_tokens": 1071,
+     "cache_read_input_tokens": 165203,
+     "output_tokens": 1338,
+     "output_tokens_details": {
+      "thinking_tokens": 252
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 1071,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 1223,
+       "cache_read_input_tokens": 82857,
+       "cache_creation_input_tokens": 560,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 560
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 78,
+      "outputTokens": 22388,
+      "cacheReadInputTokens": 2120020,
+      "cacheCreationInputTokens": 69141,
+      "webSearchRequests": 0,
+      "costUSD": 0.7126020000000001,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 3002,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 69141,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "Git can't separate today's changes from earlier ones. Five files were already modified and four test or service files were already untracked before this conversation began. The `git diff --stat` above therefore mixes both. The tracked files total 10 files, +202/−18. Untracked files (the new ones) don't show in `git diff` at all.\n\n**What I changed in this conversation**\n\n| File | Change |\n|---|---|\n| `src/routes/shipments.ts` | One line: each `GET /shipments` list item now includes `eta`. `GET /shipments/:id` is untouched. |\n| `src/router.ts` | Request logging. It writes one `request` line with method, path, status and `duration_ms` when the response closes. It never logs the query string, request body or response body. |\n| `src/store.ts` | Debounced persistence: `save()` schedules a write after 200 ms, capped at 2 s under constant traffic. `flush()` writes pending changes immediately. A failed write stays pending. |\n| `src/server.ts` | `store.flush()` on SIGINT/SIGTERM after the server closes, plus a flush in the `exit` handler. |\n| `src/services/notify.ts` | Only the payload fields: `type` is now `event_type` and `at` is now `occurred_at`, as in `docs/erp-api.md`. The rest of the file (signing, retries) was already there. |\n| `test/shipments.test.ts` | +2 tests: list items have an `eta` that matches the detail endpoint, and the detail endpoint's field set is unchanged. |\n| `test/notify.test.ts` | +1 test pinning the documented ERP field names, and one existing line updated to `event_type`. |\n| `test/request-log.test.ts` (new) | 3 tests: log fields, error statuses, and no recipient data in the log output. |\n| `test/store.test.ts` (new) | 7 tests for debounce, flush, the max-wait cap, reload, and memory-only mode. |\n| `.gemkeeper/ledger.md` | Rules, decisions and dead ends from this conversation. |\n\n**Changes from earlier sessions that I didn't make today**\n- **Modified:** `README.md`, `src/config.ts`, `src/lib/validate.ts`, `src/services/eta.ts` (the holiday-aware ETA), and most of `src/services/notify.ts`.\n- **Untracked:** `src/services/holidays.ts`, `src/services/tracking.ts`, `test/holidays.test.ts`, `test/tracking.test.ts`, and most of `test/notify.test.ts`.\n\n**Not changed:** `docs/erp-api.md`, `src/legacy/`, `package.json`, and `config/default.json`. The config file still has port 8080 for the ERP sandbox, as I mentioned earlier.\n\n**Status:** the full suite passes with 83 tests and 0 failures. Nothing is committed, and `main` still points at `0f67fab`."
+   ]
+  },
+  {
+   "i": 9,
+   "prompt_chars": 113,
+   "ctx": [
+    84676,
+    84875
+   ],
+   "tools": [
+    {
+     "id": "toolu_0199ebouFr4vJyevpCphzBnU",
+     "name": "Bash",
+     "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker\\\" && npm test 2>&1 | grep -E \\\"✖|ℹ\\\"\"}",
+     "input_chars": 120,
+     "result_chars": 99,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "The final run passes: 83 tests in 18 suites, with 0 failures, 0 cancelled and 0 skipped.\n\n**Done today**\n- **ERP load numbers:** the staging peak on 2026-11-12 was 2 notifications per minute, one request per event. I didn't build batching, since the ERP rejects arrays with 422.\n- **ETA in the list:** `GET /shipments` items now have `eta`. The `GET /shipments/:id` response is unchanged, and a test pins its field set.\n- **Request logging:** one line per request with method, path, status and duration. No recipient data is logged, and a test checks that.\n- **Debounced store writes:** the JSON file store now writes after 200 ms (capped at 2 s), with `flush()` on shutdown. It's still plain JSON, so the rsync backup keeps working.\n- **ERP payload fix:** `type` and `at` are now `event_type` and `occurred_at`. The old names would have stopped being accepted after 2026-12-31.\n- **ETA memoization:** I never added it. I measured instead and found ETA isn't the bottleneck. You've since ruled caching out, and the ledger records that.\n\n**What I'd do next**\n1. **Check what QA tested.** They saw a stale ETA from memoization that isn't in this tree, so they were probably on another branch or build.\n2. **Review and commit.** Nothing is committed yet. The tree also holds earlier-session work (holidays, ATP validation, signing, retries).\n3. **Fix the config port.** `config/default.json` still points the ERP sandbox at 8080 when it should be 9911. That change is yours to approve.\n4. **Check the staging logs for recipient data.** The 11-12 log has recipient names and addresses on exception lines. The current code doesn't write those, but the old logs need scrubbing, and the source of that log should be found.\n5. **Paginate `GET /shipments`.** Use a cursor or offset, and stop copying and sorting all shipments on every call.\n6. **Decide on `note`.** Do you want the carrier `note` on exception events sent to the ERP, as the doc allows?\n7. **Extend the holiday list before 2028.** It only covers 2026 and 2027.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 2,
+    "duration_ms": 10886,
+    "total_cost_usd": 0.7437269,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 6,
+     "cache_creation_input_tokens": 1456,
+     "cache_read_input_tokens": 168089,
+     "output_tokens": 848,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 1456,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 734,
+       "cache_read_input_tokens": 84672,
+       "cache_creation_input_tokens": 201,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 201
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 84,
+      "outputTokens": 23236,
+      "cacheReadInputTokens": 2288109,
+      "cacheCreationInputTokens": 70597,
+      "webSearchRequests": 0,
+      "costUSD": 0.7437269,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 3002,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 70597,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   },
+   "texts": [
+    "The final run passes: 83 tests in 18 suites, with 0 failures, 0 cancelled and 0 skipped.\n\n**Done today**\n- **ERP load numbers:** the staging peak on 2026-11-12 was 2 notifications per minute, one request per event. I didn't build batching, since the ERP rejects arrays with 422.\n- **ETA in the list:** `GET /shipments` items now have `eta`. The `GET /shipments/:id` response is unchanged, and a test pins its field set.\n- **Request logging:** one line per request with method, path, status and duration. No recipient data is logged, and a test checks that.\n- **Debounced store writes:** the JSON file store now writes after 200 ms (capped at 2 s), with `flush()` on shutdown. It's still plain JSON, so the rsync backup keeps working.\n- **ERP payload fix:** `type` and `at` are now `event_type` and `occurred_at`. The old names would have stopped being accepted after 2026-12-31.\n- **ETA memoization:** I never added it. I measured instead and found ETA isn't the bottleneck. You've since ruled caching out, and the ledger records that.\n\n**What I'd do next**\n1. **Check what QA tested.** They saw a stale ETA from memoization that isn't in this tree, so they were probably on another branch or build.\n2. **Review and commit.** Nothing is committed yet. The tree also holds earlier-session work (holidays, ATP validation, signing, retries).\n3. **Fix the config port.** `config/default.json` still points the ERP sandbox at 8080 when it should be 9911. That change is yours to approve.\n4. **Check the staging logs for recipient data.** The 11-12 log has recipient names and addresses on exception lines. The current code doesn't write those, but the old logs need scrubbing, and the source of that log should be found.\n5. **Paginate `GET /shipments`.** Use a cursor or offset, and stop copying and sorting all shipments on every call.\n6. **Decide on `note`.** Do you want the carrier `note` on exception events sent to the ERP, as the doc allows?\n7. **Extend the holiday list before 2028.** It only covers 2026 and 2027."
+   ]
+  }
+ ],
+ "hooks": [
+  {
+   "turn": 0,
+   "hook": "SessionStart:startup",
+   "chars": 2436,
+   "output": "[gemkeeper] Ledger from earlier session(s) of this project. Follow the gems skill's Resume mode:\nverify '## Now' against git, then reply in at most three lines (mission, where we are, next step) unless the user already gave you a task.\n--- .gemkeeper/ledger.md ---\n# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n--- end ledger ---\n[gemkeeper] The ledger is not read-only: keep it current in this session. When the user states a rule, a decision with its reason, a dead end or a non-obvious fact, add it right away (update the existing bullet on that topic instead of adding a second one).\n"
+  },
+  {
+   "turn": 0,
+   "hook": "UserPromptSubmit",
+   "chars": 283,
+   "output": "[gemkeeper] gem check: this message likely states a rule, a decision and its reason, a dead end or a non-obvious fact. If something in it passes the ledger test and is not in .gemkeeper/ledger.md yet, add it first (one small edit, keep the reason, mark it (user)), then do the task.\n"
+  },
+  {
+   "turn": 0,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 1,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 1,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 2,
+   "hook": "UserPromptSubmit",
+   "chars": 283,
+   "output": "[gemkeeper] gem check: this message likely states a rule, a decision and its reason, a dead end or a non-obvious fact. If something in it passes the ledger test and is not in .gemkeeper/ledger.md yet, add it first (one small edit, keep the reason, mark it (user)), then do the task.\n"
+  },
+  {
+   "turn": 2,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 3,
+   "hook": "UserPromptSubmit",
+   "chars": 283,
+   "output": "[gemkeeper] gem check: this message likely states a rule, a decision and its reason, a dead end or a non-obvious fact. If something in it passes the ledger test and is not in .gemkeeper/ledger.md yet, add it first (one small edit, keep the reason, mark it (user)), then do the task.\n"
+  },
+  {
+   "turn": 3,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 4,
+   "hook": "UserPromptSubmit",
+   "chars": 283,
+   "output": "[gemkeeper] gem check: this message likely states a rule, a decision and its reason, a dead end or a non-obvious fact. If something in it passes the ledger test and is not in .gemkeeper/ledger.md yet, add it first (one small edit, keep the reason, mark it (user)), then do the task.\n"
+  },
+  {
+   "turn": 4,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 5,
+   "hook": "UserPromptSubmit",
+   "chars": 283,
+   "output": "[gemkeeper] gem check: this message likely states a rule, a decision and its reason, a dead end or a non-obvious fact. If something in it passes the ledger test and is not in .gemkeeper/ledger.md yet, add it first (one small edit, keep the reason, mark it (user)), then do the task.\n"
+  },
+  {
+   "turn": 5,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 6,
+   "hook": "UserPromptSubmit",
+   "chars": 283,
+   "output": "[gemkeeper] gem check: this message likely states a rule, a decision and its reason, a dead end or a non-obvious fact. If something in it passes the ledger test and is not in .gemkeeper/ledger.md yet, add it first (one small edit, keep the reason, mark it (user)), then do the task.\n"
+  },
+  {
+   "turn": 6,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 7,
+   "hook": "UserPromptSubmit",
+   "chars": 283,
+   "output": "[gemkeeper] gem check: this message likely states a rule, a decision and its reason, a dead end or a non-obvious fact. If something in it passes the ledger test and is not in .gemkeeper/ledger.md yet, add it first (one small edit, keep the reason, mark it (user)), then do the task.\n"
+  },
+  {
+   "turn": 7,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 8,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 8,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 9,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 9,
+   "hook": "Stop",
+   "chars": 0,
+   "output": ""
+  }
+ ],
+ "error": null,
+ "compact": null,
+ "cost_cumulative": 0.7437269,
+ "cost": 0.743727,
+ "wall_s": 237.6,
+ "exit_code": 0,
+ "ctx_first": 23052,
+ "ctx_last": 84875,
+ "ledger_by_turn": [
+  {
+   "turn": 10,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  },
+  {
+   "turn": 11,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  },
+  {
+   "turn": 12,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  },
+  {
+   "turn": 13,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\n- NEVER log recipient name/address/phone anywhere (GDPR; DPO flagged it in last month's audit). Shipment IDs + tracking numbers are OK to log (user). Note: staging log 2026-11-12 already shows `recipient=\"...\"` on exception event lines -> existing leak to fix.\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  },
+  {
+   "turn": 14,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\n- NEVER log recipient name/address/phone anywhere (GDPR; DPO flagged it in last month's audit). Shipment IDs + tracking numbers are OK to log (user). Note: staging log 2026-11-12 already shows `recipient=\"...\"` on exception event lines -> existing leak to fix.\n- Storage stays a plain JSON file (data/store.json), NO SQLite/node:sqlite. Why: ops' nightly rsync backup diffs plain-text files; binary DB breaks their checks. Perf fix = debounce writes in src/store.ts (200 ms, one write per burst) + flush() on shutdown (user).\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  },
+  {
+   "turn": 15,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\n- NEVER log recipient name/address/phone anywhere (GDPR; DPO flagged it in last month's audit). Shipment IDs + tracking numbers are OK to log (user). Note: staging log 2026-11-12 already shows `recipient=\"...\"` on exception event lines -> existing leak to fix.\n- Storage stays a plain JSON file (data/store.json), NO SQLite/node:sqlite. Why: ops' nightly rsync backup diffs plain-text files; binary DB breaks their checks. Perf fix = debounce writes in src/store.ts (200 ms, one write per burst) + flush() on shutdown (user).\n- ERP sandbox port is 9911 (since Oct infra move); docs/erp-api.md and README still say 8080 = outdated. Do NOT edit docs/erp-api.md (ERP team owns it); user fixes README himself/herself (user).\n- Future config hot reload of config/default.json: use fs.watchFile (polling), NOT fs.watch. Dead end: fs.watch never fires on staging (Docker bind mount from Windows host, change events don't propagate). Nothing to build now (user).\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  },
+  {
+   "turn": 16,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\n- NEVER log recipient name/address/phone anywhere (GDPR; DPO flagged it in last month's audit). Shipment IDs + tracking numbers are OK to log (user). Note: staging log 2026-11-12 already shows `recipient=\"...\"` on exception event lines -> existing leak to fix.\n- Storage stays a plain JSON file (data/store.json), NO SQLite/node:sqlite. Why: ops' nightly rsync backup diffs plain-text files; binary DB breaks their checks. Perf fix = debounce writes in src/store.ts (200 ms, one write per burst) + flush() on shutdown (user).\n- ERP sandbox port is 9911 (since Oct infra move); docs/erp-api.md and README still say 8080 = outdated. Do NOT edit docs/erp-api.md (ERP team owns it); user fixes README himself/herself (user).\n- Future config hot reload of config/default.json: use fs.watchFile (polling), NOT fs.watch. Dead end: fs.watch never fires on staging (Docker bind mount from Windows host, change events don't propagate). Nothing to build now (user).\n- Measured (5k shipments, local): calculateEta for 500 items = ~3.5 ms; GET /shipments = ~15 ms (default limit 50), ~33 ms (limit=500) end-to-end. ETA is NOT the list bottleneck -> memoization of calculateEta NOT added (pending user's staging numbers).\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  },
+  {
+   "turn": 17,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\n- NEVER log recipient name/address/phone anywhere (GDPR; DPO flagged it in last month's audit). Shipment IDs + tracking numbers are OK to log (user). Note: staging log 2026-11-12 already shows `recipient=\"...\"` on exception event lines -> existing leak to fix.\n- Storage stays a plain JSON file (data/store.json), NO SQLite/node:sqlite. Why: ops' nightly rsync backup diffs plain-text files; binary DB breaks their checks. Perf fix = debounce writes in src/store.ts (200 ms, one write per burst) + flush() on shutdown (user).\n- ERP sandbox port is 9911 (since Oct infra move); docs/erp-api.md and README still say 8080 = outdated. Do NOT edit docs/erp-api.md (ERP team owns it); user fixes README himself/herself (user).\n- Future config hot reload of config/default.json: use fs.watchFile (polling), NOT fs.watch. Dead end: fs.watch never fires on staging (Docker bind mount from Windows host, change events don't propagate). Nothing to build now (user).\n- ETA caching/memoization = DEAD END (user): QA found stale ETA in list after a new event (exception) since cache wasn't invalidated; a proper cache key got messy. No ETA memoization in the repo; list slowness to be solved by PAGINATING GET /shipments later (user), not caching. Measured (5k shipments, local): calculateEta for 500 items ~3.5 ms; GET /shipments ~15 ms (limit 50), ~33 ms (limit=500) -> ETA wasn't the bottleneck anyway.\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  },
+  {
+   "turn": 18,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\n- NEVER log recipient name/address/phone anywhere (GDPR; DPO flagged it in last month's audit). Shipment IDs + tracking numbers are OK to log (user). Note: staging log 2026-11-12 already shows `recipient=\"...\"` on exception event lines -> existing leak to fix.\n- Storage stays a plain JSON file (data/store.json), NO SQLite/node:sqlite. Why: ops' nightly rsync backup diffs plain-text files; binary DB breaks their checks. Perf fix = debounce writes in src/store.ts (200 ms, one write per burst) + flush() on shutdown (user).\n- ERP sandbox port is 9911 (since Oct infra move); docs/erp-api.md and README still say 8080 = outdated. Do NOT edit docs/erp-api.md (ERP team owns it); user fixes README himself/herself (user).\n- Future config hot reload of config/default.json: use fs.watchFile (polling), NOT fs.watch. Dead end: fs.watch never fires on staging (Docker bind mount from Windows host, change events don't propagate). Nothing to build now (user).\n- ETA caching/memoization = DEAD END (user): QA found stale ETA in list after a new event (exception) since cache wasn't invalidated; a proper cache key got messy. No ETA memoization in the repo; list slowness to be solved by PAGINATING GET /shipments later (user), not caching. Measured (5k shipments, local): calculateEta for 500 items ~3.5 ms; GET /shipments ~15 ms (limit 50), ~33 ms (limit=500) -> ETA wasn't the bottleneck anyway.\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  },
+  {
+   "turn": 19,
+   "text": "# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\n- NEVER log recipient name/address/phone anywhere (GDPR; DPO flagged it in last month's audit). Shipment IDs + tracking numbers are OK to log (user). Note: staging log 2026-11-12 already shows `recipient=\"...\"` on exception event lines -> existing leak to fix.\n- Storage stays a plain JSON file (data/store.json), NO SQLite/node:sqlite. Why: ops' nightly rsync backup diffs plain-text files; binary DB breaks their checks. Perf fix = debounce writes in src/store.ts (200 ms, one write per burst) + flush() on shutdown (user).\n- ERP sandbox port is 9911 (since Oct infra move); docs/erp-api.md and README still say 8080 = outdated. Do NOT edit docs/erp-api.md (ERP team owns it); user fixes README himself/herself (user).\n- Future config hot reload of config/default.json: use fs.watchFile (polling), NOT fs.watch. Dead end: fs.watch never fires on staging (Docker bind mount from Windows host, change events don't propagate). Nothing to build now (user).\n- ETA caching/memoization = DEAD END (user): QA found stale ETA in list after a new event (exception) since cache wasn't invalidated; a proper cache key got messy. No ETA memoization in the repo; list slowness to be solved by PAGINATING GET /shipments later (user), not caching. Measured (5k shipments, local): calculateEta for 500 items ~3.5 ms; GET /shipments ~15 ms (limit 50), ~33 ms (limit=500) -> ETA wasn't the bottleneck anyway.\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n"
+  }
+ ]
+}

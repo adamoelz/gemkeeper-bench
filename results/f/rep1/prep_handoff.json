@@ -1,0 +1,111 @@
+{
+ "cmd": [
+  "-p",
+  "--input-format",
+  "stream-json",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--include-hook-events",
+  "--model",
+  "sonnet",
+  "--effort",
+  "medium",
+  "--dangerously-skip-permissions",
+  "--settings",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+  "--disallowedTools",
+  "Agent",
+  "--resume",
+  "81f6d39e-33bc-4f5d-914c-6e3546d8510b",
+  "--fork-session"
+ ],
+ "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\f1a\\parcel-tracker",
+ "plugin": false,
+ "resume": "81f6d39e-33bc-4f5d-914c-6e3546d8510b",
+ "fork": true,
+ "parent_cost": 1.7400485,
+ "session_id": "50ea0350-c72b-4dba-a874-b0ef31e6d935",
+ "turns": [
+  {
+   "i": 0,
+   "prompt_chars": 193,
+   "ctx": [
+    141525
+   ],
+   "tools": [],
+   "result": {
+    "text": "# Handoff: parcel-tracker (session of 2026-11-16)\n\n## Project and ground rules\nShipment tracking service for the Vienna warehouse. Node 24 runs the TypeScript directly (type stripping, no build step), with zero dependencies. Tests run with `npm test` (`node:test`). The working directory is `C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\f1a\\parcel-tracker`, on Windows with Git Bash. The user is `adamoelz` and communicates in German and English. I answered in German.\n\n**The user's standing rules:**\n1. Never modify `src/legacy/`. It is vendored from the old monolith and overwritten every Monday by the platform team's sync job.\n2. No new npm dependencies, not even dev dependencies (security review takes about six weeks).\n3. Every new user-facing error `message` is German, because the packers see it verbatim. The `code` stays English `SCREAMING_SNAKE_CASE`. Existing English messages were deliberately left alone.\n4. Never log recipient name, address or phone (GDPR, flagged in the audit). Shipment IDs and tracking numbers are fine.\n5. Keep `data/store.json` a plain-text JSON file. Ops back it up with a text-diffing rsync job, so no SQLite.\n6. The ERP only accepts one event object per request (no array or batch payloads, 422). Don't build batching.\n7. Don't edit `docs/erp-api.md` (owned by the ERP team). The user fixes the README's outdated ERP sandbox port (8080, now 9911) themselves.\n8. `GET /shipments/:id` must not change in any way (mobile app v2.3 parses it strictly, next release is in January).\n9. Known flaky test: `emits webhook on delivered` in `test/events.test.ts` (OPS-412, owned by the platform team). If it fails, rerun once and don't fix it. It never failed today.\n10. For later, not built: config hot reload. `fs.watch` never fires on the staging Docker bind mount from a Windows host. `fs.watchFile` (polling) works.\n\n## State\nAll work is **uncommitted** in the working tree on `main`. The last commit is `0f67fab parcel-tracker 0.7.0`. **Last test run: 83 tests in 20 suites, 0 failures.** `src/legacy/` and `package.json` are untouched.\n\n## What was done today\n- **Holidays:** `src/services/holidays.ts` (new) has a hardcoded list of 13 Austrian public holidays each for 2026 and 2027, plus `isPublicHoliday`. `isBusinessDay` in `src/services/eta.ts` now skips them. The Easter-based dates were computed by me (Easter 2026-04-05, 2027-03-28) and are worth a check against an official calendar. Dates after 2027 have no holidays, so the list must be extended before 2028.\n- **ATP tracking numbers:** `src/lib/trackingNumber.ts` (new) implements the UPU S10 check digit per `docs/carriers.md`. `validateShipmentInput` in `src/lib/validate.ts` applies it to carrier ATP only, with German messages (code `VALIDATION_FAILED`). It also applies to `POST /import`. Other carriers accept any non-empty value on purpose.\n- **ERP signing (`src/services/notify.ts`):** HMAC-SHA256 over `JSON.stringify(payload)` with `ERP_WEBHOOK_SECRET`, hex-encoded, sent as a top-level `sig` field appended last in the body. It is not a header, because the API gateway strips custom `X-` headers. Without the env var the body goes out unsigned (a design choice I flagged, not confirmed by the user). The ERP verifier must re-serialize the body without `sig` identically (same key order, compact JSON). This should be agreed with the ERP team, ideally with an example body and expected `sig`.\n- **ERP retries:** `sendToErpWithRetry` makes 3 attempts in total with a fixed 30 s pause and no backoff. It retries network errors, timeouts and 5xx, but not 4xx. The sleep is injectable. Worst case is about 75 s, inside the ERP's 2-minute `event_id` dedup window. Retries are in-memory only, so events pending at process exit are lost. The route calls the notifier fire-and-forget (`void notify`), so responses are not blocked.\n- **ERP field names:** The payload now uses `event_type` and `occurred_at` (it was `type` and `at`). The old `type` is accepted by the ERP only until 2026-12-31, so the rollout needs to be coordinated. The optional `note` field is deliberately not sent, because carrier free text might contain personal data.\n- **List ETA:** `GET /shipments` items now include `eta`, added in the list handler only in `src/routes/shipments.ts`. It is not added in `shipmentToApi`, which the detail endpoint uses. A test pins the exact key set of `GET /shipments/:id`.\n- **Request logging:** `src/router.ts` writes one `http request` line per request via `src/lib/log.ts`, with `method`, `path` (no query string), `status` and `duration_ms`. A test verifies that no personal data appears in any log.\n- **Store debounce (`src/store.ts`):** `save()` now schedules one write after 200 ms, so mutations in the window collapse into a single write. `flush()` writes immediately. There is a `writeDebounceMs` option and a `writeCount` counter. `src/server.ts` flushes on SIGINT/SIGTERM after `server.close()` and on `process.exit`. A hard kill can lose up to about 200 ms of changes. A failed timer write is logged and retried on the next write or flush.\n- **README:** Notes on validation, error-message language, `ERP_WEBHOOK_SECRET`, retries and the debounce were added.\n\n## Investigated, deliberately not built\n- **Batching ERP calls:** The ERP returns 422 for arrays.\n- **ETA memoization:** I measured it and it is pointless. The ETA for 50 items takes about 0.2 ms and for 500 items about 2.5 ms (the maximum list size). The whole list endpoint takes about 14–18 ms over HTTP against 5k shipments. The user later said QA found a staleness bug in a memoization and asked me to remove it, but **no memoization exists in this repo**. I never added one. Either someone built it on another branch or Staging runs a different version than this working tree. The user hasn't answered that yet. Caching ETAs is declared a dead end, and pagination of the list is planned for later.\n- **Load for the ERP team (staging log 2026-11-12):** 31 notifications over about 130 minutes (30 succeeded, 1 failed with 503). Peak was 2 per minute. Retries can multiply this by up to 3 during ERP outages.\n\n## Open items and suggested next steps\n1. Review the changes and commit them (nothing is committed).\n2. Coordinate the ERP rollout: new field names and the `sig` scheme before 2026-12-31.\n3. Test the shutdown flush with a real SIGTERM on Linux. It could not be tested on this Windows machine, since `kill` terminates Node hard there. The debounce itself was verified against the running server.\n4. `config/default.json` still has `erp.url` = `http://localhost:8080/events`. Probably it should become 9911, but the user hasn't confirmed that.\n5. Find the real cause of the slow list. The staging log shows `GET /shipments?limit=50` taking 166–348 ms before the `eta` field existed. Compare server-side `duration_ms` with client-measured times (network, proxy, Docker), then add pagination.\n6. `data/fixtures/shipments.sample.json` contains 7 ATP tracking numbers with a wrong check digit, which would now be rejected: LX305584807AT, LX573947004AT, RX896519831AT, RR250412663AT, RX995770179AT, RR717104075AT, RX027874632AT. Nothing loads the fixture today, and the user hasn't asked to fix it.\n7. The staging log shows events accepted after `delivered` (201), although a test expects rejection (409 `ALREADY_DELIVERED`). Worth investigating.\n8. The old staging log `logs/staging-2026-11-12.log` contains recipient names and addresses in clear text (from an event log line that the current code in this repo does not write). The user may want to raise this with the data protection officer if the logs are shared.\n9. Extend the holiday list before 2028.\n10. Optional small addition I offered: a test that the list shows the new ETA after an `exception` event.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 1,
+    "duration_ms": 35850,
+    "total_cost_usd": 1.7900521,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 2,
+     "cache_creation_input_tokens": 1707,
+     "cache_read_input_tokens": 139816,
+     "output_tokens": 2919,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 1707,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 2919,
+       "cache_read_input_tokens": 139816,
+       "cache_creation_input_tokens": 1707,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 1707
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 176,
+      "outputTokens": 58036,
+      "thinkingTokens": 8581,
+      "cacheReadInputTokens": 6432481,
+      "cacheCreationInputTokens": 141523,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 141523,
+      "webSearchRequests": 0,
+      "costUSD": 1.7900521,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  }
+ ],
+ "hooks": [],
+ "error": null,
+ "compact": null,
+ "cost_cumulative": 1.7900521,
+ "cost": 0.050004,
+ "wall_s": 39.8,
+ "exit_code": 0,
+ "ctx_first": 141525,
+ "ctx_last": 141525,
+ "handoff_text": "# Handoff: parcel-tracker (session of 2026-11-16)\n\n## Project and ground rules\nShipment tracking service for the Vienna warehouse. Node 24 runs the TypeScript directly (type stripping, no build step), with zero dependencies. Tests run with `npm test` (`node:test`). The working directory is `C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\f1a\\parcel-tracker`, on Windows with Git Bash. The user is `adamoelz` and communicates in German and English. I answered in German.\n\n**The user's standing rules:**\n1. Never modify `src/legacy/`. It is vendored from the old monolith and overwritten every Monday by the platform team's sync job.\n2. No new npm dependencies, not even dev dependencies (security review takes about six weeks).\n3. Every new user-facing error `message` is German, because the packers see it verbatim. The `code` stays English `SCREAMING_SNAKE_CASE`. Existing English messages were deliberately left alone.\n4. Never log recipient name, address or phone (GDPR, flagged in the audit). Shipment IDs and tracking numbers are fine.\n5. Keep `data/store.json` a plain-text JSON file. Ops back it up with a text-diffing rsync job, so no SQLite.\n6. The ERP only accepts one event object per request (no array or batch payloads, 422). Don't build batching.\n7. Don't edit `docs/erp-api.md` (owned by the ERP team). The user fixes the README's outdated ERP sandbox port (8080, now 9911) themselves.\n8. `GET /shipments/:id` must not change in any way (mobile app v2.3 parses it strictly, next release is in January).\n9. Known flaky test: `emits webhook on delivered` in `test/events.test.ts` (OPS-412, owned by the platform team). If it fails, rerun once and don't fix it. It never failed today.\n10. For later, not built: config hot reload. `fs.watch` never fires on the staging Docker bind mount from a Windows host. `fs.watchFile` (polling) works.\n\n## State\nAll work is **uncommitted** in the working tree on `main`. The last commit is `0f67fab parcel-tracker 0.7.0`. **Last test run: 83 tests in 20 suites, 0 failures.** `src/legacy/` and `package.json` are untouched.\n\n## What was done today\n- **Holidays:** `src/services/holidays.ts` (new) has a hardcoded list of 13 Austrian public holidays each for 2026 and 2027, plus `isPublicHoliday`. `isBusinessDay` in `src/services/eta.ts` now skips them. The Easter-based dates were computed by me (Easter 2026-04-05, 2027-03-28) and are worth a check against an official calendar. Dates after 2027 have no holidays, so the list must be extended before 2028.\n- **ATP tracking numbers:** `src/lib/trackingNumber.ts` (new) implements the UPU S10 check digit per `docs/carriers.md`. `validateShipmentInput` in `src/lib/validate.ts` applies it to carrier ATP only, with German messages (code `VALIDATION_FAILED`). It also applies to `POST /import`. Other carriers accept any non-empty value on purpose.\n- **ERP signing (`src/services/notify.ts`):** HMAC-SHA256 over `JSON.stringify(payload)` with `ERP_WEBHOOK_SECRET`, hex-encoded, sent as a top-level `sig` field appended last in the body. It is not a header, because the API gateway strips custom `X-` headers. Without the env var the body goes out unsigned (a design choice I flagged, not confirmed by the user). The ERP verifier must re-serialize the body without `sig` identically (same key order, compact JSON). This should be agreed with the ERP team, ideally with an example body and expected `sig`.\n- **ERP retries:** `sendToErpWithRetry` makes 3 attempts in total with a fixed 30 s pause and no backoff. It retries network errors, timeouts and 5xx, but not 4xx. The sleep is injectable. Worst case is about 75 s, inside the ERP's 2-minute `event_id` dedup window. Retries are in-memory only, so events pending at process exit are lost. The route calls the notifier fire-and-forget (`void notify`), so responses are not blocked.\n- **ERP field names:** The payload now uses `event_type` and `occurred_at` (it was `type` and `at`). The old `type` is accepted by the ERP only until 2026-12-31, so the rollout needs to be coordinated. The optional `note` field is deliberately not sent, because carrier free text might contain personal data.\n- **List ETA:** `GET /shipments` items now include `eta`, added in the list handler only in `src/routes/shipments.ts`. It is not added in `shipmentToApi`, which the detail endpoint uses. A test pins the exact key set of `GET /shipments/:id`.\n- **Request logging:** `src/router.ts` writes one `http request` line per request via `src/lib/log.ts`, with `method`, `path` (no query string), `status` and `duration_ms`. A test verifies that no personal data appears in any log.\n- **Store debounce (`src/store.ts`):** `save()` now schedules one write after 200 ms, so mutations in the window collapse into a single write. `flush()` writes immediately. There is a `writeDebounceMs` option and a `writeCount` counter. `src/server.ts` flushes on SIGINT/SIGTERM after `server.close()` and on `process.exit`. A hard kill can lose up to about 200 ms of changes. A failed timer write is logged and retried on the next write or flush.\n- **README:** Notes on validation, error-message language, `ERP_WEBHOOK_SECRET`, retries and the debounce were added.\n\n## Investigated, deliberately not built\n- **Batching ERP calls:** The ERP returns 422 for arrays.\n- **ETA memoization:** I measured it and it is pointless. The ETA for 50 items takes about 0.2 ms and for 500 items about 2.5 ms (the maximum list size). The whole list endpoint takes about 14–18 ms over HTTP against 5k shipments. The user later said QA found a staleness bug in a memoization and asked me to remove it, but **no memoization exists in this repo**. I never added one. Either someone built it on another branch or Staging runs a different version than this working tree. The user hasn't answered that yet. Caching ETAs is declared a dead end, and pagination of the list is planned for later.\n- **Load for the ERP team (staging log 2026-11-12):** 31 notifications over about 130 minutes (30 succeeded, 1 failed with 503). Peak was 2 per minute. Retries can multiply this by up to 3 during ERP outages.\n\n## Open items and suggested next steps\n1. Review the changes and commit them (nothing is committed).\n2. Coordinate the ERP rollout: new field names and the `sig` scheme before 2026-12-31.\n3. Test the shutdown flush with a real SIGTERM on Linux. It could not be tested on this Windows machine, since `kill` terminates Node hard there. The debounce itself was verified against the running server.\n4. `config/default.json` still has `erp.url` = `http://localhost:8080/events`. Probably it should become 9911, but the user hasn't confirmed that.\n5. Find the real cause of the slow list. The staging log shows `GET /shipments?limit=50` taking 166–348 ms before the `eta` field existed. Compare server-side `duration_ms` with client-measured times (network, proxy, Docker), then add pagination.\n6. `data/fixtures/shipments.sample.json` contains 7 ATP tracking numbers with a wrong check digit, which would now be rejected: LX305584807AT, LX573947004AT, RX896519831AT, RR250412663AT, RX995770179AT, RR717104075AT, RX027874632AT. Nothing loads the fixture today, and the user hasn't asked to fix it.\n7. The staging log shows events accepted after `delivered` (201), although a test expects rejection (409 `ALREADY_DELIVERED`). Worth investigating.\n8. The old staging log `logs/staging-2026-11-12.log` contains recipient names and addresses in clear text (from an event log line that the current code in this repo does not write). The user may want to raise this with the data protection officer if the logs are shared.\n9. Extend the holiday list before 2028.\n10. Optional small addition I offered: a test that the list shows the new ETA after an `exception` event.",
+ "handoff_wrote_files": []
+}

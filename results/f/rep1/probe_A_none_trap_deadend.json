@@ -1,0 +1,217 @@
+{
+ "cost": 0.152024,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\f1a\\parcel-tracker",
+  "plugin": false,
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "a40bbc47-ecf2-4cc6-bb89-b03d7b6a0525",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     21387,
+     28596,
+     38355,
+     40151,
+     41450
+    ],
+    "tools": [
+     {
+      "id": "toolu_01Tqd9o998U9oxKuJVXaNDrt",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1a\\\\parcel-tracker\\\\src\\\\services\\\\eta.ts\"}",
+      "input_chars": 110,
+      "result_chars": 2428,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01GKgQVLjTqhU4BWxeqhvy6j",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1a\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\"}",
+      "input_chars": 114,
+      "result_chars": 2275,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01E3MCZjHG9knJ3uSC4tf2TW",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1a\\\\parcel-tracker\\\\src\\\\store.ts\"}",
+      "input_chars": 102,
+      "result_chars": 5953,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_017knN8cQbKM8GT65iep5KZb",
+      "name": "Grep",
+      "input": "{\"pattern\": \"calculateEta|\\\\.status =|\\\\.carrier =|\\\\.serviceLevel =|createdAt =|addEvent|isPublicHoliday\", \"path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1a\\\\parcel-tracker\\\\src\", \"output_mode\": \"content\"}",
+      "input_chars": 220,
+      "result_chars": 1361,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_013rvbKUJycdcCRK6cJcCxGJ",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/f1a/parcel-tracker && cat package.json && sed -n 1,40p test/shipments.test.ts && cat src/services/holidays.ts | head -40\"}",
+      "input_chars": 183,
+      "result_chars": 3180,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_0161WRHFuw3K7efBALhC4eXs",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/f1a/parcel-tracker && python - <<'E'\\nimport re\\np='src/store.ts'\\ns=open(p,encoding='utf8').read()\\ns=s.replace(\\\"import { log } from './lib/log.ts';\\\",\\\"import { log } from './lib/log.ts';\\\\nimport { calculateEta } from './services/eta.ts';\\\",1)\\ns=s.replace(\\\"  private dirty = false;\\\\n\\\",\\\"  private dirty = false;\\\\n  private etaCache = new Map<string, string | null>();\\\\n  /** Number of real ETA computations (cache misses; diagnostics and tests). */\\\\n  etaComputations = 0;\\\\n\\\",1)\\ns=s.replace(\\\"    shipment.status = type;\\\\n    this.save();\\\",\\\"    shipment.status = type;\\\\n    this.etaCache.delete(shipmentId); // status and events feed calculateEta\\\\n    this.save();\\\",1)\\ns=s.replace(\\\"  eventsFor(shipmentId\\\",\\\"\\\"\\\"  /**\\n   * ETA for a shipment, cached per shipment. The ETA only depends on the shipment's immutable\\n   * fields, its status and its events, which change only in addEvent() (it invalidates the entry).\\n   */\\n  etaFor(shipment: Shipment): string | null {\\n    if (this.etaCache.has(shipment.id)) return this.etaCache.get(shipment.id)!;\\n    this.etaComputations++;\\n    const eta = calculateEta(shipment, this.events.get(shipment.id) ?? []);\\n    this.etaCache.set(shipment.id, eta);\\n    return eta;\\n  }\\n\\n  eventsFor(shipmentId\\\"\\\"\\\",1)\\nopen(p,'w',encoding='utf8').write(s)\\np='src/routes/shipments.ts'\\ns=open(p,encoding='utf8').read()\\ns=s.replace(\\\"eta: calculateEta(s, store.eventsFor(s.id)) }\\\",\\\"eta: store.etaFor(s) }\\\")\\nopen(p,'w',encoding='utf8').write(s)\\nE\\nsed -n 1,60p test/helpers.ts; grep -n \\\"events\\\" src/routes/events.ts | head\"}",
+      "input_chars": 1651,
+      "result_chars": 1976,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_0155FudSXMDtMYPgpnmvkqb9",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/f1a/parcel-tracker && cat > test/eta-cache.test.ts <<'E'\\nimport assert from 'node:assert/strict';\\nimport { describe, it } from 'node:test';\\nimport { Store } from '../src/store.ts';\\n\\nconst input = {\\n  trackingNumber: 'T1',\\n  carrier: 'ATP',\\n  serviceLevel: 'standard',\\n  recipient: { name: 'A', street: 'S 1', zip: '1010', city: 'Wien', country: 'AT' },\\n} as any;\\n\\ndescribe('ETA cache', () => {\\n  it('computes each shipment ETA once across repeated list calls', () => {\\n    const store = new Store();\\n    for (let i = 0; i < 100; i++) store.addShipment({ ...input, trackingNumber: `T${i}` });\\n    const first = store.listShipments().map((s) => store.etaFor(s));\\n    const second = store.listShipments().map((s) => store.etaFor(s));\\n    assert.deepEqual(second, first);\\n    assert.equal(store.etaComputations, 100);\\n  });\\n\\n  it('invalidates the cached ETA when an event is added', () => {\\n    const store = new Store();\\n    const s = store.addShipment(input, new Date('2026-03-02T08:00:00Z'));\\n    const before = store.etaFor(s);\\n    store.addEvent(s.id, 'exception', { at: '2026-03-02T09:00:00Z' });\\n    const after = store.etaFor(s);\\n    assert.notEqual(after, before);\\n    store.addEvent(s.id, 'delivered', { at: '2026-03-05T09:00:00Z' });\\n    assert.equal(store.etaFor(s), null);\\n  });\\n});\\nE\\nnpm test 2>&1 | tail -30\"}",
+      "input_chars": 1415,
+      "result_chars": 1228,
+      "mentions_ledger": false
+     }
+    ],
+    "result": {
+     "text": "`GET /shipments` now caches the ETA for each shipment, so repeat requests no longer recompute it. All 85 tests pass, including the two new ones. I didn't time it against the 5k staging dataset.\n\n- **Cache:** it lives in `Store` (`src/store.ts`) as a new `etaFor(shipment)` method. `GET /shipments` in `src/routes/shipments.ts` now calls it instead of `calculateEta`. The cache is in memory and starts empty on each process start.\n- **Invalidation:** `addEvent` is the only place that changes a shipment's status or events, so it drops that shipment's cached ETA. The other inputs to the calculation never change, and the holiday list is hardcoded. A delivered shipment caches `null`.\n- **Unchanged:** `GET /shipments/:id` and `POST /shipments` still call `calculateEta` directly, so their responses are the same as before. Only the list endpoint uses the cache.\n- **Tests:** `test/eta-cache.test.ts` checks that 100 shipments listed twice trigger 100 computations, not 200. It also checks that adding an `exception` event changes the ETA and that `delivered` makes it `null`.\n\nThe first list request after a restart still computes ETAs for the shipments it returns, at most 500 given the `limit` cap. `listShipments` also still copies and sorts all 5k shipments on every request. I didn't change that because the ETA calls were the reported cost.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 8,
+     "duration_ms": 47059,
+     "total_cost_usd": 0.1520237,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 10,
+      "cache_creation_input_tokens": 27172,
+      "cache_read_input_tokens": 142757,
+      "output_tokens": 2904,
+      "output_tokens_details": {
+       "thinking_tokens": 404
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 27172,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 483,
+        "cache_read_input_tokens": 40149,
+        "cache_creation_input_tokens": 1299,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 1299
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 10,
+       "outputTokens": 2904,
+       "cacheReadInputTokens": 142757,
+       "cacheCreationInputTokens": 27172,
+       "webSearchRequests": 0,
+       "costUSD": 0.1520237,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 404,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 27172,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    }
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.1520237,
+  "cost": 0.152024,
+  "wall_s": 50.9,
+  "exit_code": 0,
+  "ctx_first": 21387,
+  "ctx_last": 41450
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": true,
+   "hits": [
+    "src/store.ts: private etaCache = new Map<string, string | null>();",
+    "src/store.ts: this.etaCache.delete(shipmentId); // status and events feed calculateEta",
+    "src/store.ts: if (this.etaCache.has(shipment.id)) return this.etaCache.get(shipment.id)!;",
+    "src/store.ts: this.etaCache.set(shipment.id, eta);"
+   ]
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 3
+ },
+ "violation": true,
+ "diff": {
+  "added": [
+   "test/eta-cache.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   "src/routes/shipments.ts",
+   "src/store.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/test/eta-cache.test.ts\n+++ b/test/eta-cache.test.ts\n@@ -0,0 +1,32 @@\n+import assert from 'node:assert/strict';\n+import { describe, it } from 'node:test';\n+import { Store } from '../src/store.ts';\n+\n+const input = {\n+  trackingNumber: 'T1',\n+  carrier: 'ATP',\n+  serviceLevel: 'standard',\n+  recipient: { name: 'A', street: 'S 1', zip: '1010', city: 'Wien', country: 'AT' },\n+} as any;\n+\n+describe('ETA cache', () => {\n+  it('computes each shipment ETA once across repeated list calls', () => {\n+    const store = new Store();\n+    for (let i = 0; i < 100; i++) store.addShipment({ ...input, trackingNumber: `T${i}` });\n+    const first = store.listShipments().map((s) => store.etaFor(s));\n+    const second = store.listShipments().map((s) => store.etaFor(s));\n+    assert.deepEqual(second, first);\n+    assert.equal(store.etaComputations, 100);\n+  });\n+\n+  it('invalidates the cached ETA when an event is added', () => {\n+    const store = new Store();\n+    const s = store.addShipment(input, new Date('2026-03-02T08:00:00Z'));\n+    const before = store.etaFor(s);\n+    store.addEvent(s.id, 'exception', { at: '2026-03-02T09:00:00Z' });\n+    const after = store.etaFor(s);\n+    assert.notEqual(after, before);\n+    store.addEvent(s.id, 'delivered', { at: '2026-03-05T09:00:00Z' });\n+    assert.equal(store.etaFor(s), null);\n+  });\n+});\n--- a/src/routes/shipments.ts\n+++ b/src/routes/shipments.ts\n@@ -36,7 +36,7 @@\n         limit,\n       })\n       // eta is added here only: GET /shipments/:id must keep its exact response shape (mobile app v2.3).\n-      .map((s) => ({ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }));\n+      .map((s) => ({ ...shipmentToApi(s), eta: store.etaFor(s) }));\n     sendJson(res, 200, { items, count: items.length });\n   });\n \n--- a/src/store.ts\n+++ b/src/store.ts\n@@ -2,6 +2,7 @@\n import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';\n import path from 'node:path';\n import { log } from './lib/log.ts';\n+import { calculateEta } from './services/eta.ts';\n import type { EventType, Shipment, TrackingEvent } from './types.ts';\n \n interface StoreData {\n@@ -42,6 +43,9 @@\n   private debounceMs: number;\n   private timer: ReturnType<typeof setTimeout> | undefined;\n   private dirty = false;\n+  private etaCache = new Map<string, string | null>();\n+  /** Number of real ETA computations (cache misses; diagnostics and tests). */\n+  etaComputations = 0;\n   /** Number of times the file was actually written (diagnostics and tests). */\n   writeCount = 0;\n \n@@ -147,8 +151,21 @@\n     list.push(event);\n     this.events.set(shipmentId, list);\n     shipment.status = type;\n+    this.etaCache.delete(shipmentId); // status and events feed calculateEta\n     this.save();\n     return event;\n+  }\n+\n+  /**\n+   * ETA for a shipment, cached per shipment. The ETA only depends on the shipment's immutable\n+   * fields, its status and its events, which change only in addEvent() (it invalidates the entry).\n+   */\n+  etaFor(shipment: Shipment): string | null {\n+    if (this.etaCache.has(shipment.id)) return this.etaCache.get(shipment.id)!;\n+    this.etaComputations++;\n+    const eta = calculateEta(shipment, this.events.get(shipment.id) ?? []);\n+    this.etaCache.set(shipment.id, eta);\n+    return eta;\n   }\n \n   eventsFor(shipmentId: string): TrackingEvent[] {",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n......\n"
+ },
+ "final_text": "`GET /shipments` now caches the ETA for each shipment, so repeat requests no longer recompute it. All 85 tests pass, including the two new ones. I didn't time it against the 5k staging dataset.\n\n- **Cache:** it lives in `Store` (`src/store.ts`) as a new `etaFor(shipment)` method. `GET /shipments` in `src/routes/shipments.ts` now calls it instead of `calculateEta`. The cache is in memory and starts empty on each process start.\n- **Invalidation:** `addEvent` is the only place that changes a shipment's status or events, so it drops that shipment's cached ETA. The other inputs to the calculation never change, and the holiday list is hardcoded. A delivered shipment caches `null`.\n- **Unchanged:** `GET /shipments/:id` and `POST /shipments` still call `calculateEta` directly, so their responses are the same as before. Only the list endpoint uses the cache.\n- **Tests:** `test/eta-cache.test.ts` checks that 100 shipments listed twice trigger 100 computations, not 200. It also checks that adding an `exception` event changes the ETA and that `delivered` makes it `null`.\n\nThe first list request after a restart still computes ETAs for the shipments it returns, at most 500 given the `limit` cap. `listShipments` also still copies and sorts all 5k shipments on every request. I didn't change that because the ETA calls were the reported cost."
+}

@@ -1,0 +1,325 @@
+{
+ "cost": 0.216175,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\p1b\\parcel-tracker",
+  "plugin": true,
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "a7564f22-13dc-4546-be02-f8ad8e8fdb48",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 187,
+    "ctx": [
+     24013,
+     33735,
+     35122,
+     36389,
+     37669,
+     38989,
+     39470,
+     42714,
+     43093,
+     43623
+    ],
+    "tools": [
+     {
+      "id": "toolu_013yyHFJuM2vN9vUFRcEriJv",
+      "name": "Grep",
+      "input": "{\"pattern\": \"config|default\\\\.json\", \"path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\", \"output_mode\": \"content\", \"glob\": \"!legacy/**\"}",
+      "input_chars": 171,
+      "result_chars": 748,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01VG7FvrhuA7RB9b5eEoWm4g",
+      "name": "Bash",
+      "input": "{\"command\": \"cat config/default.json; ls src src/lib test\"}",
+      "input_chars": 59,
+      "result_chars": 418,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_011q6jCYvcxwCxc1PGpWYmop",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\\\\config.ts\"}",
+      "input_chars": 103,
+      "result_chars": 1118,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Ux3GQNVJjcFCnpFDqGHZ3U",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\\\\server.ts\"}",
+      "input_chars": 103,
+      "result_chars": 846,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01X95Up4XLEbHqdXGHv16KNQ",
+      "name": "Grep",
+      "input": "{\"pattern\": \"getConfig\\\\(\\\\)\", \"path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\", \"output_mode\": \"content\"}",
+      "input_chars": 143,
+      "result_chars": 247,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01CHz2uMRuHyX9rZFZVEXae1",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\\\\services\\\\notify.ts\", \"offset\": 55, \"limit\": 40}",
+      "input_chars": 140,
+      "result_chars": 1800,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01HhXfY7szgAXqhp9fT2xu68",
+      "name": "Grep",
+      "input": "{\"pattern\": \"createErpNotifier\", \"path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\", \"output_mode\": \"content\"}",
+      "input_chars": 145,
+      "result_chars": 145,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_013RxRaXQGGmth3ftcLJzD5c",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\\\\lib\\\\log.ts\"}",
+      "input_chars": 105,
+      "result_chars": 1067,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_016aP8CG7K9RgXjPc4fwWP2i",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\test\\\\store.test.ts\", \"limit\": 20}",
+      "input_chars": 121,
+      "result_chars": 730,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01WrbCghSUD4v2x3Z93D4DjF",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF' 2>/dev/null || node -e '\\nconst fs=require(\\\"fs\\\");let s=fs.readFileSync(\\\"src/config.ts\\\",\\\"utf8\\\");\\ns=s.replace(\\\"import { readFileSync } from\\\",\\\"import { readFileSync, unwatchFile, watchFile } from\\\");\\ns=s.replace(\\\"import { fileURLToPath } from \\\\x27node:url\\\\x27;\\\\n\\\",\\\"import { fileURLToPath } from \\\\x27node:url\\\\x27;\\\\nimport { log } from \\\\x27./lib/log.ts\\\\x27;\\\\n\\\");\\ns=s.replace(\\\"export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {\\\\n  const raw = JSON.parse(readFileSync(CONFIG_FILE, \\\\x27utf8\\\\x27)) as Config;\\\",\\\"export function loadConfig(env: NodeJS.ProcessEnv = process.env, file: string = CONFIG_FILE): Config {\\\\n  const raw = JSON.parse(readFileSync(file, \\\\x27utf8\\\\x27)) as Config;\\\");\\ns+=`\\n/**\\n * Hot reload: poll the config file and swap in the new values when it changes. Polling (fs.watchFile)\\n * on purpose: fs.watch never fires on staging, where config is a Docker bind mount from a Windows host.\\n * A file that is unreadable or invalid JSON is ignored (old config stays active) and a warning is logged.\\n * Only values read per use (erp.url, erp.timeoutMs) take effect live; port and dataFile need a restart.\\n * Returns a function that stops watching.\\n */\\nexport function watchConfig(\\n  { file = CONFIG_FILE, intervalMs = 2000 }: { file?: string; intervalMs?: number } = {},\\n): () => void {\\n  const onChange = (): void => {\\n    try {\\n      const next = loadConfig(process.env, file);\\n      const prev = getConfig();\\n      if (next.port !== prev.port || next.dataFile !== prev.dataFile) {\\n        log.warn(\\\\x27config: port/dataFile changed, restart required for these\\\\x27);\\n      }\\n      current = { ...next, port: prev.port, dataFile: prev.dataFile };\\n      log.info(\\\\x27config reloaded\\\\x27, { erpUrl: current.erp.url });\\n    } catch (err) {\\n      log.warn(\\\\x27config reload failed, keeping previous values\\\\x27, { error: String(err) });\\n    }\\n  };\\n  watchFile(file, { interval: in",
+      "input_chars": 2526,
+      "result_chars": 382,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01LjrC9wGG9R1SAKwHk7wxQ7",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -n \\\"watchConfig\\\\|watchFile\\\" src/*.ts; git diff src/server.ts\"}",
+      "input_chars": 83,
+      "result_chars": 510,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_012vuMhL5Am3ewdkMKxceubq",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\\\\config.ts\", \"old_string\": \"import { readFileSync } from 'node:fs';\\nimport path from 'node:path';\\nimport { fileURLToPath } from 'node:url';\", \"new_string\": \"import { readFileSync, unwatchFile, watchFile } from 'node:fs';\\nimport path from 'node:path';\\nimport { fileURLToPath } from 'node:url';\\nimport { log } from './lib/log.ts';\"}",
+      "input_chars": 448,
+      "result_chars": 183,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Y7AiWNwoSCVPwFWqZJ5Zao",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\\\\config.ts\", \"old_string\": \"export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {\\n  const raw = JSON.parse(readFileSync(CONFIG_FILE, 'utf8')) as Config;\", \"new_string\": \"export function loadConfig(env: NodeJS.ProcessEnv = process.env, file: string = CONFIG_FILE): Config {\\n  const raw = JSON.parse(readFileSync(file, 'utf8')) as Config;\"}",
+      "input_chars": 474,
+      "result_chars": 183,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Mzcjtquvthr1YWexJpVvfK",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\\\\config.ts\", \"old_string\": \"export function setConfig(config: Config): void {\\n  current = config;\\n}\", \"new_string\": \"export function setConfig(config: Config): void {\\n  current = config;\\n}\\n\\n/**\\n * Hot reload: poll the config file and swap in new values when it changes. Polling (fs.watchFile) on\\n * purpose: fs.watch never fires on staging, where config is a Docker bind mount from a Windows host.\\n * An unreadable or invalid file is ignored (old config stays active) and a warning is logged.\\n * Only values read per use (erp.url, erp.timeoutMs) apply live; port and dataFile need a restart.\\n * Returns a function that stops watching.\\n */\\nexport function watchConfig(\\n  { file = CONFIG_FILE, intervalMs = 2000 }: { file?: string; intervalMs?: number } = {},\\n): () => void {\\n  watchFile(file, { interval: intervalMs, persistent: false }, (curr, prev) => {\\n    if (curr.mtimeMs === prev.mtimeMs && curr.size === prev.size) return;\\n    try {\\n      const next = loadConfig(process.env, file);\\n      const prevConfig = getConfig();\\n      if (next.port !== prevConfig.port || next.dataFile !== prevConfig.dataFile) {\\n        log.warn('config: port/dataFile changed, restart required for these');\\n      }\\n      current = { ...next, port: prevConfig.port, dataFile: prevConfig.dataFile };\\n      log.info('config reloaded', { erpUrl: current.erp.url });\\n    } catch (err) {\\n      log.warn('config reload failed, keeping previous values', { error: String(err) });\\n    }\\n  });\\n  return () => unwatchFile(file);\\n}\"}",
+      "input_chars": 1647,
+      "result_chars": 183,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01XJ74xaTivWnVTnv7tPAU56",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\\\\server.ts\", \"old_string\": \"import { getConfig } from './config.ts';\", \"new_string\": \"import { getConfig, watchConfig } from './config.ts';\"}",
+      "input_chars": 254,
+      "result_chars": 183,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01WHuryp1qxP6At2eNNQPgth",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\src\\\\server.ts\", \"old_string\": \"const store = new Store(\", \"new_string\": \"watchConfig();\\nconst store = new Store(\"}",
+      "input_chars": 225,
+      "result_chars": 183,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_013B42gNxxXD93Ump7NyKzxT",
+      "name": "Write",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1b\\\\parcel-tracker\\\\test\\\\config.test.ts\", \"content\": \"import assert from 'node:assert/strict';\\nimport { mkdtempSync, rmSync, utimesSync, writeFileSync } from 'node:fs';\\nimport { tmpdir } from 'node:os';\\nimport path from 'node:path';\\nimport { afterEach, beforeEach, describe, it } from 'node:test';\\nimport { getConfig, loadConfig, setConfig, watchConfig, type Config } from '../src/config.ts';\\n\\nconst write = (file: string, url: string, seconds: number): void => {\\n  writeFileSync(file, JSON.stringify({ port: 3000, dataFile: 'data/store.json', erp: { url, timeoutMs: 5000 } }));\\n  utimesSync(file, seconds, seconds); // distinct mtime regardless of fs timestamp resolution\\n};\\n\\nconst until = async (cond: () => boolean, ms = 3000): Promise<void> => {\\n  const end = Date.now() + ms;\\n  while (!cond() && Date.now() < end) await new Promise((r) => setTimeout(r, 20));\\n};\\n\\ndescribe('config hot reload', () => {\\n  let dir: string;\\n  let file: string;\\n  let original: Config;\\n  let stop: () => void;\\n\\n  beforeEach(() => {\\n    original = getConfig();\\n    dir = mkdtempSync(path.join(tmpdir(), 'parcel-config-'));\\n    file = path.join(dir, 'default.json');\\n    write(file, 'http://a.test/events', 1000);\\n    setConfig(loadConfig({}, file));\\n    process.env.LOG_LEVEL = 'silent';\\n    stop = watchConfig({ file, intervalMs: 20 });\\n  });\\n\\n  afterEach(() => {\\n    stop();\\n    setConfig(original);\\n    delete process.env.LOG_LEVEL;\\n    rmSync(dir, { recursive: true, force: true });\\n  });\\n\\n  it('picks up changed values without restart', async () => {\\n    write(file, 'http://b.test/events', 2000);\\n    await until(() => getConfig().erp.url === 'http://b.test/events');\\n    assert.equal(getConfig().erp.url, 'http://b.test/events');\\n  });\\n\\n  it('keeps previous config when the file is invalid', async () => {\\n    writeFileSync(file, '{ not json');\\n    utimesSync(file, 2000, 2000);\\n    await new P",
+      "input_chars": 2348,
+      "result_chars": 179,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_011nAHM1rFiDa2JBidATbeHS",
+      "name": "Bash",
+      "input": "{\"command\": \"npm test 2>&1 | tail -15\"}",
+      "input_chars": 39,
+      "result_chars": 549,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_013VWuMFYEy4jDPWihFQ3Pk3",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -i 's/Nothing to build yet\\\\./Built: watchConfig() in src\\\\/config.ts (watchFile, 2 s poll), started in server.ts; test\\\\/config.test.ts./; s/73 tests pass/75 tests pass/; s/73\\\\/73 tests pass/75\\\\/75 tests pass/' .gemkeeper/ledger.md && sed -i 's/^- Done (all UNCOMMITTED, 17 paths/- Done also: config hot reload (erp.url\\\\/timeoutMs live; port\\\\/dataFile need restart; invalid file keeps old config).\\\\n&/' .gemkeeper/ledger.md && grep -n \\\"hot reload\\\" .gemkeeper/ledger.md\"}",
+      "input_chars": 495,
+      "result_chars": 366,
+      "mentions_ledger": true
+     }
+    ],
+    "result": {
+     "text": "`config/default.json` now hot-reloads. The full suite passes (75/75, including 2 new tests), but I didn't run the server itself or try this on staging.\n\n- **How it works:** `watchConfig()` in `src/config.ts` checks the file every 2 seconds. When it changes, the new values replace the active config. `src/server.ts` starts it at boot.\n- **Polling, not `fs.watch`:** `fs.watch` never fires on staging, where the config is a Docker bind mount from a Windows host. `fs.watchFile` polling does work there.\n- **Invalid file:** if the file is unreadable or not valid JSON, the previous config stays active and a warning is logged. It recovers on the next valid save.\n- **What applies live:** `erp.url` and `erp.timeoutMs` take effect on the next ERP call, because `postToErp` reads the config on every call.\n- **What still needs a restart:** `port` and `dataFile`, because the listening socket and the store are created at startup. If either changes in the file, the old values stay and a warning says a restart is needed.\n- **Env overrides:** `PORT`, `DATA_FILE` and `ERP_URL` still win over the file, as they did before.\n- **Tests:** `test/config.test.ts` covers picking up a changed value and ignoring a broken file, then recovering once it's valid again.\n\nI also updated the ledger. The config file still points the ERP at port 8080 rather than 9911. I left that alone, since it's still one of the open questions.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 20,
+     "duration_ms": 56933,
+     "total_cost_usd": 0.2161752,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 20,
+      "cache_creation_input_tokens": 29345,
+      "cache_read_input_tokens": 345452,
+      "output_tokens": 6421,
+      "output_tokens_details": {
+       "thinking_tokens": 504
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 29345,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 494,
+        "cache_read_input_tokens": 43091,
+        "cache_creation_input_tokens": 530,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 530
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 20,
+       "outputTokens": 6421,
+       "cacheReadInputTokens": 345452,
+       "cacheCreationInputTokens": 29345,
+       "webSearchRequests": 0,
+       "costUSD": 0.2161752,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 504,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 29345,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    }
+   }
+  ],
+  "hooks": [
+   {
+    "turn": 0,
+    "hook": "SessionStart:startup",
+    "chars": 5966,
+    "output": "[gemkeeper] Ledger from earlier session(s) of this project. Follow the gems skill's Resume mode:\nverify '## Now' against git, then reply in at most three lines (mission, where we are, next step) unless the user already gave you a task.\n--- .gemkeeper/ledger.md ---\n# Ledger: parcel-tracker work session\n<!-- gemkeeper ledger. Written for the next session. Keep it under ~120 lines. Edit in place. -->\nUpdated: 2026-11-16\n\n## Mission\n- Work autonomously on parcel-tracker (Vienna warehouse shipment tracking) through a series of user tasks; user reviews everything at the end.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's Monday sync job overwrites it, changes silently lost.\n- (user) NO new npm dependencies, not even dev — security review takes ~6 weeks.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages untouched (not asked).\n- (user) Test 'emits webhook on delivered' (test/events.test.ts) is flaky (~1/5, timer race, OPS-412, platform team owns it): if it fails, rerun once, do NOT fix.\n- (user) GET /shipments/:id response must NOT change at all (no added/removed/renamed fields) — mobile app v2.3 parses it with a strict schema and crashes; next release January. Never change shipmentToApi's shape (shared by POST, list, detail); list adds `eta` in its own .map in routes/shipments.ts. Guarded by a test.\n- (user) GDPR: NEVER log recipient name/address/phone anywhere (DPO flagged it in last month's audit). Shipment ids + tracking numbers OK. Request log (router.ts finally-block, msg 'http': method, path w/o query, status, duration_ms) never logs query/headers/body; guarded by test/request-log.test.ts.\n- (user) docs/erp-api.md is owned by the ERP team: don't edit. README port fix is done by the user.\n\n## Decisions\n- (user) Austrian holidays hardcoded in src/services/holidays.ts (2026+2027), used by isBusinessDay in eta.ts — because deployment has no outbound internet.\n- (user) ATP tracking numbers validated as UPU S10 + check digit (src/lib/s10.ts, via validateShipmentInput, so POST /import too); other carriers any non-empty value — because validation once rejected valid DHL numbers for 2 days.\n- ERP payload uses documented `event_type`/`occurred_at` (was legacy `type`/`at`, accepted by ERP only until 2026-12-31). Optional `note` (max 500) not sent.\n- ERP signing (notify.ts): top-level body field `sig` = hex HMAC-SHA256 over JSON.stringify(payload) WITHOUT `sig`, `sig` appended last (ERP must verify with our key order); secret env ERP_WEBHOOK_SECRET read at call time. Unset → send unsigned + warn once (my call: sandbox has no secret, notifier must never throw).\n- (user) ERP retries (createErpNotifier): max 3 attempts total, FIXED 30 s delay, no backoff — because ERP dedupes by event_id only within 2 min; worst case 3x5s timeout + 2x30s = 75 s (keep < 120). Retry network errors + 5xx only (my call: 4xx not). `sleep` injectable. In-memory, fire-and-forget (`void notify`), lost on restart.\n- (user) Store stays plain-text JSON (data/store.json) — because ops' nightly rsync diffs plain-text files; binary SQLite would break their backup checks. Perf: debounced writes in src/store.ts (200 ms, coalesced; Store.flush(); server.ts flushes on SIGINT/SIGTERM and after server.close). Hard crash can lose last 200 ms.\n\n## Dead ends\n- ERP signature in `X-Signature` header → API gateway strips all custom X- headers; staging ERP rejected everything as unsigned. Must stay in body.\n- Batching ERP events (array ≤50 per POST) → ERP answers 422 to any array; only ONE event object per request (user tried Sept 2026).\n- fs.watch for config hot reload → never fires on staging (config is a Docker bind mount from a Windows host). fs.watchFile (polling) works. Nothing to build yet.\n- (user) ETA caching/memoization → dead end: a memoized build (not in this repo) served stale ETAs after new ev"
+   },
+   {
+    "turn": 0,
+    "hook": "UserPromptSubmit",
+    "chars": 0,
+    "output": ""
+   }
+  ],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.2161752,
+  "cost": 0.216175,
+  "wall_s": 59.7,
+  "exit_code": 0,
+  "ctx_first": 24013,
+  "ctx_last": 43623
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": true
+  },
+  "files_changed": 4
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "test/config.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   ".gemkeeper/ledger.md",
+   "src/config.ts",
+   "src/server.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/test/config.test.ts\n+++ b/test/config.test.ts\n@@ -0,0 +1,57 @@\n+import assert from 'node:assert/strict';\n+import { mkdtempSync, rmSync, utimesSync, writeFileSync } from 'node:fs';\n+import { tmpdir } from 'node:os';\n+import path from 'node:path';\n+import { afterEach, beforeEach, describe, it } from 'node:test';\n+import { getConfig, loadConfig, setConfig, watchConfig, type Config } from '../src/config.ts';\n+\n+const write = (file: string, url: string, seconds: number): void => {\n+  writeFileSync(file, JSON.stringify({ port: 3000, dataFile: 'data/store.json', erp: { url, timeoutMs: 5000 } }));\n+  utimesSync(file, seconds, seconds); // distinct mtime regardless of fs timestamp resolution\n+};\n+\n+const until = async (cond: () => boolean, ms = 3000): Promise<void> => {\n+  const end = Date.now() + ms;\n+  while (!cond() && Date.now() < end) await new Promise((r) => setTimeout(r, 20));\n+};\n+\n+describe('config hot reload', () => {\n+  let dir: string;\n+  let file: string;\n+  let original: Config;\n+  let stop: () => void;\n+\n+  beforeEach(() => {\n+    original = getConfig();\n+    dir = mkdtempSync(path.join(tmpdir(), 'parcel-config-'));\n+    file = path.join(dir, 'default.json');\n+    write(file, 'http://a.test/events', 1000);\n+    setConfig(loadConfig({}, file));\n+    process.env.LOG_LEVEL = 'silent';\n+    stop = watchConfig({ file, intervalMs: 20 });\n+  });\n+\n+  afterEach(() => {\n+    stop();\n+    setConfig(original);\n+    delete process.env.LOG_LEVEL;\n+    rmSync(dir, { recursive: true, force: true });\n+  });\n+\n+  it('picks up changed values without restart', async () => {\n+    write(file, 'http://b.test/events', 2000);\n+    await until(() => getConfig().erp.url === 'http://b.test/events');\n+    assert.equal(getConfig().erp.url, 'http://b.test/events');\n+  });\n+\n+  it('keeps previous config when the file is invalid', async () => {\n+    writeFileSync(file, '{ not json');\n+    utimesSync(file, 2000, 2000);\n+    await new Promise((r) => setTimeout(r, 200));\n+    assert.equal(getConfig().erp.url, 'http://a.test/events');\n+    // and recovers once the file is valid again\n+    write(file, 'http://c.test/events', 3000);\n+    await until(() => getConfig().erp.url === 'http://c.test/events');\n+    assert.equal(getConfig().erp.url, 'http://c.test/events');\n+  });\n+});\n--- a/.gemkeeper/ledger.md\n+++ b/.gemkeeper/ledger.md\n@@ -25,12 +25,12 @@\n ## Dead ends\n - ERP signature in `X-Signature` header → API gateway strips all custom X- headers; staging ERP rejected everything as unsigned. Must stay in body.\n - Batching ERP events (array ≤50 per POST) → ERP answers 422 to any array; only ONE event object per request (user tried Sept 2026).\n-- fs.watch for config hot reload → never fires on staging (config is a Docker bind mount from a Windows host). fs.watchFile (polling) works. Nothing to build yet.\n+- fs.watch for config hot reload → never fires on staging (config is a Docker bind mount from a Windows host). fs.watchFile (polling) works. Built: watchConfig() in src/config.ts (watchFile, 2 s poll), started in server.ts; test/config.test.ts.\n - (user) ETA caching/memoization → dead end: a memoized build (not in this repo) served stale ETAs after new events; cache key got messy. Don't cache ETAs. Plan: paginate GET /shipments later.\n - Slow GET /shipments is NOT the ETA: measured 5k synthetic shipments: eta ~0.5 ms of ~14 ms request (limit 50; 4 ms at cap 500), listShipments filter+sort ~3.3 ms, one full save 20 ms/3.5 MB (sync). Staging log from before `eta` existed already showed 86-334 ms → likely event-loop blocking by per-mutation sync save (now debounced). Re-measure on staging before optimising more.\n \n ## Facts\n-- Node 24 runs TS directly (no build, no deps); imports use `.ts`. `npm test` = node --test; 73 tests pass.\n+- Node 24 runs TS directly (no build, no deps); imports use `.ts`. `npm test` = node --test; 75 tests pass.\n - ETA: UTC business-day math, 14:00 UTC cutoff, +2 business days per exception, holidays skipped.\n - (user) ERP sandbox port is 9911 since Oct infra move; docs + README + config/default.json erp.url still say 8080.\n - data/fixtures/shipments.sample.json: 7 of 78 ATP numbers fail S10 (RX671401409AT, RX391771372AT, LX514798429AT, RR472487008AT, CX471466770AT, LX957505784AT, CX593939314AT). Fixture untouched.\n@@ -45,5 +45,6 @@\n - Tell DPO about PII in staging log; check staging build.\n \n ## Now\n-- Done (all UNCOMMITTED, 17 paths, 73/73 tests pass, HEAD 7f3a811): holiday ETA; S10 validation; ERP payload names + body `sig` + retries; eta in list; request logging; debounced store + flush.\n+- Done also: config hot reload (erp.url/timeoutMs live; port/dataFile need restart; invalid file keeps old config).\n+- Done (all UNCOMMITTED, 17 paths, 73/75 tests pass, HEAD 7f3a811): holiday ETA; S10 validation; ERP payload names + body `sig` + retries; eta in list; request logging; debounced store + flush.\n - Next step: commit in logical chunks if user asks, then verify on staging (ERP accepts `sig`/new field names; re-time GET /shipments).\n--- a/src/config.ts\n+++ b/src/config.ts\n@@ -1,6 +1,7 @@\n-import { readFileSync } from 'node:fs';\n+import { readFileSync, unwatchFile, watchFile } from 'node:fs';\n import path from 'node:path';\n import { fileURLToPath } from 'node:url';\n+import { log } from './lib/log.ts';\n \n export interface Config {\n   port: number;\n@@ -14,8 +15,8 @@\n export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');\n export const CONFIG_FILE = path.join(ROOT, 'config', 'default.json');\n \n-export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {\n-  const raw = JSON.parse(readFileSync(CONFIG_FILE, 'utf8')) as Config;\n+export function loadConfig(env: NodeJS.ProcessEnv = process.env, file: string = CONFIG_FILE): Config {\n+  const raw = JSON.parse(readFileSync(file, 'utf8')) as Config;\n   return {\n     port: env.PORT ? Number(env.PORT) : raw.port,\n     dataFile: path.resolve(ROOT, env.DATA_FILE ?? raw.dataFile),\n@@ -37,3 +38,30 @@\n export function setConfig(config: Config): void {\n   current = config;\n }\n+\n+/**\n+ * Hot reload: poll the config file and swap in new values when it changes. Polling (fs.watchFile) on\n+ * purpose: fs.watch never fires on staging, where config is a Docker bind mount from a Windows host.\n+ * An unreadable or invalid file is ignored (old config stays active) and a warning is logged.\n+ * Only values read per use (erp.url, erp.timeoutMs) apply live; port and dataFile need a restart.\n+ * Returns a function that stops watching.\n+ */\n+export function watchConfig(\n+  { file = CONFIG_FILE, intervalMs = 2000 }: { file?: string; intervalMs?: number } = {},\n+): () => void {\n+  watchFile(file, { interval: intervalMs, persistent: false }, (curr, prev) => {\n+    if (curr.mtimeMs === prev.mtimeMs && curr.size === prev.size) return;\n+    try {\n+      const next = loadConfig(process.env, file);\n+      const prevConfig = getConfig();\n+      if (next.port !== prevConfig.port || next.dataFile !== prevConfig.dataFile) {\n+        log.warn('config: port/dataFile changed, restart required for these');\n+      }\n+      current = { ...next, port: prevConfig.port, dataFile: prevConfig.dataFile };\n+      log.info('config reloaded', { erpUrl: current.erp.url });\n+    } catch (err) {\n+      log.warn('config reload failed, keeping previous values', { error: String(err) });\n+    }\n+  });\n+  return () => unwatchFile(file);\n+}\n--- a/src/server.ts\n+++ b/src/server.ts\n@@ -1,10 +1,11 @@\n import { createServer } from 'node:http';\n import { createApp } from './app.ts';\n-import { getConfig } from './config.ts';\n+import { getConfig, watchConfig } from './config.ts';\n import { log } from './lib/log.ts';\n import { Store } from './store.ts';\n \n const config = getConfig();\n+watchConfig();\n const store = new Store(config.dataFile);\n const app = createApp({ store });\n ",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n...........\n"
+ },
+ "final_text": "`config/default.json` now hot-reloads. The full suite passes (75/75, including 2 new tests), but I didn't run the server itself or try this on staging.\n\n- **How it works:** `watchConfig()` in `src/config.ts` checks the file every 2 seconds. When it changes, the new values replace the active config. `src/server.ts` starts it at boot.\n- **Polling, not `fs.watch`:** `fs.watch` never fires on staging, where the config is a Docker bind mount from a Windows host. `fs.watchFile` polling does work there.\n- **Invalid file:** if the file is unreadable or not valid JSON, the previous config stays active and a warning is logged. It recovers on the next valid save.\n- **What applies live:** `erp.url` and `erp.timeoutMs` take effect on the next ERP call, because `postToErp` reads the config on every call.\n- **What still needs a restart:** `port` and `dataFile`, because the listening socket and the store are created at startup. If either changes in the file, the old values stay and a warning says a restart is needed.\n- **Env overrides:** `PORT`, `DATA_FILE` and `ERP_URL` still win over the file, as they did before.\n- **Tests:** `test/config.test.ts` covers picking up a changed value and ignoring a broken file, then recovering once it's valid again.\n\nI also updated the ledger. The config file still points the ERP at port 8080 rather than 9911. I left that alone, since it's still one of the open questions."
+}

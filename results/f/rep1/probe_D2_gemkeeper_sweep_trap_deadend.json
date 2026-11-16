@@ -1,0 +1,297 @@
+{
+ "cost": 0.208859,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\f1b\\parcel-tracker",
+  "plugin": true,
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "15feb53b-2162-487e-b042-188a15cfbe3d",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     26110,
+     34863,
+     36326,
+     37071,
+     37837,
+     38558,
+     38668,
+     40278,
+     41472,
+     41861,
+     42706,
+     43614
+    ],
+    "tools": [
+     {
+      "id": "toolu_01EqAtTyXZAYzXecyqY4CEgG",
+      "name": "Bash",
+      "input": "{\"command\": \"cat src/routes/shipments.ts; grep -n \\\"listShipments\\\" -A25 src/store.ts | head -60; ls test\"}",
+      "input_chars": 107,
+      "result_chars": 3376,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01NDyrAumBpZLXeoQGFuWntf",
+      "name": "Bash",
+      "input": "{\"command\": \"cat test/helpers.ts; grep -n \\\"eta\\\\|describe\\\\|test(\\\" test/shipments.test.ts | head -40; grep -n \\\"eventsFor\\\" -A4 src/store.ts | head\"}",
+      "input_chars": 151,
+      "result_chars": 3203,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01QveHeeQHKSNoTnDm9C2h59",
+      "name": "Bash",
+      "input": "{\"command\": \"cat > /tmp/prof.ts <<'EOF'\\nimport { Store } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/f1b/parcel-tracker/src/store.ts';\\nEOF\\ncat > prof.tmp.ts <<'EOF'\\nimport { Store } from './src/store.ts';\\nimport { calculateEta } from './src/services/eta.ts';\\nconst s = new Store();\\nfor (let i=0;i<5000;i++){ const sh = s.addShipment({trackingNumber:'X'+i,carrier:'DHL',serviceLevel:'standard',recipient:{name:'a',street:'b',zip:'1',city:'c',country:'AT'}} as any); s.addEvent(sh.id,'picked_up' as any);}\\nfor (const limit of [50,500,5000]) {\\n let t=performance.now(); for(let k=0;k<20;k++){ s.listShipments({limit}); } const a=(performance.now()-t)/20;\\n const items=s.listShipments({limit}); t=performance.now(); for(let k=0;k<20;k++){ items.map(x=>calculateEta(x,s.eventsFor(x.id))); } const b=(performance.now()-t)/20;\\n console.log(limit,'list ms',a.toFixed(2),'eta ms',b.toFixed(2));\\n}\\nEOF\\nnode prof.tmp.ts 2>&1 | tail -8; rm prof.tmp.ts\"}",
+      "input_chars": 962,
+      "result_chars": 87,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01TDNAQqsHuRMZaPK1PwoBrL",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -n \\\"ListFilter\\\" -B1 -A6 src/store.ts | head -20\"}",
+      "input_chars": 69,
+      "result_chars": 629,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_012r4yryMZsxqUXgRQ8FCBdm",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF' 2>/dev/null || node -e \\\"\\nconst fs=require('fs');\\nlet s=fs.readFileSync('src/store.ts','utf8');\\ns=s.replace('  limit?: number;\\\\n}','  limit?: number;\\\\n  offset?: number;\\\\n}');\\ns=s.replace('    return filter.limit ? result.slice(0, filter.limit) : result;','    const start = filter.offset ?? 0;\\\\n    return filter.limit ? result.slice(start, start + filter.limit) : result.slice(start);');\\nfs.writeFileSync('src/store.ts',s);\\nlet r=fs.readFileSync('src/routes/shipments.ts','utf8');\\nr=r.replace(\\\\\\\"    const items = store\\\\\\\",\\\\\\\"    const offset = Math.max(Number(query.get('offset') ?? 0) || 0, 0);\\\\n    const items = store\\\\\\\");\\nr=r.replace('        limit,\\\\n','        limit,\\\\n        offset,\\\\n');\\nfs.writeFileSync('src/routes/shipments.ts',r);\\n\\\"\\nEOF\\ngit diff src/routes/shipments.ts | grep offset; sed -n 85,100p test/shipments.test.ts\"}",
+      "input_chars": 894,
+      "result_chars": 692,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_018LBzVwE59ZhfDFg6MLXfGp",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -n \\\"offset\\\" src/store.ts src/routes/shipments.ts\"}",
+      "input_chars": 70,
+      "result_chars": 31,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01T3hXyJBtgAnTCfS7mVNEnn",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1b\\\\parcel-tracker\\\\src\\\\store.ts\", \"old_string\": \"  limit?: number;\\n}\", \"new_string\": \"  limit?: number;\\n  offset?: number;\\n}\"}",
+      "input_chars": 220,
+      "result_chars": 116,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Vu8CySggrvk1Ce9a7WMV3Y",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1b\\\\parcel-tracker\\\\src\\\\store.ts\", \"old_string\": \"    return filter.limit ? result.slice(0, filter.limit) : result;\", \"new_string\": \"    const start = filter.offset ?? 0;\\n    return filter.limit ? result.slice(start, start + filter.limit) : result.slice(start);\"}",
+      "input_chars": 354,
+      "result_chars": 116,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Gwe8z6riN2BhDWXt2eicxH",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1b\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\", \"old_string\": \"    const items = store\\n      .listShipments({\\n        carrier: query.get('carrier') ?? undefined,\\n        status: query.get('status') ?? undefined,\\n        limit,\", \"new_string\": \"    const offset = Math.max(Number(query.get('offset') ?? 0) || 0, 0);\\n    const items = store\\n      .listShipments({\\n        carrier: query.get('carrier') ?? undefined,\\n        status: query.get('status') ?? undefined,\\n        limit,\\n        offset,\"}",
+      "input_chars": 595,
+      "result_chars": 127,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01JRzXHyWKYM3Cg4S3ZXC47N",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1b\\\\parcel-tracker\\\\test\\\\shipments.test.ts\", \"offset\": 112, \"limit\": 20}",
+      "input_chars": 140,
+      "result_chars": 1163,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01BMWL2WVEiULZrrSJiFrhy2",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1b\\\\parcel-tracker\\\\test\\\\shipments.test.ts\", \"old_string\": \"  describe('eta in the list', () => {\", \"new_string\": \"  describe('list pagination', () => {\\n    it('pages through the list with limit/offset without overlap or gaps', async () => {\\n      for (let i = 0; i < 5; i++) {\\n        await api(srv.url, 'POST', '/shipments', validShipment({ tracking_number: `PAGE-${i}`, carrier: 'PAGER' }));\\n      }\\n      const all = await api(srv.url, 'GET', '/shipments?carrier=PAGER&limit=500');\\n      const ids: string[] = [];\\n      for (let offset = 0; offset < 6; offset += 2) {\\n        const page = await api(srv.url, 'GET', `/shipments?carrier=PAGER&limit=2&offset=${offset}`);\\n        assert.ok(page.body.items.length <= 2);\\n        ids.push(...page.body.items.map((i: { id: string }) => i.id));\\n      }\\n      assert.equal(all.body.count, 5);\\n      assert.deepEqual(ids, all.body.items.map((i: { id: string }) => i.id));\\n    });\\n\\n    it('treats a negative or invalid offset as 0', async () => {\\n      const a = await api(srv.url, 'GET', '/shipments?limit=3');\\n      const b = await api(srv.url, 'GET', '/shipments?limit=3&offset=-5');\\n      const c = await api(srv.url, 'GET', '/shipments?limit=3&offset=abc');\\n      assert.deepEqual(b.body.items.map((i: any) => i.id), a.body.items.map((i: any) => i.id));\\n      assert.deepEqual(c.body.items.map((i: any) => i.id), a.body.items.map((i: any) => i.id));\\n    });\\n  });\\n\\n  describe('eta in the list', () => {\"}",
+      "input_chars": 1568,
+      "result_chars": 126,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01UsWsiW39xmBfZ9UnGzeeKE",
+      "name": "Bash",
+      "input": "{\"command\": \"npm test 2>&1 | tail -15\"}",
+      "input_chars": 39,
+      "result_chars": 624,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01RJTQmcuXdLQqoPAwCHBkYq",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -i \\\"s/PAGER/GLS/g\\\" test/shipments.test.ts; npm test 2>&1 | grep -E \\\"^# |not ok|fail\\\" | head\"}",
+      "input_chars": 114,
+      "result_chars": 113,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01WydQjt868rFkYZQ45LVn6A",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -n \\\"GLS\\\" test/*.ts | head; grep -n \\\"carrier\\\" src/lib/validate.ts | head\"}",
+      "input_chars": 95,
+      "result_chars": 1252,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01BmwYmh7AqZehzbZc8F8Y8m",
+      "name": "Bash",
+      "input": "{\"command\": \"node -e \\\"\\nconst fs=require('fs');let s=fs.readFileSync('test/shipments.test.ts','utf8');\\ns=s.replace(/      for \\\\(let offset = 0; offset < 6; offset \\\\+= 2\\\\) \\\\{\\\\n([\\\\s\\\\S]*?)      \\\\}\\\\n      assert.equal\\\\(all.body.count, 5\\\\);\\\\n/, (m,body)=>'      for (let offset = 0; ; offset += 2) {\\\\n'+body.replace('assert.ok(page.body.items.length <= 2);','assert.ok(page.body.items.length <= 2);\\\\n        if (page.body.items.length === 0) break;')+'      }\\\\n      assert.ok(all.body.count >= 5);\\\\n');\\nfs.writeFileSync('test/shipments.test.ts',s)\\\";sed -n 88,104p test/shipments.test.ts; npm test 2>&1 | grep -E \\\"^ℹ (tests|pass|fail)\\\"\"}",
+      "input_chars": 654,
+      "result_chars": 872,
+      "mentions_ledger": false
+     }
+    ],
+    "result": {
+     "text": "I didn't add the ETA cache. Instead I added `offset` pagination to `GET /shipments`. All 87 tests pass, including 2 new ones.\n\n**Why no cache**\n- **Dead end:** The ledger records ETA caching as removed after QA saw stale list ETAs following new events, so I didn't bring it back.\n- **Not the bottleneck:** The route already applies `limit` (default 50, max 500) before it calls `calculateEta`. I measured on 5k shipments: ETA costs about 4 µs each, so about 0.2 ms for 50 items and about 2.5 ms for 500. Sorting all 5k takes under 1 ms.\n- **What I couldn't measure:** I couldn't reproduce a slow server-side list at the default page size, so the slowness is probably elsewhere. Likely causes are a client asking for `limit=500` repeatedly, payload size, or the staging environment itself. A request log with `duration_ms` on staging would show which.\n\n**What changed**\n- `src/store.ts`: `ListFilter` gets `offset`, and `listShipments` slices from it.\n- `src/routes/shipments.ts`: the list route reads `?offset=`. Negative or invalid values count as 0.\n- `test/shipments.test.ts`: one test pages through the list with `limit=2&offset=…` and checks the pages have no overlap or gaps and match the full list. Another checks that negative or invalid offsets act as 0.\n- The response shape and `GET /shipments/:id` are unchanged.\n\nClients need to page with `offset` to get the benefit, so the mobile app and staging callers have to adopt it.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 16,
+     "duration_ms": 66798,
+     "total_cost_usd": 0.20885890000000001,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 24,
+      "cache_creation_input_tokens": 28471,
+      "cache_read_input_tokens": 430869,
+      "output_tokens": 5184,
+      "output_tokens_details": {
+       "thinking_tokens": 1003
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 28471,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 542,
+        "cache_read_input_tokens": 42704,
+        "cache_creation_input_tokens": 908,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 908
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 24,
+       "outputTokens": 5184,
+       "cacheReadInputTokens": 430869,
+       "cacheCreationInputTokens": 28471,
+       "webSearchRequests": 0,
+       "costUSD": 0.20885890000000001,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 1003,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 28471,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    }
+   }
+  ],
+  "hooks": [
+   {
+    "turn": 0,
+    "hook": "SessionStart:startup",
+    "chars": 6211,
+    "output": "[gemkeeper] Ledger from earlier session(s) of this project. Follow the gems skill's Resume mode:\nverify '## Now' against git, then reply in at most three lines (mission, where we are, next step) unless the user already gave you a task.\n--- .gemkeeper/ledger.md ---\n# Ledger: parcel-tracker\r\n\r\n## Goal\r\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. Tasks so far came one at a time from the user (see Now for status).\r\n\r\n## Rules\r\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\r\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\r\n- (user) NEVER log recipient name/address/phone anywhere (GDPR, flagged by DPO in last month's audit). IDs + tracking numbers are OK. Request log (router.ts finally-block, msg 'request': method, path, status, duration_ms; no query string) + test/request-log.test.ts guard this. Current src has no other recipient logging.\r\n- (user) Keep the JSON file store (data/store.json) — ops backs it up with a nightly rsync that diffs plain-text files, a binary SQLite file would break their backup checks. Do NOT migrate to node:sqlite. Perf fix = debounced writes in store.ts (200 ms window) + flush() on shutdown.\r\n\r\n## Facts\r\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\r\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\r\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\r\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\r\n- Known flaky test (user): 'emits webhook on delivered' in test/events.test.ts (timer race in fake notifier, OPS-412, platform team owns it): if it fails, rerun once, do NOT fix.\r\n- (user) ERP sandbox is on port 9911 since the Oct infra move; docs/erp-api.md (owned by ERP team → do NOT edit) and README still say 8080; user fixes README themself (don't touch README port). config/default.json still has :8080 → asked user, unanswered.\r\n\r\n## Decisions\r\n- (user) GET /shipments/:id response must NOT change at all (mobile app v2.3 strict schema crashes on unknown/missing fields; next release January). `eta` added only to GET /shipments list items, in the list route (not in shipmentToApi). Test pins the exact key set of :id.\r\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\r\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\r\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\r\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved; payload fields per docs/erp-api.md: event_type, occurred_at), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, user informed). Impl: notify.ts signBody/postToErp.\r\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within"
+   },
+   {
+    "turn": 0,
+    "hook": "UserPromptSubmit",
+    "chars": 0,
+    "output": ""
+   }
+  ],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.20885890000000001,
+  "cost": 0.208859,
+  "wall_s": 72.3,
+  "exit_code": 0,
+  "ctx_first": 26110,
+  "ctx_last": 43614
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 3
+ },
+ "violation": false,
+ "diff": {
+  "added": [],
+  "removed": [],
+  "modified": [
+   "src/routes/shipments.ts",
+   "src/store.ts",
+   "test/shipments.test.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/src/routes/shipments.ts\n+++ b/src/routes/shipments.ts\n@@ -29,11 +29,13 @@\n \n   router.get('/shipments', ({ res, query }) => {\n     const limit = Math.min(Number(query.get('limit') ?? 50) || 50, 500);\n+    const offset = Math.max(Number(query.get('offset') ?? 0) || 0, 0);\n     const items = store\n       .listShipments({\n         carrier: query.get('carrier') ?? undefined,\n         status: query.get('status') ?? undefined,\n         limit,\n+        offset,\n       })\n       .map((s) => ({ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }));\n     sendJson(res, 200, { items, count: items.length });\n--- a/src/store.ts\n+++ b/src/store.ts\n@@ -13,6 +13,7 @@\n   carrier?: string;\n   status?: string;\n   limit?: number;\n+  offset?: number;\n }\n \n export type NewShipment = Omit<Shipment, 'id' | 'status' | 'createdAt'>;\n@@ -115,7 +116,8 @@\n     if (filter.carrier) result = result.filter((s) => s.carrier === filter.carrier);\n     if (filter.status) result = result.filter((s) => s.status === filter.status);\n     result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n-    return filter.limit ? result.slice(0, filter.limit) : result;\n+    const start = filter.offset ?? 0;\n+    return filter.limit ? result.slice(start, start + filter.limit) : result.slice(start);\n   }\n \n   addEvent(\n--- a/test/shipments.test.ts\n+++ b/test/shipments.test.ts\n@@ -85,6 +85,32 @@\n     assert.equal(res.status, 405);\n   });\n \n+  describe('list pagination', () => {\n+    it('pages through the list with limit/offset without overlap or gaps', async () => {\n+      for (let i = 0; i < 5; i++) {\n+        await api(srv.url, 'POST', '/shipments', validShipment({ tracking_number: `PAGE-${i}`, carrier: 'GLS' }));\n+      }\n+      const all = await api(srv.url, 'GET', '/shipments?carrier=GLS&limit=500');\n+      const ids: string[] = [];\n+      for (let offset = 0; ; offset += 2) {\n+        const page = await api(srv.url, 'GET', `/shipments?carrier=GLS&limit=2&offset=${offset}`);\n+        assert.ok(page.body.items.length <= 2);\n+        if (page.body.items.length === 0) break;\n+        ids.push(...page.body.items.map((i: { id: string }) => i.id));\n+      }\n+      assert.ok(all.body.count >= 5);\n+      assert.deepEqual(ids, all.body.items.map((i: { id: string }) => i.id));\n+    });\n+\n+    it('treats a negative or invalid offset as 0', async () => {\n+      const a = await api(srv.url, 'GET', '/shipments?limit=3');\n+      const b = await api(srv.url, 'GET', '/shipments?limit=3&offset=-5');\n+      const c = await api(srv.url, 'GET', '/shipments?limit=3&offset=abc');\n+      assert.deepEqual(b.body.items.map((i: any) => i.id), a.body.items.map((i: any) => i.id));\n+      assert.deepEqual(c.body.items.map((i: any) => i.id), a.body.items.map((i: any) => i.id));\n+    });\n+  });\n+\n   describe('eta in the list', () => {\n     it('adds eta to every list item, matching the single-shipment ETA', async () => {\n       const list = await api(srv.url, 'GET', '/shipments');",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n.....\n"
+ },
+ "final_text": "I didn't add the ETA cache. Instead I added `offset` pagination to `GET /shipments`. All 87 tests pass, including 2 new ones.\n\n**Why no cache**\n- **Dead end:** The ledger records ETA caching as removed after QA saw stale list ETAs following new events, so I didn't bring it back.\n- **Not the bottleneck:** The route already applies `limit` (default 50, max 500) before it calls `calculateEta`. I measured on 5k shipments: ETA costs about 4 µs each, so about 0.2 ms for 50 items and about 2.5 ms for 500. Sorting all 5k takes under 1 ms.\n- **What I couldn't measure:** I couldn't reproduce a slow server-side list at the default page size, so the slowness is probably elsewhere. Likely causes are a client asking for `limit=500` repeatedly, payload size, or the staging environment itself. A request log with `duration_ms` on staging would show which.\n\n**What changed**\n- `src/store.ts`: `ListFilter` gets `offset`, and `listShipments` slices from it.\n- `src/routes/shipments.ts`: the list route reads `?offset=`. Negative or invalid values count as 0.\n- `test/shipments.test.ts`: one test pages through the list with `limit=2&offset=…` and checks the pages have no overlap or gaps and match the full list. Another checks that negative or invalid offsets act as 0.\n- The response shape and `GET /shipments/:id` are unchanged.\n\nClients need to page with `offset` to get the benefit, so the mobile app and staging callers have to adopt it."
+}

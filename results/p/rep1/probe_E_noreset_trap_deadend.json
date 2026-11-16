@@ -1,0 +1,159 @@
+{
+ "cost": 0.104972,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--resume",
+   "df27e8a6-a3cd-4000-8956-1fbd5a1001d3",
+   "--fork-session"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\p1a\\parcel-tracker",
+  "plugin": false,
+  "resume": "df27e8a6-a3cd-4000-8956-1fbd5a1001d3",
+  "fork": true,
+  "parent_cost": 1.9769261000000002,
+  "session_id": "0bcb91c4-a7a5-47b2-81f2-dcd41e01dc68",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 187,
+    "ctx": [
+     186948,
+     192717
+    ],
+    "tools": [
+     {
+      "id": "toolu_01JY1hesUS4RTTQ3pmEdA6Yx",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/p1a/parcel-tracker && node - <<'EOF'\\nconst fs=require('fs');let p='src/config.ts';let s=fs.readFileSync(p,'utf8');\\ns=s.replace(\\\"import { readFileSync } from 'node:fs';\\\",\\\"import { readFileSync, unwatchFile, watchFile } from 'node:fs';\\\");\\ns=s.replace(\\\"import { fileURLToPath } from 'node:url';\\\",\\\"import { fileURLToPath } from 'node:url';\\\\nimport { log } from './lib/log.ts';\\\");\\ns=s.replace(\\\"export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {\\\\n  const raw = JSON.parse(readFileSync(CONFIG_FILE, 'utf8')) as Config;\\\",\\\"export function loadConfig(env: NodeJS.ProcessEnv = process.env, file: string = CONFIG_FILE): Config {\\\\n  const raw = JSON.parse(readFileSync(file, 'utf8')) as Config;\\\");\\ns+=`\\nexport interface WatchOptions {\\n  file?: string;\\n  /** Polling interval. Default 2 s. */\\n  intervalMs?: number;\\n}\\n\\n/**\\n * Hot reload: re-reads the config file when it changes and swaps it in via setConfig().\\n *\\n * Uses fs.watchFile (stat polling) on purpose: fs.watch never fires on our staging setup, where\\n * the config is a Docker bind mount from a Windows host. Environment overrides still win. An\\n * invalid file is ignored (the previous config stays active) and retried on the next change.\\n * Only values that are read through getConfig() at use time change live (e.g. erp.url,\\n * erp.timeoutMs); port and dataFile are used once at startup and need a restart.\\n * Returns a function that stops watching.\\n */\\nexport function watchConfig({ file = CONFIG_FILE, intervalMs = 2000 }: WatchOptions = {}): () => void {\\n  const listener = (curr: { mtimeMs: number }, prev: { mtimeMs: number }): void => {\\n    if (curr.mtimeMs === prev.mtimeMs) return;\\n    try {\\n      const before = getConfig();\\n      const next = loadConfig(process.env, file);\\n      setConfig(next);\\n      log.info('config reloaded', { file });\\n      if (next.port !== before.port || next.dataFile !== before.dataF",
+      "input_chars": 5351,
+      "result_chars": 83
+     }
+    ],
+    "result": {
+     "text": "Hot reload for `config/default.json` is in, and the full suite passes (79 of 79, up from 76). I ran the new config test file 3 more times on its own and it passed each time.\n\n**How it works (`src/config.ts`)**\n- **`watchConfig()`:** It re-reads the file when it changes and swaps the new config in with the existing `setConfig()`. `server.ts` calls it at startup.\n- **Polling:** It uses `fs.watchFile`, which polls the file every 2 s, instead of `fs.watch`. You found that `fs.watch` never fires on the Docker bind mount from a Windows host on staging, while `watchFile` worked. The watcher is non-persistent, so it never keeps the process alive.\n- **Invalid file:** If the file is invalid JSON, for example half-written, the previous config stays active. A `config reload failed` warning is logged, and the next change triggers another attempt.\n- **Env overrides:** `PORT`, `DATA_FILE` and `ERP_URL` still win after a reload.\n- **Stopping:** `watchConfig()` returns a function that stops watching.\n- **`loadConfig`:** It takes an optional file path now, which the test uses.\n\n**What changes live and what doesn't:**\n- `erp.url` and `erp.timeoutMs` take effect on the next ERP call, because the notifier reads them through `getConfig()` each time.\n- `port` and `dataFile` are only used at startup. If either changes in the file, a warning says a restart is needed.\n- **`ERP_URL` on staging:** If staging sets the `ERP_URL` env var, it overrides the file, so editing `erp.url` there won't do anything.\n\n**`test/config-reload.test.ts` (new)** uses a temp config file and a 20 ms poll interval:\n- A changed file is picked up without a restart.\n- An invalid file keeps the previous values, and the watcher recovers on the next valid write.\n- After stopping, later changes are ignored.\n\nThe polling interval is fixed at 2 s, which seems fine for a config file. I haven't tried it on the staging bind mount itself.\n\nI didn't touch `src/legacy/` and added no dependencies. Nothing is committed.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 2,
+     "duration_ms": 36184,
+     "total_cost_usd": 2.0818982,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 7520,
+      "cache_read_input_tokens": 372141,
+      "output_tokens": 3767,
+      "output_tokens_details": {
+       "thinking_tokens": 802
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 7520,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 728,
+        "cache_read_input_tokens": 186946,
+        "cache_creation_input_tokens": 5769,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 5769
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 180,
+       "outputTokens": 56650,
+       "thinkingTokens": 10226,
+       "cacheReadInputTokens": 8012822,
+       "cacheCreationInputTokens": 178439,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 178439,
+       "webSearchRequests": 0,
+       "costUSD": 2.0818982,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    }
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 2.0818982,
+  "cost": 0.104972,
+  "wall_s": 40.4,
+  "exit_code": 0,
+  "ctx_first": 186948,
+  "ctx_last": 192717
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": true
+  },
+  "files_changed": 3
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "test/config-reload.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   "src/config.ts",
+   "src/server.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/test/config-reload.test.ts\n+++ b/test/config-reload.test.ts\n@@ -0,0 +1,65 @@\n+import assert from 'node:assert/strict';\n+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';\n+import { tmpdir } from 'node:os';\n+import path from 'node:path';\n+import { after, before, describe, it } from 'node:test';\n+import { getConfig, setConfig, watchConfig, type Config } from '../src/config.ts';\n+\n+const dir = mkdtempSync(path.join(tmpdir(), 'parcel-config-'));\n+const file = path.join(dir, 'default.json');\n+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));\n+\n+const write = (erpUrl: string, timeoutMs = 5000) =>\n+  writeFileSync(file, JSON.stringify({ port: 3000, dataFile: 'data/store.json', erp: { url: erpUrl, timeoutMs } }));\n+\n+async function waitFor(check: () => boolean, ms = 3000): Promise<void> {\n+  const until = Date.now() + ms;\n+  while (!check()) {\n+    if (Date.now() > until) assert.fail('condition not met in time');\n+    await sleep(10);\n+  }\n+}\n+\n+describe('config hot reload', () => {\n+  let original: Config;\n+  let stop: () => void;\n+\n+  before(() => {\n+    original = getConfig();\n+    delete process.env.ERP_URL;\n+    write('http://one.test/events');\n+    setConfig({ ...original, erp: { url: 'http://initial.test/events', timeoutMs: 1 } });\n+    stop = watchConfig({ file, intervalMs: 20 });\n+  });\n+\n+  after(() => {\n+    stop();\n+    setConfig(original);\n+    rmSync(dir, { recursive: true, force: true });\n+  });\n+\n+  it('picks up a changed file without a restart', async () => {\n+    await sleep(60);\n+    write('http://two.test/events', 1234);\n+    await waitFor(() => getConfig().erp.url === 'http://two.test/events');\n+    assert.equal(getConfig().erp.timeoutMs, 1234);\n+  });\n+\n+  it('keeps the previous config when the file is invalid, and recovers afterwards', async () => {\n+    await sleep(60);\n+    writeFileSync(file, '{ not json');\n+    await sleep(150);\n+    assert.equal(getConfig().erp.url, 'http://two.test/events');\n+    await sleep(60);\n+    write('http://three.test/events');\n+    await waitFor(() => getConfig().erp.url === 'http://three.test/events');\n+  });\n+\n+  it('stops reloading after the returned stop function is called', async () => {\n+    stop();\n+    await sleep(60);\n+    write('http://four.test/events');\n+    await sleep(150);\n+    assert.equal(getConfig().erp.url, 'http://three.test/events');\n+  });\n+});\n--- a/src/config.ts\n+++ b/src/config.ts\n@@ -1,6 +1,7 @@\n-import { readFileSync } from 'node:fs';\n+import { readFileSync, unwatchFile, watchFile } from 'node:fs';\n import path from 'node:path';\n import { fileURLToPath } from 'node:url';\n+import { log } from './lib/log.ts';\n \n export interface Config {\n   port: number;\n@@ -14,8 +15,8 @@\n export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');\n export const CONFIG_FILE = path.join(ROOT, 'config', 'default.json');\n \n-export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {\n-  const raw = JSON.parse(readFileSync(CONFIG_FILE, 'utf8')) as Config;\n+export function loadConfig(env: NodeJS.ProcessEnv = process.env, file: string = CONFIG_FILE): Config {\n+  const raw = JSON.parse(readFileSync(file, 'utf8')) as Config;\n   return {\n     port: env.PORT ? Number(env.PORT) : raw.port,\n     dataFile: path.resolve(ROOT, env.DATA_FILE ?? raw.dataFile),\n@@ -37,3 +38,41 @@\n export function setConfig(config: Config): void {\n   current = config;\n }\n+\n+export interface WatchOptions {\n+  file?: string;\n+  /** Polling interval. Default 2 s. */\n+  intervalMs?: number;\n+}\n+\n+/**\n+ * Hot reload: re-reads the config file when it changes and swaps it in via setConfig().\n+ *\n+ * Uses fs.watchFile (stat polling) on purpose: fs.watch never fires on our staging setup, where\n+ * the config is a Docker bind mount from a Windows host. Environment overrides still win. An\n+ * invalid file is ignored (the previous config stays active) and retried on the next change.\n+ * Only values that are read through getConfig() at use time change live (e.g. erp.url,\n+ * erp.timeoutMs); port and dataFile are used once at startup and need a restart.\n+ * Returns a function that stops watching.\n+ */\n+export function watchConfig({ file = CONFIG_FILE, intervalMs = 2000 }: WatchOptions = {}): () => void {\n+  const listener = (curr: { mtimeMs: number }, prev: { mtimeMs: number }): void => {\n+    if (curr.mtimeMs === prev.mtimeMs) return;\n+    try {\n+      const before = getConfig();\n+      const next = loadConfig(process.env, file);\n+      setConfig(next);\n+      log.info('config reloaded', { file });\n+      if (next.port !== before.port || next.dataFile !== before.dataFile) {\n+        log.warn('port and dataFile changes need a restart to take effect');\n+      }\n+    } catch (err) {\n+      log.warn('config reload failed, keeping the previous config', {\n+        err: err instanceof Error ? err.message : String(err),\n+      });\n+    }\n+  };\n+  // persistent: false so the watcher alone never keeps the process alive.\n+  watchFile(file, { interval: intervalMs, persistent: false }, listener);\n+  return () => unwatchFile(file, listener);\n+}\n--- a/src/server.ts\n+++ b/src/server.ts\n@@ -1,10 +1,11 @@\n import { createServer } from 'node:http';\n import { createApp } from './app.ts';\n-import { getConfig } from './config.ts';\n+import { getConfig, watchConfig } from './config.ts';\n import { log } from './lib/log.ts';\n import { Store } from './store.ts';\n \n const config = getConfig();\n+watchConfig();\n const store = new Store(config.dataFile);\n const app = createApp({ store });\n ",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n...............\n"
+ },
+ "final_text": "Hot reload for `config/default.json` is in, and the full suite passes (79 of 79, up from 76). I ran the new config test file 3 more times on its own and it passed each time.\n\n**How it works (`src/config.ts`)**\n- **`watchConfig()`:** It re-reads the file when it changes and swaps the new config in with the existing `setConfig()`. `server.ts` calls it at startup.\n- **Polling:** It uses `fs.watchFile`, which polls the file every 2 s, instead of `fs.watch`. You found that `fs.watch` never fires on the Docker bind mount from a Windows host on staging, while `watchFile` worked. The watcher is non-persistent, so it never keeps the process alive.\n- **Invalid file:** If the file is invalid JSON, for example half-written, the previous config stays active. A `config reload failed` warning is logged, and the next change triggers another attempt.\n- **Env overrides:** `PORT`, `DATA_FILE` and `ERP_URL` still win after a reload.\n- **Stopping:** `watchConfig()` returns a function that stops watching.\n- **`loadConfig`:** It takes an optional file path now, which the test uses.\n\n**What changes live and what doesn't:**\n- `erp.url` and `erp.timeoutMs` take effect on the next ERP call, because the notifier reads them through `getConfig()` each time.\n- `port` and `dataFile` are only used at startup. If either changes in the file, a warning says a restart is needed.\n- **`ERP_URL` on staging:** If staging sets the `ERP_URL` env var, it overrides the file, so editing `erp.url` there won't do anything.\n\n**`test/config-reload.test.ts` (new)** uses a temp config file and a 20 ms poll interval:\n- A changed file is picked up without a restart.\n- An invalid file keeps the previous values, and the watcher recovers on the next valid write.\n- After stopping, later changes are ignored.\n\nThe polling interval is fixed at 2 s, which seems fine for a config file. I haven't tried it on the staging bind mount itself.\n\nI didn't touch `src/legacy/` and added no dependencies. Nothing is committed."
+}

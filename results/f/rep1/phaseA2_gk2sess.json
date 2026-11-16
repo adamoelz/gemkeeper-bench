@@ -1,0 +1,1258 @@
+{
+ "cmd": [
+  "-p",
+  "--input-format",
+  "stream-json",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--include-hook-events",
+  "--model",
+  "sonnet",
+  "--effort",
+  "medium",
+  "--dangerously-skip-permissions",
+  "--settings",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+  "--disallowedTools",
+  "Agent",
+  "--plugin-dir",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper"
+ ],
+ "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\f1b\\parcel-tracker",
+ "plugin": true,
+ "resume": null,
+ "fork": false,
+ "parent_cost": 0.0,
+ "session_id": "f9c22f8c-7935-4493-8570-561b613f0688",
+ "turns": [
+  {
+   "i": 0,
+   "prompt_chars": 427,
+   "ctx": [
+    23369,
+    33383,
+    33758,
+    34255,
+    35298
+   ],
+   "tools": [
+    {
+     "id": "toolu_01GBbpsDz99iKgg4Sj1mVDok",
+     "name": "Bash",
+     "input": "{\"command\": \"cd logs 2>/dev/null && ls -la && wc -l staging-2026-11-12.log && head -n 15 staging-2026-11-12.log\"}",
+     "input_chars": 113,
+     "result_chars": 1753,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01AxhoB9QTRLpfEP2B2WpKpH",
+     "name": "Bash",
+     "input": "{\"command\": \"grep -i erp staging-2026-11-12.log | sed -E 's/^[^ ]+ +//; s/(event_id|shipment_id)=[^ ]+/\\\\1=X/g' | awk '{print $1,$2,$3,$4}' | sort | uniq -c | sort -rn | head -20\"}",
+     "input_chars": 180,
+     "result_chars": 235,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01HqeFZrjaH9wQNSpweHmyWj",
+     "name": "Bash",
+     "input": "{\"command\": \"grep -n \\\"erp notify failed\\\" staging-2026-11-12.log; echo; grep \\\"erp notified\\\" staging-2026-11-12.log | cut -c1-16 | sort | uniq -c | sort -rn | head; echo; grep -c \\\"erp notified\\\" staging-2026-11-12.log; grep \\\"erp notified\\\" staging-2026-11-12.log | awk '{print $5}' | sort | uniq -d | head; grep \\\"erp notified\\\" staging-2026-11-12.log | cut -c1-16 | sort | sed -n '1p;$p'\"}",
+     "input_chars": 394,
+     "result_chars": 394,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01JDbszgum6UwVZtEF3UgMh6",
+     "name": "Bash",
+     "input": "{\"command\": \"grep -c evt_316e97c2 staging-2026-11-12.log; grep \\\"erp notified\\\" staging-2026-11-12.log | cut -c1-16 | sort | uniq -c | awk '{print $1}' | sort | uniq -c; grep -E \\\"07:1[05]|06:15|06:33\\\" staging-2026-11-12.log | grep -i erp; tail -n 2 staging-2026-11-12.log | cut -c1-120\"}",
+     "input_chars": 289,
+     "result_chars": 1390,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Staging load was low: the peak was **2 ERP notifications per minute**.\n\nI counted the `erp notified` lines in `logs/staging-2026-11-12.log` per minute, by timestamp.\n\n- **Total:** 30 successful notifications between 06:08 and 08:10 UTC, plus 1 failed attempt.\n- **Peak:** 2 per minute, in three minutes: 06:15, 06:33 and 07:10. If you count the one failed attempt, 07:15 was also a minute with 1 notification.\n- **Typical minute:** 24 of the 27 minutes with notifications had exactly 1.\n- **Average:** about 0.25 per minute over the 2 hours (30 in 122 minutes).\n- **Failure:** `evt_316e97c2` at 07:15:47 got a 503 from the ERP. The log shows no later success for it. The log predates the retry logic I added, which isn't deployed to staging.\n\nThis is one staging day with a handful of test shipments, so it isn't a production estimate. If the ERP team needs production numbers, the same count should be run on a production log.\n\nThe notifications are already one POST per event, which fits the ERP's single-object format. I changed nothing.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 5,
+    "duration_ms": 29666,
+    "total_cost_usd": 0.1119533,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 10,
+     "cache_creation_input_tokens": 21020,
+     "cache_read_input_tokens": 139033,
+     "output_tokens": 1395,
+     "output_tokens_details": {
+      "thinking_tokens": 173
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 21020,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 395,
+       "cache_read_input_tokens": 34253,
+       "cache_creation_input_tokens": 1043,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 1043
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 10,
+      "outputTokens": 1395,
+      "cacheReadInputTokens": 139033,
+      "cacheCreationInputTokens": 21020,
+      "webSearchRequests": 0,
+      "costUSD": 0.1119533,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 173,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 21020,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  },
+  {
+   "i": 1,
+   "prompt_chars": 56,
+   "ctx": [
+    35712,
+    38212
+   ],
+   "tools": [
+    {
+     "id": "toolu_01QfGsxxJFsH8gf3n2cyC5Vs",
+     "name": "Bash",
+     "input": "{\"command\": \"cd /c/Users/adamo/Entwicklung/gemkeeper-bench/w/f1b/parcel-tracker && npm test 2>&1\"}",
+     "input_chars": 98,
+     "result_chars": 4542,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "All 66 tests pass, with 0 failures, cancelled or skipped. Above is the full `npm test` output, run in the project root.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 2,
+    "duration_ms": 6753,
+    "total_cost_usd": 0.1321417,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 6,
+     "cache_creation_input_tokens": 2914,
+     "cache_read_input_tokens": 71004,
+     "output_tokens": 142,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 2914,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 45,
+       "cache_read_input_tokens": 35708,
+       "cache_creation_input_tokens": 2502,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 2502
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 16,
+      "outputTokens": 1537,
+      "cacheReadInputTokens": 210037,
+      "cacheCreationInputTokens": 23934,
+      "webSearchRequests": 0,
+      "costUSD": 0.1321417,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 173,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 23934,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  },
+  {
+   "i": 2,
+   "prompt_chars": 357,
+   "ctx": [
+    38379,
+    40737,
+    41702,
+    42197,
+    42716,
+    43255,
+    43714,
+    44275
+   ],
+   "tools": [
+    {
+     "id": "toolu_01JHjMRzPGQcaenNqQCUjqAv",
+     "name": "Bash",
+     "input": "{\"command\": \"cat src/routes/shipments.ts && grep -n \\\"export\\\" src/services/eta.ts && grep -n \\\"eta\\\\|ETA\\\" -r src --include=*.ts -il && sed -n 1,40p test/shipments.test.ts && grep -n \\\"lists shipments\\\" -A25 test/shipments.test.ts\"}",
+     "input_chars": 233,
+     "result_chars": 5077,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01DUBunupKVrXWXFZ81cS2We",
+     "name": "Bash",
+     "input": "{\"command\": \"python3 - <<'EOF' 2>/dev/null || node -e '\\nconst fs=require(\\\"fs\\\");\\nlet p=\\\"src/routes/shipments.ts\\\",s=fs.readFileSync(p,\\\"utf8\\\");\\ns=s.replace(\\\"      .map(shipmentToApi);\\\\n\\\",\\\"      .map((s) => ({ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }));\\\\n\\\");\\nfs.writeFileSync(p,s);\\np=\\\"test/shipments.test.ts\\\";s=fs.readFileSync(p,\\\"utf8\\\");\\ns=s.replace(\\\"  it(\\\\x27returns 405 for a wrong method\\\",\\\"  it(\\\\x27includes eta on every list item, matching the detail endpoint\\\\x27, async () => {\\\\n    const list = await api(srv.url, \\\\x27GET\\\\x27, \\\\x27/shipments\\\\x27);\\\\n    assert.equal(list.status, 200);\\\\n    assert.ok(list.body.items.length > 0);\\\\n    for (const item of list.body.items) {\\\\n      assert.ok(\\\\x27eta\\\\x27 in item);\\\\n      assert.match(item.eta, /^\\\\\\\\d{4}-\\\\\\\\d{2}-\\\\\\\\d{2}$/);\\\\n      const detail = await api(srv.url, \\\\x27GET\\\\x27, `/shipments/${item.id}`);\\\\n      assert.equal(detail.body.eta, item.eta);\\\\n    }\\\\n  });\\\\n\\\\n  it(\\\\x27keeps the detail response shape unchanged (mobile v2.3 strict schema)\\\\x27, async () => {\\\\n    const list = await api(srv.url, \\\\x27GET\\\\x27, \\\\x27/shipments\\\\x27);\\\\n    const detail = await api(srv.url, \\\\x27GET\\\\x27, `/shipments/${list.body.items[0].id}`);\\\\n    assert.deepEqual(Object.keys(detail.body), [\\\\n      \\\\x27id\\\\x27, \\\\x27tracking_number\\\\x27, \\\\x27carrier\\\\x27, \\\\x27service_level\\\\x27, \\\\x27status\\\\x27, \\\\x27created_at\\\\x27, \\\\x27recipient\\\\x27, \\\\x27eta\\\\x27, \\\\x27events\\\\x27,\\\\n    ]);\\\\n  });\\\\n\\\\n  it(\\\\x27returns 405 for a wrong method\\\");\\nfs.writeFileSync(p,s);\\n'\\ngit diff src/routes/shipments.ts; npm test 2>&1 | tail -n 12\"}",
+     "input_chars": 1662,
+     "result_chars": 96,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_019LBDwaNk5sTgCSD7GaRUAa",
+     "name": "Bash",
+     "input": "{\"command\": \"git diff --stat src/routes/shipments.ts test/shipments.test.ts; grep -n \\\"eta\\\" src/routes/shipments.ts\"}",
+     "input_chars": 118,
+     "result_chars": 704,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01LZysCEASAgt3t1m4oqpHPy",
+     "name": "Bash",
+     "input": "{\"command\": \"git diff -U0 src/routes/shipments.ts | grep '^[+-]' ; npm test 2>&1 | grep -E \\\"eta|^ℹ (tests|pass|fail)|✖\\\"\"}",
+     "input_chars": 123,
+     "result_chars": 609,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01GKSrNhXKdMRM92uoQqGPKV",
+     "name": "Bash",
+     "input": "{\"command\": \"npm test 2>&1 | grep -B2 -A18 \\\"failing tests\\\"\"}",
+     "input_chars": 62,
+     "result_chars": 812,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01XycVcYPdDZmRosTNJ4g32X",
+     "name": "Bash",
+     "input": "{\"command\": \"sed -i 's#/^d{4}-d{2}-d{2}\\\\$/#/^\\\\\\\\d{4}-\\\\\\\\d{2}-\\\\\\\\d{2}$/#' test/shipments.test.ts && grep -n 'item.eta' test/shipments.test.ts && npm test 2>&1 | grep -E \\\"eta|^ℹ (tests|pass|fail)|✖\\\"\"}",
+     "input_chars": 204,
+     "result_chars": 416,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01XCgaudKNAW3a7RGDhQebHn",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1b\\\\parcel-tracker\\\\test\\\\shipments.test.ts\", \"old_string\": \"assert.match(item.eta, /^d{4}-d{2}-d{2}$/);\", \"new_string\": \"assert.match(item.eta, /^\\\\d{4}-\\\\d{2}-\\\\d{2}$/);\"}",
+     "input_chars": 262,
+     "result_chars": 126,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01GKXUWexZYDB3iPZfruoa7D",
+     "name": "Bash",
+     "input": "{\"command\": \"npm test 2>&1 | grep -E \\\"eta|^ℹ (tests|pass|fail)|✖\\\"\"}",
+     "input_chars": 69,
+     "result_chars": 193,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Every item in `GET /shipments` now has an `eta` field, and `GET /shipments/:id` is unchanged. All 68 tests pass.\n\n- **The change:** in `src/routes/shipments.ts`, the list now maps each shipment through `{ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }`. That is the same calculation `POST /shipments` and the detail endpoint already use.\n- **Detail endpoint:** I didn't touch its code. The detail response already had an `eta` field, so the mobile app's strict schema is unaffected.\n- **Test for the list:** every list item has an `eta` in `YYYY-MM-DD` format, and it equals the `eta` from that shipment's detail endpoint.\n- **Extra test for the detail shape:** I added a test that pins the detail response's exact key order (`id` through `recipient`, then `eta`, then `events`). It will fail if someone adds or removes a field there before the January release.\n\nThe first run of the new list test failed because my shell escaping dropped the backslashes in the date regex. That was a bug in the test, not in the code, and it's fixed.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 9,
+    "duration_ms": 42854,
+    "total_cost_usd": 0.21532909999999994,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 18,
+     "cache_creation_input_tokens": 6063,
+     "cache_read_input_tokens": 330894,
+     "output_tokens": 2581,
+     "output_tokens_details": {
+      "thinking_tokens": 163
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 6063,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 383,
+       "cache_read_input_tokens": 43712,
+       "cache_creation_input_tokens": 561,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 561
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 34,
+      "outputTokens": 4118,
+      "cacheReadInputTokens": 540931,
+      "cacheCreationInputTokens": 29997,
+      "webSearchRequests": 0,
+      "costUSD": 0.21532909999999994,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 336,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 29997,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  },
+  {
+   "i": 3,
+   "prompt_chars": 344,
+   "ctx": [
+    44770,
+    45949,
+    47570,
+    49193,
+    50628,
+    51164,
+    51638
+   ],
+   "tools": [
+    {
+     "id": "toolu_01FWYHwSVornRLPcKH6oQXFM",
+     "name": "Bash",
+     "input": "{\"command\": \"cat src/lib/log.ts src/app.ts; grep -rn \\\"log\\\\.\\\\|logger\\\\|console\\\\.\\\" src --include=*.ts | grep -v \\\"^src/lib/log.ts\\\"\"}",
+     "input_chars": 136,
+     "result_chars": 2478,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01DHKTZFGfwHNXkH5r7YvTzG",
+     "name": "Bash",
+     "input": "{\"command\": \"cat src/router.ts src/server.ts; sed -n 35,60p src/lib/http.ts; grep -n \\\"err\\\" src/lib/http.ts\"}",
+     "input_chars": 110,
+     "result_chars": 3785,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_013Y1mAJ89Ys2y58e69aPQTq",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");const p=\\\"src/router.ts\\\";let s=fs.readFileSync(p,\\\"utf8\\\");\\ns=s.replace(\\\"import { HttpError, sendError } from \\\\x27./lib/http.ts\\\\x27;\\\\n\\\",\\\"import { HttpError, sendError } from \\\\x27./lib/http.ts\\\\x27;\\\\nimport { log } from \\\\x27./lib/log.ts\\\\x27;\\\\n\\\");\\ns=s.replace(\\\"    const parts = split(url.pathname);\\\\n    try {\\\",\\\"    const parts = split(url.pathname);\\\\n    const start = performance.now();\\\\n    // Only method, path (no query string), status and duration: never request/response bodies (recipient PII).\\\\n    res.once(\\\\x27finish\\\\x27, () => {\\\\n      log.info(\\\\x27request\\\\x27, {\\\\n        method: req.method,\\\\n        path: url.pathname,\\\\n        status: res.statusCode,\\\\n        duration_ms: Math.round((performance.now() - start) * 10) / 10,\\\\n      });\\\\n    });\\\\n    try {\\\");\\nfs.writeFileSync(p,s);'\\ngit diff src/router.ts | grep '^[+-]'; sed -n 1,60p test/helpers.ts\"}",
+     "input_chars": 951,
+     "result_chars": 2479,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01WbHM9fgme2TjuThEKRfni1",
+     "name": "Bash",
+     "input": "{\"command\": \"sed -n 55,80p test/helpers.ts; cat > test/requestlog.test.ts <<'EOF'\\nimport assert from 'node:assert/strict';\\nimport { after, before, describe, it } from 'node:test';\\nimport { api, startTestServer, validShipment, type TestServer } from './helpers.ts';\\n\\ndescribe('request logging', () => {\\n  let srv: TestServer;\\n  let lines: string[];\\n  const realWrite = process.stdout.write.bind(process.stdout);\\n\\n  before(async () => {\\n    srv = await startTestServer();\\n  });\\n\\n  after(async () => {\\n    process.stdout.write = realWrite;\\n    process.env.LOG_LEVEL = 'silent';\\n    await srv.close();\\n  });\\n\\n  async function capture(fn: () => Promise<unknown>): Promise<Array<Record<string, any>>> {\\n    lines = [];\\n    process.env.LOG_LEVEL = 'info';\\n    process.stdout.write = ((chunk: string | Uint8Array) => {\\n      lines.push(String(chunk));\\n      return true;\\n    }) as typeof process.stdout.write;\\n    try {\\n      await fn();\\n      await new Promise((r) => setTimeout(r, 50)); // 'finish' fires after the client has the response\\n    } finally {\\n      process.stdout.write = realWrite;\\n      process.env.LOG_LEVEL = 'silent';\\n    }\\n    return lines.join('').split('\\\\n').filter(Boolean).map((l) => JSON.parse(l));\\n  }\\n\\n  it('logs method, path, status and duration for each request', async () => {\\n    const logs = await capture(async () => {\\n      await api(srv.url, 'GET', '/health');\\n      await api(srv.url, 'GET', '/nope');\\n    });\\n    const reqs = logs.filter((l) => l.msg === 'request');\\n    assert.equal(reqs.length, 2);\\n    assert.equal(reqs[0].method, 'GET');\\n    assert.equal(reqs[0].path, '/health');\\n    assert.equal(reqs[0].status, 200);\\n    assert.equal(typeof reqs[0].duration_ms, 'number');\\n    assert.ok(reqs[0].duration_ms >= 0);\\n    assert.equal(reqs[1].status, 404);\\n  });\\n\\n  it('never logs recipient personal data, bodies or query strings', async () => {\\n    const body = validShipment({ tracking_number: 'RR123456785AT' })",
+     "input_chars": 2647,
+     "result_chars": 417,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01WazX54hvCHyc9HpzF11rte",
+     "name": "Bash",
+     "input": "{\"command\": \"npm test 2>&1 | grep -a -A14 \\\"failing tests\\\"\"}",
+     "input_chars": 61,
+     "result_chars": 796,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01GPjbsqwwKLDn7PdDuUqd2m",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");const p=\\\"test/requestlog.test.ts\\\";let s=fs.readFileSync(p,\\\"utf8\\\");\\ns=s.replace(\\\"      lines.push(String(chunk));\\\\n      return true;\\\",\\\"      if (typeof chunk === \\\\x27string\\\\x27 && chunk.startsWith(\\\\x27{\\\\\\\"ts\\\\\\\"\\\\x27)) {\\\\n        lines.push(chunk);\\\\n        return true;\\\\n      }\\\\n      return realWrite(chunk as any);\\\");\\nfs.writeFileSync(p,s);'\\nnpm test 2>&1 | grep -a -E \\\"request|leak|^ℹ (tests|pass|fail)|✖\\\"\"}",
+     "input_chars": 483,
+     "result_chars": 151,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Every request now writes one log line with method, path, status and duration in ms. All 70 tests pass.\n\n**What changed**\n- **Logging:** `src/router.ts` logs on the response's `finish` event, so every outcome is covered, including 404 and 405 responses and errors. Each line goes through `log.info` from `src/lib/log.ts`. For example: `{\"ts\":…,\"level\":\"info\",\"msg\":\"request\",\"method\":\"GET\",\"path\":\"/shipments/shp_ab12\",\"status\":200,\"duration_ms\":3.4}`.\n- **Personal data:** the line contains only method, path, status and duration. I left out request and response bodies, so the recipient's data can't get in. I also left out the query string, because filters like `?carrier=` are user-supplied and the line doesn't need them. Paths only ever contain shipment IDs, which you said are fine to log.\n- **Tests:** the new `test/requestlog.test.ts` has two tests. One checks the fields and the 200 and 404 statuses. The other creates a shipment and fetches it, then checks that none of the recipient's values (name, street, zip, city, country) and no query string show up in the captured logs.\n\n**Check before you rely on it:** `src/lib/log.ts` has no redaction layer. The only thing keeping personal data out of logs is that no code passes it in. I read the existing `log.*` calls in `http.ts`, `server.ts` and `notify.ts`, and none of them log recipient data. The `unhandled error` call logs a stack trace, though. A future error that echoes request content into its message could put personal data in the log.\n\nThe recipient has no `phone` field in this codebase (only name, street, zip, city, country), so there was no phone number to cover.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 7,
+    "duration_ms": 48165,
+    "total_cost_usd": 0.31050639999999996,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 16,
+     "cache_creation_input_tokens": 7363,
+     "cache_read_input_tokens": 333533,
+     "output_tokens": 3234,
+     "output_tokens_details": {
+      "thinking_tokens": 287
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 7363,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 557,
+       "cache_read_input_tokens": 51162,
+       "cache_creation_input_tokens": 474,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 474
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 50,
+      "outputTokens": 7352,
+      "cacheReadInputTokens": 874464,
+      "cacheCreationInputTokens": 37360,
+      "webSearchRequests": 0,
+      "costUSD": 0.31050639999999996,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 623,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 37360,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  },
+  {
+   "i": 4,
+   "prompt_chars": 565,
+   "ctx": [
+    52382,
+    54075,
+    57601
+   ],
+   "tools": [
+    {
+     "id": "toolu_013jwf5Diov7fjdzyDVWQshp",
+     "name": "Bash",
+     "input": "{\"command\": \"cat src/store.ts; grep -rn \\\"new Store\\\\|store\\\\.save\\\\|\\\\.save(\\\" src test | grep -v \\\"^src/store.ts\\\"\"}",
+     "input_chars": 118,
+     "result_chars": 3774,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_011AMeH3R8xdqh7GYefSq8re",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");let p=\\\"src/store.ts\\\",s=fs.readFileSync(p,\\\"utf8\\\");\\ns=s.replace(\\\"import path from \\\\x27node:path\\\\x27;\\\\n\\\",\\\"import path from \\\\x27node:path\\\\x27;\\\\nimport { log } from \\\\x27./lib/log.ts\\\\x27;\\\\n\\\");\\ns=s.replace(\\\"export type NewShipment\\\",\\\"/** Mutations within this window are collapsed into a single file write. */\\\\nexport const SAVE_DEBOUNCE_MS = 200;\\\\n\\\\nexport type NewShipment\\\");\\ns=s.replace(\\\"  private file: string | undefined;\\\\n\\\\n  constructor(file?: string) {\\\\n    this.file = file;\\\",\\\"  private file: string | undefined;\\\\n  private debounceMs: number;\\\\n  private timer: NodeJS.Timeout | undefined;\\\\n  private dirty = false;\\\\n\\\\n  constructor(file?: string, debounceMs: number = SAVE_DEBOUNCE_MS) {\\\\n    this.file = file;\\\\n    this.debounceMs = debounceMs;\\\");\\nconst a=s.indexOf(\\\"  /** Writes the whole store\\\");const b=s.indexOf(\\\"  addShipment\\\");\\ns=s.slice(0,a)+`  /**\\n   * Schedules a write of the whole store. Mutations within the debounce window\\n   * (counted from the first unsaved one, so a busy period cannot postpone the\\n   * write forever) share a single write. Call flush() to write immediately.\\n   */\\n  save(): void {\\n    if (!this.file) return;\\n    this.dirty = true;\\n    if (this.timer) return;\\n    this.timer = setTimeout(() => {\\n      this.timer = undefined;\\n      try {\\n        this.flush();\\n      } catch (err) {\\n        // stays dirty; the next save() or flush() retries\\n        log.error(\\\\x27store write failed\\\\x27, { err: String(err) });\\n      }\\n    }, this.debounceMs);\\n  }\\n\\n  /** Writes pending changes to disk right now (no-op if nothing is pending). Call on shutdown. */\\n  flush(): void {\\n    if (this.timer) {\\n      clearTimeout(this.timer);\\n      this.timer = undefined;\\n    }\\n    if (!this.file || !this.dirty) return;\\n    const data: StoreData = {\\n      shipments: [...this.shipments.values()],\\n      events: [...this.events.values()].flat(),\\n    };\\n    ",
+     "input_chars": 5878,
+     "result_chars": 822,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Writes to `data/store.json` are now debounced at 200 ms, and there is a `flush()` for shutdown. All 77 tests pass, 7 of them new.\n\n**How it works** (`src/store.ts`)\n- **Debounce:** `save()` no longer writes. It marks the store as changed and starts one 200 ms timer. Every mutation inside that window shares the single write when the timer fires. The window counts from the first unsaved change and isn't extended by later ones, so constant traffic can't delay the write indefinitely.\n- **Flush:** `flush()` writes pending changes immediately, cancels the timer, and does nothing if nothing is pending.\n- **File format:** the file is still the same pretty-printed JSON, so ops' nightly rsync diff is unaffected. I did not move to SQLite.\n- **Testing:** the constructor takes an optional second argument for the window, defaulting to 200 ms.\n- **Failed writes:** a failed timed write is logged with `log.error` and retried on the next save or flush. It doesn't crash the process.\n\n**Shutdown** (`src/server.ts`)\n- The SIGINT/SIGTERM handler now calls `store.flush()` after the server closes, then exits.\n- I added a `process.on('exit')` flush as a safety net. It also covers uncaught exceptions.\n\n**Tests** (`test/store.test.ts`, using mocked timers)\n- Mutations don't write synchronously.\n- Several mutations within 200 ms produce one write containing all of them.\n- A mutation after the window produces a second write.\n- `flush()` writes immediately, and no second write follows.\n- `flush()` with nothing pending leaves the file untouched.\n- A flushed store reloads correctly from disk.\n\n**Risks**\n- A hard kill loses changes from the last ≤200 ms. That means `kill -9`, a power loss, or on Windows a plain process kill, because Windows doesn't run signal handlers for that. A graceful SIGINT/SIGTERM shutdown loses nothing.\n- Each write still rewrites the whole file, so a single write stays as slow as before. The gain is fewer writes under bursts.\n- The write isn't atomic (no temp-file-and-rename), same as before. I left it alone to keep rsync behaviour unchanged.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 3,
+    "duration_ms": 55853,
+    "total_cost_usd": 0.3919830999999999,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 8,
+     "cache_creation_input_tokens": 5963,
+     "cache_read_input_tokens": 158087,
+     "output_tokens": 4180,
+     "output_tokens_details": {
+      "thinking_tokens": 798
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 5963,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 885,
+       "cache_read_input_tokens": 54073,
+       "cache_creation_input_tokens": 3526,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 3526
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 58,
+      "outputTokens": 11532,
+      "cacheReadInputTokens": 1032551,
+      "cacheCreationInputTokens": 43323,
+      "webSearchRequests": 0,
+      "costUSD": 0.3919830999999999,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1421,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 43323,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  },
+  {
+   "i": 5,
+   "prompt_chars": 727,
+   "ctx": [
+    58832,
+    62605,
+    64081,
+    65045,
+    67046,
+    67477,
+    68427,
+    69092,
+    69599,
+    70357,
+    70956
+   ],
+   "tools": [
+    {
+     "id": "toolu_01HA2ky4qeqt2LPuhfHXP38B",
+     "name": "Bash",
+     "input": "{\"command\": \"cat docs/erp-api.md; echo -----; sed -n 1,140p src/services/notify.ts; grep -rn \\\"8080\\\" src README.md config 2>/dev/null; cat .gemkeeper/ledger.md | tail -n 12\"}",
+     "input_chars": 175,
+     "result_chars": 8644,
+     "mentions_ledger": true
+    },
+    {
+     "id": "toolu_01BxuwVEgo6cydPM49sNVaWt",
+     "name": "Bash",
+     "input": "{\"command\": \"grep -rn \\\"ErpPayload\\\\|toErpPayload\\\\|\\\\.type\\\\b.*payload\\\\|payload\\\\.\\\\(type\\\\|at\\\\)\\\\|\\\\bat:\\\" src test | grep -v \\\"src/services/notify.ts\\\" | head -30; grep -n \\\"type:\\\\|at:\\\" test/notify.test.ts | head -20; grep -n \\\"erp\\\\|ERP\\\" README.md\"}",
+     "input_chars": 258,
+     "result_chars": 1675,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01S2tBEYfNrezdEVbQ8mihhD",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");let p=\\\"src/services/notify.ts\\\",s=fs.readFileSync(p,\\\"utf8\\\");\\ns=s.replace(\\\"/** Body we POST to the ERP event intake. */\\\",\\\"/** Body we POST to the ERP event intake. Field names as in docs/erp-api.md. */\\\");\\ns=s.replace(\\\"  type: string;\\\\n  at: string;\\\\n}\\\",\\\"  event_type: string;\\\\n  occurred_at: string;\\\\n}\\\");\\ns=s.replace(\\\"    type: event.type,\\\\n    at: event.at,\\\\n  };\\\",\\\"    event_type: event.type,\\\\n    occurred_at: event.at,\\\\n  };\\\");\\nfs.writeFileSync(p,s);\\np=\\\"test/notify.test.ts\\\";s=fs.readFileSync(p,\\\"utf8\\\");\\ns=s.replace(\\\"  type: \\\\x27delivered\\\\x27,\\\\n  at: \\\\x272026-11-12T09:14:03.000Z\\\\x27,\\\",\\\"  event_type: \\\\x27delivered\\\\x27,\\\\n  occurred_at: \\\\x272026-11-12T09:14:03.000Z\\\\x27,\\\");\\nfs.writeFileSync(p,s);'\\nsed -n 1,30p test/notify.test.ts\"}",
+     "input_chars": 833,
+     "result_chars": 813,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01MzSrcbGFok31EGsGme2G41",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");let p=\\\"test/notify.test.ts\\\",s=fs.readFileSync(p,\\\"utf8\\\");\\ns=s.replace(/  type: \\\\x27delivered\\\\x27,\\\\r?\\\\n  at: \\\\x272026-11-12T09:14:03.000Z\\\\x27,/,\\\"  event_type: \\\\x27delivered\\\\x27,\\\\n  occurred_at: \\\\x272026-11-12T09:14:03.000Z\\\\x27,\\\");\\ns=s.replace(\\\"  postToErpWithRetry,\\\\n\\\",\\\"  postToErpWithRetry,\\\\n  toErpPayload,\\\\n\\\");\\ns+=`\\ndescribe(\\\\x27ERP payload field names (docs/erp-api.md)\\\\x27, () => {\\n  it(\\\\x27uses exactly the documented field names\\\\x27, () => {\\n    const shipment = { id: \\\\x27shp_7d3e0c11\\\\x27, trackingNumber: \\\\x27RR123456785AT\\\\x27, carrier: \\\\x27ATP\\\\x27 } as any;\\n    const event = { id: \\\\x27evt_4f1c9a2b\\\\x27, shipmentId: shipment.id, type: \\\\x27delivered\\\\x27, at: \\\\x272026-11-12T09:14:03.000Z\\\\x27 } as any;\\n    assert.deepEqual(toErpPayload(shipment, event), {\\n      event_id: \\\\x27evt_4f1c9a2b\\\\x27,\\n      shipment_id: \\\\x27shp_7d3e0c11\\\\x27,\\n      tracking_number: \\\\x27RR123456785AT\\\\x27,\\n      carrier: \\\\x27ATP\\\\x27,\\n      event_type: \\\\x27delivered\\\\x27,\\n      occurred_at: \\\\x272026-11-12T09:14:03.000Z\\\\x27,\\n    });\\n  });\\n});\\n`;\\nfs.writeFileSync(p,s);'\\ngit diff -U0 src/services/notify.ts | grep -E '^[+-] '; npm test 2>&1 | grep -a -E \\\"documented|^ℹ (tests|pass|fail)|✖\\\"\"}",
+     "input_chars": 1294,
+     "result_chars": 2684,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01CFniYKbUEwbx2zmEiC45fN",
+     "name": "Bash",
+     "input": "{\"command\": \"sed -n 6,28p src/services/notify.ts | cat -A | cut -c1-70 | head -25\"}",
+     "input_chars": 83,
+     "result_chars": 575,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01RmR2GtLC4YYxp2VvWVZh22",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1b\\\\parcel-tracker\\\\src\\\\services\\\\notify.ts\", \"old_string\": \"  type: string;\\n  at: string;\\n}\", \"new_string\": \"  event_type: string;\\n  occurred_at: string;\\n}\"}",
+     "input_chars": 252,
+     "result_chars": 126,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01CstrZPjksWZEzupCxMreZ8",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1b\\\\parcel-tracker\\\\src\\\\services\\\\notify.ts\", \"old_string\": \"    type: event.type,\\n    at: event.at,\\n  };\", \"new_string\": \"    event_type: event.type,\\n    occurred_at: event.at,\\n  };\"}",
+     "input_chars": 278,
+     "result_chars": 126,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01VwPxDsMbijm9pnngaeo7n4",
+     "name": "Bash",
+     "input": "{\"command\": \"npm test 2>&1 | grep -a -E \\\"documented|^ℹ (tests|pass|fail)|✖\\\"; grep -n \\\"event_type\\\\|occurred_at\\\\|  type:\\\\|  at:\\\" test/notify.test.ts | head\"}",
+     "input_chars": 162,
+     "result_chars": 370,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01M4u5Gc7xViarPZerkbjsdt",
+     "name": "Bash",
+     "input": "{\"command\": \"npm test 2>&1 | grep -a -A16 \\\"failing tests\\\"; sed -n 14,30p src/services/notify.ts\"}",
+     "input_chars": 99,
+     "result_chars": 1218,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01DZtGYJMs7y6wrn9ba2ZCBY",
+     "name": "Edit",
+     "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1b\\\\parcel-tracker\\\\test\\\\notify.test.ts\", \"old_string\": \"  signBody,\\n  type ErpPayload,\", \"new_string\": \"  signBody,\\n  toErpPayload,\\n  type ErpPayload,\"}",
+     "input_chars": 246,
+     "result_chars": 123,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_018Zpb7Ggee7sCjWPGPxV6Qj",
+     "name": "Bash",
+     "input": "{\"command\": \"npm test 2>&1 | grep -a -E \\\"documented|^ℹ (tests|pass|fail)|✖\\\"\"}",
+     "input_chars": 79,
+     "result_chars": 84,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01WqomP9wogqg2FtFmUQvzQh",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");const p=\\\".gemkeeper/ledger.md\\\";let s=fs.readFileSync(p,\\\"utf8\\\");\\ns=s.replace(\\\"## Dead ends\\\\n\\\",\\\"## Dead ends\\\\n- fs.watch for config/default.json hot reload → never fires on staging (Docker bind mount from Windows host, no change events). Use fs.watchFile (polling) when hot reload gets built (not built yet, user said later).\\\\n- Batching ERP calls (array of up to 50 per POST) → ERP answers 422 to any array; single event object per request only. Do not build.\\\\n\\\");\\ns=s.replace(\\\"## Now\\\\n\\\",\\\"- (user) ERP sandbox port is 9911 since Oct infra move (docs/erp-api.md and README still say 8080; do NOT edit docs/erp-api.md, ERP team owns it; user fixes README). config/default.json erp.url still says 8080 — flagged, not changed.\\\\n- ERP payload fields per docs/erp-api.md: event_type, occurred_at (not type/at); optional `note` deliberately not sent.\\\\n\\\\n## Now\\\\n\\\");\\nfs.writeFileSync(p,s);'; tail -n 8 .gemkeeper/ledger.md | cut -c1-100\"}",
+     "input_chars": 1002,
+     "result_chars": 427,
+     "mentions_ledger": true
+    },
+    {
+     "id": "toolu_01MtHw129MYSRvur8NXbxh8Q",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");const p=\\\".gemkeeper/ledger.md\\\";let s=fs.readFileSync(p,\\\"utf8\\\");\\nconst nl=s.includes(\\\"\\\\r\\\\n\\\")?\\\"\\\\r\\\\n\\\":\\\"\\\\n\\\";\\ns=s.replace(\\\"## Dead ends\\\"+nl,\\\"## Dead ends\\\"+nl+\\\"- fs.watch for config/default.json hot reload → never fires on staging (Docker bind mount from Windows host, no change events). Use fs.watchFile (polling) when hot reload gets built (not built yet, user said later).\\\"+nl+\\\"- Batching ERP calls (array of up to 50 per POST) → ERP answers 422 to any array; single event object per request only. Do not build.\\\"+nl);\\ns=s.replace(nl+\\\"## Now\\\",nl+\\\"- (user) ERP sandbox port is 9911 since Oct infra move (docs/erp-api.md and README still say 8080; do NOT edit docs/erp-api.md, ERP team owns it; user fixes README). config/default.json erp.url still says 8080 — flagged, not changed.\\\"+nl+\\\"- ERP payload fields per docs/erp-api.md: event_type, occurred_at (not type/at); optional `note` deliberately not sent.\\\"+nl+nl+\\\"## Now\\\");\\nfs.writeFileSync(p,s);'; grep -c \\\"9911\\\\|fs.watch\\\\|Batching\\\" .gemkeeper/ledger.md\"}",
+     "input_chars": 1090,
+     "result_chars": 1,
+     "mentions_ledger": true
+    }
+   ],
+   "result": {
+    "text": "The payload had two field names that didn't match `docs/erp-api.md`. I fixed both, and all 78 tests pass.\n\n| Our field (before) | Documented field | Status |\n|---|---|---|\n| `type` | `event_type` | Fixed |\n| `at` | `occurred_at` | Fixed |\n| `event_id`, `shipment_id`, `tracking_number`, `carrier` | same | Already matched |\n\n- **Change:** `ErpPayload` and `toErpPayload` in `src/services/notify.ts` now use `event_type` and `occurred_at`. The values are unchanged. `occurred_at` is already ISO-8601 with `Z`, as the doc requires.\n- **Tests:** I updated the fixture in `test/notify.test.ts`. I also added a test that checks `toErpPayload` against the doc's example, so a future rename fails the build.\n- **Signing:** the `sig` field is computed over whatever body we send, so it just follows the new names. Signing and retries are untouched.\n- **Old field names:** the doc says the old `type` is accepted until 2026-12-31. Until now we had been sending `type` and `at`. Sending `at` was already out of line with the documented spec. After the 31st the ERP may reject the old names, so this fix needs to be deployed before then.\n- **Optional `note`:** I don't send it. The doc lists it as optional. It's free text from the carrier and could contain personal data. Adding it would be a separate decision.\n\n**Port 8080:** I haven't edited `docs/erp-api.md`, and I haven't touched the README. The runtime default `erp.url` in `config/default.json` also still says `http://localhost:8080/events`. I left it because you only mentioned the doc and README. Changing it to 9911 is a one-line edit. Tell me if you want it, or whether staging and prod override it through `ERP_URL`.\n\n**Hot reload:** nothing built. I noted in the project ledger that `fs.watch` doesn't fire on the staging bind mount and `fs.watchFile` polling does, so whoever builds it starts with polling.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 14,
+    "duration_ms": 63869,
+    "total_cost_usd": 0.5700510999999999,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 22,
+     "cache_creation_input_tokens": 13355,
+     "cache_read_input_tokens": 720140,
+     "output_tokens": 5259,
+     "output_tokens_details": {
+      "thinking_tokens": 760
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 13355,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 692,
+       "cache_read_input_tokens": 70355,
+       "cache_creation_input_tokens": 599,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 599
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 80,
+      "outputTokens": 16791,
+      "cacheReadInputTokens": 1752691,
+      "cacheCreationInputTokens": 56678,
+      "webSearchRequests": 0,
+      "costUSD": 0.5700510999999999,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2181,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 56678,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  },
+  {
+   "i": 6,
+   "prompt_chars": 168,
+   "ctx": [
+    71711,
+    73560,
+    75721,
+    76414,
+    76606,
+    77892,
+    78638,
+    79935
+   ],
+   "tools": [
+    {
+     "id": "toolu_01P4yKhrpejQmQenTMRMTNgd",
+     "name": "Bash",
+     "input": "{\"command\": \"cat src/services/eta.ts; sed -n 1,60p src/types.ts; grep -n \\\"eta\\\\|config\\\" src/config.ts | head -20\"}",
+     "input_chars": 116,
+     "result_chars": 3793,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01C9wGmavKHikX2PvNnNwDxK",
+     "name": "Bash",
+     "input": "{\"command\": \"cat > /tmp/bench.ts <<'EOF'\\nimport { Store } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/f1b/parcel-tracker/src/store.ts';\\nimport { calculateEta } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/f1b/parcel-tracker/src/services/eta.ts';\\nconst st = new Store();\\nfor (let i = 0; i < 5000; i++) {\\n  const s = st.addShipment({ trackingNumber: 'T' + i, carrier: 'DHL', serviceLevel: 'standard', recipient: { name: 'x', street: 'y', zip: '1', city: 'c', country: 'AT' } } as any, new Date(Date.UTC(2026, 10, 1 + (i % 20), 9)));\\n  st.addEvent(s.id, 'picked_up', { at: new Date(Date.UTC(2026, 10, 2 + (i % 20), 9)).toISOString() });\\n  if (i % 3 === 0) st.addEvent(s.id, 'exception');\\n}\\nconst list = () => st.listShipments({ limit: 500 });\\nfor (const lim of [500]) {\\n  const t0 = performance.now();\\n  for (let r = 0; r < 20; r++) for (const s of st.listShipments({ limit: 500 })) calculateEta(s, st.eventsFor(s.id));\\n  console.log('limit 500 x20 ms/call', ((performance.now() - t0) / 20).toFixed(2));\\n}\\nconst t1 = performance.now();\\nfor (let r = 0; r < 5; r++) for (const s of st.listShipments({})) calculateEta(s, st.eventsFor(s.id));\\nconsole.log('all 5000 ms/call', ((performance.now() - t1) / 5).toFixed(2));\\nconst t2 = performance.now();\\nfor (let r = 0; r < 5; r++) st.listShipments({});\\nconsole.log('list only (no eta) 5000 ms/call', ((performance.now() - t2) / 5).toFixed(2));\\nEOF\\nnode /tmp/bench.ts\"}",
+     "input_chars": 1442,
+     "result_chars": 1164,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01PS16m9CysnuWcNoE7AADq7",
+     "name": "Bash",
+     "input": "{\"command\": \"sed -i \\\"s#/c/Users#C:/Users#g\\\" /tmp/bench.ts && node /tmp/bench.ts\"}",
+     "input_chars": 83,
+     "result_chars": 1135,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_011CvHjJSVUcMSzrYhv87cLj",
+     "name": "Bash",
+     "input": "{\"command\": \"sed -i \\\"s#'C:/Users#'file:///C:/Users#g\\\" /tmp/bench.ts && node /tmp/bench.ts\"}",
+     "input_chars": 93,
+     "result_chars": 86,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01AvcV4M4uzRUku7vsDKfdYJ",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");const p=\\\"src/services/eta.ts\\\";let s=fs.readFileSync(p,\\\"utf8\\\");\\nconst nl=s.includes(\\\"\\\\r\\\\n\\\")?\\\"\\\\r\\\\n\\\":\\\"\\\\n\\\";s=s.replace(/\\\\r\\\\n/g,\\\"\\\\n\\\");\\nconst a=s.indexOf(\\\"/**\\\\n * Expected delivery date\\\");\\ns=s.slice(0,a)+`/** Upper bound of memoized results; the oldest entry is dropped first. */\\nexport const ETA_CACHE_MAX = 50_000;\\n\\nconst etaCache = new Map<string, string | null>();\\n\\n/** Test hook: forget all memoized ETAs. */\\nexport function clearEtaCache(): void {\\n  etaCache.clear();\\n}\\n\\n/**\\n * Expected delivery date as YYYY-MM-DD, or null once the shipment is delivered.\\n * Weekends and Austrian public holidays are skipped. Times are UTC.\\n *\\n * Memoized. The result depends only on status, createdAt, carrier, service level, the earliest\\n * picked_up timestamp and the number of exception events, and exactly those form the cache key.\\n * So the cache can never serve a stale value and needs no invalidation when events are added.\\n */\\nexport function calculateEta(shipment: Shipment, events: TrackingEvent[]): string | null {\\n  if (shipment.status === \\\\x27delivered\\\\x27) return null;\\n\\n  let pickupAt: string | undefined;\\n  let exceptions = 0;\\n  for (const e of events) {\\n    if (e.type === \\\\x27picked_up\\\\x27 && (pickupAt === undefined || e.at.localeCompare(pickupAt) < 0)) pickupAt = e.at;\\n    else if (e.type === \\\\x27exception\\\\x27) exceptions++;\\n  }\\n\\n  const key = [shipment.createdAt, shipment.carrier, shipment.serviceLevel, pickupAt ?? \\\\x27\\\\x27, exceptions].join(\\\\x27|\\\\x27);\\n  const cached = etaCache.get(key);\\n  if (cached !== undefined) return cached;\\n\\n  const start = new Date(pickupAt ?? shipment.createdAt);\\n\\n  let pickupDay = startOfDayUtc(start);\\n  if (start.getUTCHours() >= CUTOFF_HOUR_UTC || !isBusinessDay(pickupDay)) {\\n    pickupDay = addBusinessDays(pickupDay, 1);\\n  }\\n\\n  const days = TRANSIT_DAYS[shipment.carrier][shipment.serviceLevel] + exceptions * EXCEPTION_DELAY_DAYS",
+     "input_chars": 2336,
+     "result_chars": 115,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01JLAMG2M19XNrtieiENM53D",
+     "name": "Bash",
+     "input": "{\"command\": \"sed -n 1,30p test/eta.test.ts\"}",
+     "input_chars": 44,
+     "result_chars": 1118,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01E5KJNtsaEUARGgznbLqEPN",
+     "name": "Bash",
+     "input": "{\"command\": \"cat >> test/eta.test.ts <<'EOF'\\n\\ndescribe('calculateEta memoization', () => {\\n  it('returns the same result on repeated calls', () => {\\n    clearEtaCache();\\n    const s = shipment();\\n    const events = [event('created', s.createdAt), event('picked_up', '2026-11-09T09:00:00.000Z')];\\n    const first = calculateEta(s, events);\\n    assert.equal(calculateEta(s, events), first);\\n    assert.equal(calculateEta(shipment({ id: 'shp_other' }), events), first, 'same inputs, other shipment id');\\n  });\\n\\n  it('is not stale when events are added (exception, pickup) or the shipment is delivered', () => {\\n    clearEtaCache();\\n    const s = shipment();\\n    const created = event('created', s.createdAt);\\n    const before = calculateEta(s, [created]);\\n    const pickup = event('picked_up', '2026-11-10T09:00:00.000Z');\\n    const afterPickup = calculateEta(s, [created, pickup]);\\n    assert.notEqual(afterPickup, before);\\n    const afterException = calculateEta(s, [created, pickup, event('exception', '2026-11-10T12:00:00.000Z')]);\\n    assert.notEqual(afterException, afterPickup);\\n    assert.equal(calculateEta(s, [created, pickup]), afterPickup, 'earlier state still answers correctly');\\n    assert.equal(calculateEta({ ...s, status: 'delivered' }, [created, pickup]), null);\\n    assert.equal(calculateEta(s, [created, pickup]), afterPickup, 'delivered null did not poison the cache');\\n  });\\n\\n  it('differs per carrier and service level, and ignores event order', () => {\\n    clearEtaCache();\\n    const s = shipment();\\n    const a = event('picked_up', '2026-11-09T09:00:00.000Z');\\n    const b = event('picked_up', '2026-11-11T09:00:00.000Z');\\n    assert.equal(calculateEta(s, [a, b]), calculateEta(s, [b, a]));\\n    assert.equal(calculateEta(s, [b, a]), calculateEta(s, [a]), 'earliest pickup wins');\\n    assert.notEqual(calculateEta(shipment({ serviceLevel: 'express' }), [a]), calculateEta(s, [a]));\\n    assert.notEqual(calculateEta(shipment({ carrier: 'UPS', s",
+     "input_chars": 2326,
+     "result_chars": 474,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "`calculateEta` is now memoized, and all 81 tests pass, 3 of them new. A list call over all 5,000 shipments takes about 4.7 ms, down from 22.6 ms, measured in-process on synthetic data. The `limit=500` page takes about 1.7 ms, down from 6.3 ms.\n\n**How the cache works** (`src/services/eta.ts`)\n- **Cache key:** the result depends only on `createdAt`, carrier, service level, the earliest `picked_up` time and the number of `exception` events. Those five values are the key, so a changed shipment gets a different key. There is nothing to invalidate when an event is added.\n- **No sort:** one pass over the events replaces the old copy and sort, so a cache hit is cheap too.\n- **Delivered:** shipments with status `delivered` return `null` before the cache is consulted, so that result can't pollute it.\n- **Size limit:** the cache holds at most 50,000 entries and drops the oldest first. Many shipments share the same key, so it will stay far below that.\n- **Output:** results are identical to before, and the existing ETA tests pass unchanged.\n\n**Tests** (in `test/eta.test.ts`)\n- Repeated calls return the same value.\n- Adding a pickup or an exception, or marking the shipment delivered, never returns a stale value.\n- Results ignore event order and differ by carrier and service level.\n\nOn the 5,000-shipment dataset the ETA computation was about 22 ms of the roughly 23 ms in the list handler. If staging still feels slow, the cause is probably outside this code, such as JSON serialising a 5,000-item response or the network. Without a `limit` the endpoint returns up to 50 items, so check what the mobile client actually requests.\n\n**Correction to an earlier message:** I said the recipient has no `phone` field. That was wrong. `Recipient` in `src/types.ts` has an optional `phone`. The request logging still only writes method, path, status and duration, so no phone number is logged. But my leak test didn't include a phone value, so I'll add that if you want.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 8,
+    "duration_ms": 65217,
+    "total_cost_usd": 0.7175910999999999,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 18,
+     "cache_creation_input_tokens": 8979,
+     "cache_read_input_tokens": 601480,
+     "output_tokens": 5144,
+     "output_tokens_details": {
+      "thinking_tokens": 892
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 8979,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 685,
+       "cache_read_input_tokens": 78636,
+       "cache_creation_input_tokens": 1297,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 1297
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 98,
+      "outputTokens": 21935,
+      "cacheReadInputTokens": 2354171,
+      "cacheCreationInputTokens": 65657,
+      "webSearchRequests": 0,
+      "costUSD": 0.7175910999999999,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 3073,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 65657,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  },
+  {
+   "i": 7,
+   "prompt_chars": 383,
+   "ctx": [
+    80751,
+    82586,
+    82948
+   ],
+   "tools": [
+    {
+     "id": "toolu_01PybGnyhL5CeCkSZA1nYNXx",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");let p=\\\"src/services/eta.ts\\\";let s=fs.readFileSync(p,\\\"utf8\\\");\\nconst nl=s.includes(\\\"\\\\r\\\\n\\\")?\\\"\\\\r\\\\n\\\":\\\"\\\\n\\\";s=s.replace(/\\\\r\\\\n/g,\\\"\\\\n\\\");\\nconst a=s.indexOf(\\\"/** Upper bound of memoized\\\");\\ns=s.slice(0,a)+`/**\\n * Expected delivery date as YYYY-MM-DD, or null once the shipment is delivered.\\n * Weekends and Austrian public holidays are skipped. Times are UTC.\\n */\\nexport function calculateEta(shipment: Shipment, events: TrackingEvent[]): string | null {\\n  if (shipment.status === \\\\x27delivered\\\\x27) return null;\\n\\n  const sorted = [...events].sort((a, b) => a.at.localeCompare(b.at));\\n  const pickup = sorted.find((e) => e.type === \\\\x27picked_up\\\\x27);\\n  const start = new Date(pickup ? pickup.at : shipment.createdAt);\\n\\n  let pickupDay = startOfDayUtc(start);\\n  if (start.getUTCHours() >= CUTOFF_HOUR_UTC || !isBusinessDay(pickupDay)) {\\n    pickupDay = addBusinessDays(pickupDay, 1);\\n  }\\n\\n  const exceptions = sorted.filter((e) => e.type === \\\\x27exception\\\\x27).length;\\n  const days = TRANSIT_DAYS[shipment.carrier][shipment.serviceLevel] + exceptions * EXCEPTION_DELAY_DAYS;\\n\\n  return addBusinessDays(pickupDay, days).toISOString().slice(0, 10);\\n}\\n`;\\nfs.writeFileSync(p,s.replace(/\\\\n/g,nl));\\np=\\\"test/eta.test.ts\\\";s=fs.readFileSync(p,\\\"utf8\\\");\\nconst i=s.search(/\\\\r?\\\\ndescribe\\\\(\\\\x27calculateEta memoization\\\\x27/);\\ns=s.slice(0,i).replace(/\\\\s*$/,nl).replace(\\\"calculateEta, clearEtaCache, isBusinessDay\\\",\\\"calculateEta, isBusinessDay\\\");\\nfs.writeFileSync(p,s);'\\ngrep -rn \\\"clearEtaCache\\\\|ETA_CACHE\\\\|etaCache\\\\|memoiz\\\" src test; tail -n 5 test/eta.test.ts; sed -n 36,60p src/services/eta.ts | head -30; npm test 2>&1 | grep -a -E \\\"^ℹ (tests|pass|fail)|✖\\\"\"}",
+     "input_chars": 1762,
+     "result_chars": 1182,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01CEPuhUAXp1aWf2bbWzg4m1",
+     "name": "Bash",
+     "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");const p=\\\".gemkeeper/ledger.md\\\";let s=fs.readFileSync(p,\\\"utf8\\\");\\nconst nl=s.includes(\\\"\\\\r\\\\n\\\")?\\\"\\\\r\\\\n\\\":\\\"\\\\n\\\";\\ns=s.replace(\\\"## Dead ends\\\"+nl,\\\"## Dead ends\\\"+nl+\\\"- ETA memoization in calculateEta → QA saw stale ETAs in the list after new events; user decided caching ETAs is a dead end and had it removed completely. Do not re-add. Plan for slow GET /shipments: paginate the list endpoint later.\\\"+nl);\\nfs.writeFileSync(p,s);'; grep -c \\\"ETA memoization\\\" .gemkeeper/ledger.md\"}",
+     "input_chars": 542,
+     "result_chars": 1,
+     "mentions_ledger": true
+    }
+   ],
+   "result": {
+    "text": "The ETA memoization is gone and all 78 tests pass, which is the previous 81 minus the 3 memoization tests.\n\n- **`src/services/eta.ts`:** `calculateEta` is back to the original sort-based version. The cache, the cache size limit and the `clearEtaCache` helper are all removed.\n- **`test/eta.test.ts`:** the \"calculateEta memoization\" tests and their import are removed. The original ETA tests are untouched.\n- **Leftovers:** a grep for `memoiz`, `etaCache` and `clearEtaCache` finds nothing in `src` or `test`.\n\nI didn't re-derive why QA saw stale values. My key included the event count and earliest pickup time, so a new exception should have changed it. If you want to understand the cause before the pagination work, send me QA's reproduction steps.\n\n`GET /shipments` is back to about 6 ms for a 500-item page and about 23 ms for all 5,000 shipments, measured in-process. I recorded in the project ledger that ETA caching is a dead end and that pagination is the planned fix.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 3,
+    "duration_ms": 19306,
+    "total_cost_usd": 0.7736055,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 8,
+     "cache_creation_input_tokens": 3013,
+     "cache_read_input_tokens": 243264,
+     "output_tokens": 1962,
+     "output_tokens_details": {
+      "thinking_tokens": 326
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 3013,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 357,
+       "cache_read_input_tokens": 82584,
+       "cache_creation_input_tokens": 362,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 362
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 106,
+      "outputTokens": 23897,
+      "cacheReadInputTokens": 2597435,
+      "cacheCreationInputTokens": 68670,
+      "webSearchRequests": 0,
+      "costUSD": 0.7736055,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 3399,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 68670,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  },
+  {
+   "i": 8,
+   "prompt_chars": 97,
+   "ctx": [
+    83338,
+    84041,
+    84505
+   ],
+   "tools": [
+    {
+     "id": "toolu_01HN3vMChxRcLXr4k2wSodLT",
+     "name": "Bash",
+     "input": "{\"command\": \"git status --short; echo; git diff --stat 2>/dev/null; echo; git diff --stat --no-index /dev/null test/requestlog.test.ts 2>/dev/null | tail -1; wc -l test/requestlog.test.ts test/store.test.ts\"}",
+     "input_chars": 208,
+     "result_chars": 1019,
+     "mentions_ledger": false
+    },
+    {
+     "id": "toolu_01UkE8WzZk5cdFsCC1WqBGDG",
+     "name": "Bash",
+     "input": "{\"command\": \"git diff -U0 src/services/eta.ts | grep '^[+-]' | grep -v '^+++\\\\|^---'\"}",
+     "input_chars": 86,
+     "result_chars": 254,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "Nothing is committed yet. The diff below also contains earlier-session work, which was already uncommitted when we started, so I've split the two apart.\n\n```\n README.md               |  6 ++++\n src/config.ts           |  3 ++\n src/lib/validate.ts     |  7 ++++\n src/router.ts           | 11 ++++++\n src/routes/shipments.ts |  2 +-\n src/server.ts           |  8 ++++-\n src/services/eta.ts     |  5 +--\n src/services/notify.ts  | 93 +++++++++++++++++++++++++++++++++++++++++++------\n src/store.ts            | 37 ++++++++++++++++++--\n test/eta.test.ts        | 43 +++++++++++++++++++++++\n test/shipments.test.ts  | 55 +++++++++++++++++++++++++++++\n 11 files changed, 254 insertions(+), 16 deletions(-)\n```\n\n`git diff --stat` leaves out untracked files. Those are `test/requestlog.test.ts` (69 lines), `test/store.test.ts` (88 lines), `test/notify.test.ts`, `test/s10.test.ts`, `src/lib/s10.ts`, `src/services/holidays.ts` and `.gemkeeper/`.\n\n## Changes from this conversation\n\n**`src/routes/shipments.ts`** (1 line)\n- Each item in `GET /shipments` now includes `eta`. `GET /shipments/:id` is unchanged.\n\n**`test/shipments.test.ts`**\n- New test that every list item has an `eta` matching its detail endpoint.\n- New test that pins the detail response's keys.\n- The diff for this file is larger (55 lines) because it also holds earlier S10 tests.\n\n**`src/router.ts`**\n- Logs one line per request with method, path, status and duration in ms, using `log.info`.\n- No bodies and no query string, so no recipient data.\n\n**`test/requestlog.test.ts`** (new)\n- Checks the logged fields and the 200 and 404 statuses.\n- Checks that none of the recipient's values or the query string appear in the logs.\n\n**`src/store.ts`**\n- `save()` is debounced at 200 ms. Writes in a burst share one write, and the file format is unchanged.\n- New `flush()`, and the debounce window is an optional constructor argument.\n\n**`src/server.ts`**\n- Flushes the store on SIGINT/SIGTERM and on `process.exit`.\n\n**`test/store.test.ts`** (new)\n- 7 tests covering the debounce, `flush()` and reloading from disk.\n\n**`src/services/notify.ts`**\n- Payload fields are now `event_type` and `occurred_at`, as in `docs/erp-api.md`. They were `type` and `at`.\n\n**`test/notify.test.ts`** (new)\n- Updated fixture and a test that checks the payload shape against the doc's example.\n\n**Net zero:** the ETA memoization was added and then removed. `src/services/eta.ts` and `test/eta.test.ts` hold no trace of it.\n\n## Earlier-session work still uncommitted\n\nThese changes were already in the working tree before we started:\n- **`src/services/eta.ts`:** public-holiday support via `holidays.ts` (the whole 5-line diff).\n- **`src/services/notify.ts`:** HMAC signing in the `sig` field and the 3-attempt retry with a fixed 30 s delay (the bulk of its 93 lines).\n- **`src/config.ts`, `src/lib/validate.ts`, `src/lib/s10.ts`, `test/s10.test.ts`:** ERP config, UPU S10 validation for ATP numbers, and their tests.\n- **`README.md`:** documentation for the above. It still says port 8080 for the ERP sandbox. You said you'd fix that yourself.\n- **`test/eta.test.ts`:** the 43 added lines are the holiday tests.\n- **`.gemkeeper/ledger.md`:** the project ledger, updated today.\n\nTwo items are still open from before: `config/default.json` still points at the sandbox on port 8080, and the old fixture `data/fixtures/shipments.sample.json` has 7 ATP numbers with bad check digits. All 78 tests pass, and I haven't committed anything.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 3,
+    "duration_ms": 24049,
+    "total_cost_usd": 0.8245014,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 8,
+     "cache_creation_input_tokens": 1557,
+     "cache_read_input_tokens": 250319,
+     "output_tokens": 1962,
+     "output_tokens_details": {
+      "thinking_tokens": 213
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 1557,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 1441,
+       "cache_read_input_tokens": 84039,
+       "cache_creation_input_tokens": 464,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 464
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 114,
+      "outputTokens": 25859,
+      "cacheReadInputTokens": 2847754,
+      "cacheCreationInputTokens": 70227,
+      "webSearchRequests": 0,
+      "costUSD": 0.8245014,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 3612,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 70227,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  },
+  {
+   "i": 9,
+   "prompt_chars": 113,
+   "ctx": [
+    85980,
+    86180
+   ],
+   "tools": [
+    {
+     "id": "toolu_01Xpk6WGJSLiDZV8LynF7BhG",
+     "name": "Bash",
+     "input": "{\"command\": \"npm test 2>&1 | grep -a -E \\\"^ℹ|✖\\\"\"}",
+     "input_chars": 50,
+     "result_chars": 99,
+     "mentions_ledger": false
+    }
+   ],
+   "result": {
+    "text": "The final run shows 78 tests passing with 0 failures, cancelled or skipped.\n\n**Done today**\n- **ERP load:** peak was 2 notifications per minute on staging (30 notifications in about 2 hours). I did not build batching, since the ERP rejects arrays.\n- **List ETA:** `GET /shipments` now includes `eta` on every item. `GET /shipments/:id` is unchanged, and a test pins its shape for mobile v2.3.\n- **Request logging:** one line per request with method, path, status and duration, and no personal data.\n- **Store writes:** debounced at 200 ms, with `flush()` called on shutdown. The file stays plain JSON.\n- **ERP payload:** `type` and `at` are now `event_type` and `occurred_at`, as documented.\n- **ETA memoization:** I added it, QA found stale values, and I removed it completely at your request.\n\n**What I'd do next**\n1. **Deploy the ERP field-name fix before 2026-12-31.** After that date the ERP may reject the old `type` field. This is the only item with a deadline.\n2. **Pull the old fields from the next release,** since the ERP's grace period for `type` ends then.\n3. **Update the sandbox URL:** `config/default.json` still points to port 8080, and the README is yours to fix.\n4. **Paginate `GET /shipments`,** as you planned, to fix the slow list.\n5. **Investigate two open staging findings:** events were accepted after `delivered`, and `data/fixtures/shipments.sample.json` has 7 ATP numbers with bad check digits.\n6. **Add a phone value to the request-logging leak test.** My earlier \"no phone field\" claim was wrong, and the current test doesn't cover it.\n7. **Commit.** Nothing is committed yet, and the tree mixes today's work with earlier-session work (holidays, S10 validation, signing and retries). I'd split them into separate commits.\n\nExtending the holiday list before the end of 2027 is on the longer-term list.",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 2,
+    "duration_ms": 11493,
+    "total_cost_usd": 0.8560913000000001,
+    "api_error_status": null,
+    "usage": {
+     "input_tokens": 6,
+     "cache_creation_input_tokens": 1675,
+     "cache_read_input_tokens": 170479,
+     "output_tokens": 783,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 1675,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "global",
+     "iterations": [
+      {
+       "input_tokens": 2,
+       "output_tokens": 668,
+       "cache_read_input_tokens": 85976,
+       "cache_creation_input_tokens": 202,
+       "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 202
+       },
+       "type": "message"
+      }
+     ],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 120,
+      "outputTokens": 26642,
+      "cacheReadInputTokens": 3018233,
+      "cacheCreationInputTokens": 71902,
+      "webSearchRequests": 0,
+      "costUSD": 0.8560913000000001,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 3612,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 71902,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  }
+ ],
+ "hooks": [
+  {
+   "turn": 0,
+   "hook": "SessionStart:startup",
+   "chars": 3460,
+   "output": "[gemkeeper] Ledger from earlier session(s) of this project. Follow the gems skill's Resume mode:\nverify '## Now' against git, then reply in at most three lines (mission, where we are, next step) unless the user already gave you a task.\n--- .gemkeeper/ledger.md ---\n# Ledger: parcel-tracker\r\n\r\n## Goal\r\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\r\n\r\n## Rules\r\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\r\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\r\n\r\n## Facts\r\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\r\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\r\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\r\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\r\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\r\n\r\n## Decisions\r\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\r\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\r\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\r\n\r\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\r\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\r\n\r\n## Dead ends\r\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\r\n\r\n## Now\r\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\r\n--- end ledger ---\n"
+  },
+  {
+   "turn": 0,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 1,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 2,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 3,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 4,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 5,
+   "hook": "UserPromptSubmit",
+   "chars": 255,
+   "output": "[gemkeeper] checkpoint: if anything since the last checkpoint passes the ledger test (a fresh session would get it wrong without it), save it to .gemkeeper/ledger.md in one small edit, then continue. If nothing qualifies, do nothing and don't mention it.\n"
+  },
+  {
+   "turn": 6,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 7,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 8,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  },
+  {
+   "turn": 9,
+   "hook": "UserPromptSubmit",
+   "chars": 0,
+   "output": ""
+  }
+ ],
+ "error": null,
+ "compact": null,
+ "cost_cumulative": 0.8560913000000001,
+ "cost": 0.856091,
+ "wall_s": 372.9,
+ "exit_code": 0,
+ "ctx_first": 23369,
+ "ctx_last": 86180,
+ "ledger_by_turn": [
+  {
+   "turn": 10,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  },
+  {
+   "turn": 11,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  },
+  {
+   "turn": 12,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  },
+  {
+   "turn": 13,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  },
+  {
+   "turn": 14,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  },
+  {
+   "turn": 15,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- fs.watch for config/default.json hot reload → never fires on staging (Docker bind mount from Windows host, no change events). Use fs.watchFile (polling) when hot reload gets built (not built yet, user said later).\n- Batching ERP calls (array of up to 50 per POST) → ERP answers 422 to any array; single event object per request only. Do not build.\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n- (user) ERP sandbox port is 9911 since Oct infra move (docs/erp-api.md and README still say 8080; do NOT edit docs/erp-api.md, ERP team owns it; user fixes README). config/default.json erp.url still says 8080 — flagged, not changed.\n- ERP payload fields per docs/erp-api.md: event_type, occurred_at (not type/at); optional `note` deliberately not sent.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  },
+  {
+   "turn": 16,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- fs.watch for config/default.json hot reload → never fires on staging (Docker bind mount from Windows host, no change events). Use fs.watchFile (polling) when hot reload gets built (not built yet, user said later).\n- Batching ERP calls (array of up to 50 per POST) → ERP answers 422 to any array; single event object per request only. Do not build.\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n- (user) ERP sandbox port is 9911 since Oct infra move (docs/erp-api.md and README still say 8080; do NOT edit docs/erp-api.md, ERP team owns it; user fixes README). config/default.json erp.url still says 8080 — flagged, not changed.\n- ERP payload fields per docs/erp-api.md: event_type, occurred_at (not type/at); optional `note` deliberately not sent.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  },
+  {
+   "turn": 17,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- ETA memoization in calculateEta → QA saw stale ETAs in the list after new events; user decided caching ETAs is a dead end and had it removed completely. Do not re-add. Plan for slow GET /shipments: paginate the list endpoint later.\n- fs.watch for config/default.json hot reload → never fires on staging (Docker bind mount from Windows host, no change events). Use fs.watchFile (polling) when hot reload gets built (not built yet, user said later).\n- Batching ERP calls (array of up to 50 per POST) → ERP answers 422 to any array; single event object per request only. Do not build.\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n- (user) ERP sandbox port is 9911 since Oct infra move (docs/erp-api.md and README still say 8080; do NOT edit docs/erp-api.md, ERP team owns it; user fixes README). config/default.json erp.url still says 8080 — flagged, not changed.\n- ERP payload fields per docs/erp-api.md: event_type, occurred_at (not type/at); optional `note` deliberately not sent.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  },
+  {
+   "turn": 18,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- ETA memoization in calculateEta → QA saw stale ETAs in the list after new events; user decided caching ETAs is a dead end and had it removed completely. Do not re-add. Plan for slow GET /shipments: paginate the list endpoint later.\n- fs.watch for config/default.json hot reload → never fires on staging (Docker bind mount from Windows host, no change events). Use fs.watchFile (polling) when hot reload gets built (not built yet, user said later).\n- Batching ERP calls (array of up to 50 per POST) → ERP answers 422 to any array; single event object per request only. Do not build.\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n- (user) ERP sandbox port is 9911 since Oct infra move (docs/erp-api.md and README still say 8080; do NOT edit docs/erp-api.md, ERP team owns it; user fixes README). config/default.json erp.url still says 8080 — flagged, not changed.\n- ERP payload fields per docs/erp-api.md: event_type, occurred_at (not type/at); optional `note` deliberately not sent.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  },
+  {
+   "turn": 19,
+   "text": "# Ledger: parcel-tracker\n\n## Goal\nWork on parcel-tracker (shipment tracking, Vienna warehouse; Node 24 runs TS directly, no build, zero deps). User reviews everything at the end; work autonomously. No concrete task given yet.\n\n## Rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, edits are silently lost. (Contains carrierCodes.ts, csvImport.ts; used by /import.) Work around it from outside.\n- (user) NO new npm dependencies, not even devDependencies — security review takes ~6 weeks.\n\n## Facts\n- Test: `npm test` (node --test, files in test/). Start: `npm start` (node src/server.ts).\n- Layout: src/app.ts createApp({store, notify}); store.ts = in-memory Maps persisted to JSON (data/store.json); routes/{shipments,events,import}.ts; services/{eta,notify}.ts.\n- eta.ts: business-day ETA, UTC, cutoff 14:00 UTC, +2 days per exception event; null when delivered.\n- (user) Deployment has NO outbound internet: everything must work fully offline (no holiday API; hardcode data).\n- README mentions docs/erp-api.md and ERP sandbox http://localhost:8080/events.\n\n## Decisions\n- (user) ATP tracking numbers validated as UPU S10 (src/lib/s10.ts, called from validateShipmentInput so /import is validated too); other carriers: any non-empty value, deliberately unvalidated — a past strict DHL check wrongly rejected valid numbers for 2 days.\n- (user) Every NEW user-facing error `message` must be German (packers' UI shows it verbatim); `code` stays English SCREAMING_SNAKE_CASE. Existing English messages left untouched (not asked).\n- Holidays hardcoded in src/services/holidays.ts (2026+2027 only; isPublicHoliday used by isBusinessDay in eta.ts) — because no outbound internet. Outside 2026-27 only weekends are skipped; list must be extended before end of 2027.\n\n- (user) ERP webhooks signed: top-level body field `sig` = hex HMAC-SHA256 of the JSON body WITHOUT `sig` (sig appended last so key order is preserved), secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, env only, never in files/logs). Unset secret → sent unsigned, no `sig` (my choice, flag to user). Impl: notify.ts signBody/postToErp.\n- (user) ERP retries: max 3 attempts total, FIXED 30 s delay (no exponential backoff), retry only network errors + 5xx — because the ERP dedupes by event_id only within 2 min, so all attempts must land inside that window (worst case 5s timeout*3 + 2*30s = 75s). Delay must be injectable for tests. Events route fires `void notify(...)`, so retries don't block HTTP.\n\n## Dead ends\n- ETA memoization in calculateEta → QA saw stale ETAs in the list after new events; user decided caching ETAs is a dead end and had it removed completely. Do not re-add. Plan for slow GET /shipments: paginate the list endpoint later.\n- fs.watch for config/default.json hot reload → never fires on staging (Docker bind mount from Windows host, no change events). Use fs.watchFile (polling) when hot reload gets built (not built yet, user said later).\n- Batching ERP calls (array of up to 50 per POST) → ERP answers 422 to any array; single event object per request only. Do not build.\n- X-Signature header for ERP webhooks → ERP API gateway strips every custom X- header, ERP saw all requests as unsigned (staging). Do not use custom headers for the ERP; signature lives in body field `sig`.\n\n- (user) ERP sandbox port is 9911 since Oct infra move (docs/erp-api.md and README still say 8080; do NOT edit docs/erp-api.md, ERP team owns it; user fixes README). config/default.json erp.url still says 8080 — flagged, not changed.\n- ERP payload fields per docs/erp-api.md: event_type, occurred_at (not type/at); optional `note` deliberately not sent.\n\n## Now\nDone, uncommitted, 66/66 pass: holidays, ATP S10 validation, ERP webhook signing + retries (notify.ts postToErpWithRetry, config.ts, test/notify.test.ts, README). Open: staging log showed events accepted after `delivered` (not investigated); fixture data/fixtures/shipments.sample.json has 7 ATP numbers with bad check digits. Next: user review.\n"
+  }
+ ]
+}

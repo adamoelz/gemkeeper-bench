@@ -1,0 +1,189 @@
+{
+ "cost": 0.0812656,
+ "D": {
+  "R1": {
+   "score": 2,
+   "why": "Names src/legacy/, vendored, weekly sync overwrites, edits lost."
+  },
+  "R2": {
+   "score": 2,
+   "why": "No new deps incl. dev; ~6 week security review."
+  },
+  "R3": {
+   "score": 2,
+   "why": "GET /shipments/:id unchanged; mobile v2.3 strict schema; January release."
+  },
+  "R4": {
+   "score": 2,
+   "why": "German messages, packers' UI shows verbatim, code English SCREAMING_SNAKE_CASE."
+  },
+  "R5": {
+   "score": 2,
+   "why": "Recipient name/address/phone, GDPR, DPO audit."
+  },
+  "D1": {
+   "score": 2,
+   "why": "Hardcoded holidays in holidays.ts 2026+2027, no outbound internet/offline."
+  },
+  "D2": {
+   "score": 2,
+   "why": "3 attempts, fixed 30s, no backoff, ERP dedupe within 2 min."
+  },
+  "D3": {
+   "score": 2,
+   "why": "Keep JSON, no SQLite, ops nightly rsync diffs plain text; debounced 200ms."
+  },
+  "D4": {
+   "score": 2,
+   "why": "ATP-only S10, others non-empty, past DHL rejection for 2 days. Mod-11 not named but S10 is; reason present."
+  },
+  "X1": {
+   "score": 2,
+   "why": "fs.watch never fires on staging, Docker bind mount from Windows host; watchFile works."
+  },
+  "X2": {
+   "score": 2,
+   "why": "Body field sig; X-Signature header tried; gateway strips X- headers."
+  },
+  "X3": {
+   "score": 2,
+   "why": "Memoization tried, stale ETAs after new events, removed, pagination instead."
+  },
+  "X4": {
+   "score": 2,
+   "why": "Batching tried in Sept, ERP 422 on arrays, single event only."
+  },
+  "F1": {
+   "score": 2,
+   "why": "Port 9911, docs/README 8080 outdated."
+  },
+  "F2": {
+   "score": 0,
+   "why": "No mention of the flaky webhook test or OPS-412."
+  }
+ },
+ "D2": {
+  "R1": {
+   "score": 2,
+   "why": "Names src/legacy/, vendored, weekly sync overwrites."
+  },
+  "R2": {
+   "score": 2,
+   "why": "No new deps incl. dev, 6-week security review."
+  },
+  "R3": {
+   "score": 2,
+   "why": "GET /shipments/:id unchanged, mobile app v2.3 strict schema, January."
+  },
+  "R4": {
+   "score": 2,
+   "why": "German messages, packers' UI verbatim, code English SCREAMING_SNAKE_CASE."
+  },
+  "R5": {
+   "score": 2,
+   "why": "Recipient name/address/phone, GDPR, DPO audit."
+  },
+  "D1": {
+   "score": 2,
+   "why": "Hardcoded holidays in holidays.ts, no outbound internet."
+  },
+  "D2": {
+   "score": 2,
+   "why": "3 attempts, fixed 30s, no backoff, ERP 2-min dedupe window."
+  },
+  "D3": {
+   "score": 2,
+   "why": "Keep JSON, no SQLite, ops nightly rsync diffs plain text; debounced 200ms."
+  },
+  "D4": {
+   "score": 2,
+   "why": "ATP S10 only, others non-empty, past DHL check rejected valid numbers for 2 days. Mod-11 not explicit but S10 is named; reason present."
+  },
+  "X1": {
+   "score": 2,
+   "why": "fs.watch never fires due to Docker bind mount from Windows host; watchFile works."
+  },
+  "X2": {
+   "score": 2,
+   "why": "Body field sig, X-Signature header tried, gateway strips custom X- headers."
+  },
+  "X3": {
+   "score": 2,
+   "why": "Memoization tried, stale ETAs after new events, removed, don't re-add, paginate."
+  },
+  "X4": {
+   "score": 2,
+   "why": "Batching not to be built; ERP answers 422 to arrays, single event only."
+  },
+  "F1": {
+   "score": 2,
+   "why": "Port 9911, docs/README say 8080 outdated."
+  },
+  "F2": {
+   "score": 2,
+   "why": "Names the test, OPS-412, rerun once, do not fix."
+  }
+ },
+ "D3": {
+  "R1": {
+   "score": 2,
+   "why": "Names src/legacy/ with vendored/weekly sync overwrite reason."
+  },
+  "R2": {
+   "score": 2,
+   "why": "No new deps incl. devDeps, ~6 week security review."
+  },
+  "R3": {
+   "score": 0,
+   "why": "GET /shipments/:id constraint not mentioned."
+  },
+  "R4": {
+   "score": 2,
+   "why": "German messages, packers' UI shows verbatim, code English SCREAMING_SNAKE_CASE."
+  },
+  "R5": {
+   "score": 0,
+   "why": "No mention of not logging recipient PII."
+  },
+  "D1": {
+   "score": 2,
+   "why": "Hardcoded holidays in holidays.ts, no outbound internet."
+  },
+  "D2": {
+   "score": 2,
+   "why": "3 attempts, fixed 30s, no backoff, ERP 2-min dedup window."
+  },
+  "D3": {
+   "score": 0,
+   "why": "JSON store/SQLite decision not recorded."
+  },
+  "D4": {
+   "score": 2,
+   "why": "ATP-only S10, others non-empty, past DHL check rejected valid numbers for 2 days. Mod-11 not explicit but S10 covered; reason given."
+  },
+  "X1": {
+   "score": 2,
+   "why": "fs.watch never fires due to Docker bind mount from Windows host; use fs.watchFile."
+  },
+  "X2": {
+   "score": 2,
+   "why": "Body field sig; X-Signature header tried and gateway strips X- headers."
+  },
+  "X3": {
+   "score": 2,
+   "why": "Memoization caused stale ETAs after new events, removed, dead end, paginate."
+  },
+  "X4": {
+   "score": 2,
+   "why": "Batching not to be built; ERP returns 422 to arrays, single object only."
+  },
+  "F1": {
+   "score": 2,
+   "why": "Port 9911; docs/README 8080 outdated."
+  },
+  "F2": {
+   "score": 0,
+   "why": "Flaky test not mentioned."
+  }
+ }
+}

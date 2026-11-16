@@ -1,0 +1,236 @@
+{
+ "cost": 0.435014,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--resume",
+   "df27e8a6-a3cd-4000-8956-1fbd5a1001d3",
+   "--fork-session"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\p1a\\parcel-tracker",
+  "plugin": false,
+  "resume": "df27e8a6-a3cd-4000-8956-1fbd5a1001d3",
+  "fork": true,
+  "parent_cost": 1.9769261000000002,
+  "session_id": "23f0de6d-f928-4f10-a5a2-adaaaec739fc",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 256,
+    "ctx": [
+     186987,
+     191204,
+     195551,
+     196061,
+     200838,
+     202294,
+     206978,
+     208064,
+     208325
+    ],
+    "tools": [
+     {
+      "id": "toolu_01LJbmqtZL8ZLMC1pN37xCos",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/p1a/parcel-tracker && node -e \\\"console.log(typeof require('zlib').crc32, process.version)\\\"; (python3 -c \\\"import openpyxl;print('openpyxl',openpyxl.__version__)\\\" || python -c \\\"import openpyxl;print('openpyxl',openpyxl.__version__)\\\") 2>&1 | tail -1; sed -n 20,32p src/routes/shipments.ts\"}",
+      "input_chars": 354,
+      "result_chars": 756
+     },
+     {
+      "id": "toolu_01C3afstDDqoyYna4quiFH43",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/p1a/parcel-tracker && cat > src/lib/xlsx.ts <<'EOF'\\nimport { crc32, deflateRawSync } from 'node:zlib';\\n\\n/**\\n * Minimal .xlsx writer without dependencies: an .xlsx is a zip archive of a few XML parts.\\n * Supports one sheet of text cells (inline strings, so nothing is ever interpreted as a formula).\\n */\\n\\nexport const XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';\\n\\nexport type Cell = string | null | undefined;\\n\\ninterface ZipEntry {\\n  name: string;\\n  data: Buffer;\\n}\\n\\nfunction dosDateTime(date: Date): { time: number; date: number } {\\n  return {\\n    time: (date.getHours() << 11) | (date.getMinutes() << 5) | (date.getSeconds() >> 1),\\n    date: ((Math.max(date.getFullYear(), 1980) - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate(),\\n  };\\n}\\n\\n/** Builds a zip archive (deflate-compressed entries). */\\nexport function zip(entries: ZipEntry[], now: Date = new Date()): Buffer {\\n  const { time, date } = dosDateTime(now);\\n  const parts: Buffer[] = [];\\n  const central: Buffer[] = [];\\n  let offset = 0;\\n\\n  for (const entry of entries) {\\n    const name = Buffer.from(entry.name, 'utf8');\\n    const compressed = deflateRawSync(entry.data);\\n    const crc = crc32(entry.data);\\n\\n    const local = Buffer.alloc(30);\\n    local.writeUInt32LE(0x04034b50, 0);\\n    local.writeUInt16LE(20, 4); // version needed\\n    local.writeUInt16LE(0x0800, 6); // UTF-8 names\\n    local.writeUInt16LE(8, 8); // deflate\\n    local.writeUInt16LE(time, 10);\\n    local.writeUInt16LE(date, 12);\\n    local.writeUInt32LE(crc, 14);\\n    local.writeUInt32LE(compressed.length, 18);\\n    local.writeUInt32LE(entry.data.length, 22);\\n    local.writeUInt16LE(name.length, 26);\\n    local.writeUInt16LE(0, 28);\\n    parts.push(local, name, compressed);\\n\\n    const head = Buffer.alloc(46);\\n    head.writeUInt32LE(0x02014b50, 0);\\n    head.writeUInt16LE(20, 4); // version made by\\n    h",
+      "input_chars": 9273,
+      "result_chars": 86
+     },
+     {
+      "id": "toolu_01P8V7CAeHFE6FJkFws3P3Hi",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/p1a/parcel-tracker && ls src/lib; git status --short | head -20\"}",
+      "input_chars": 126,
+      "result_chars": 379
+     },
+     {
+      "id": "toolu_01PxzLHG1Lohsudx9XyrTWRm",
+      "name": "Write",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1a\\\\parcel-tracker\\\\src\\\\lib\\\\xlsx.ts\", \"content\": \"import { crc32, deflateRawSync } from 'node:zlib';\\n\\n/**\\n * Minimal .xlsx writer without dependencies: an .xlsx is a zip archive of a few XML parts.\\n * Supports one sheet of text cells (inline strings, so nothing is ever interpreted as a formula).\\n */\\n\\nexport const XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';\\n\\nexport type Cell = string | null | undefined;\\n\\ninterface ZipEntry {\\n  name: string;\\n  data: Buffer;\\n}\\n\\nfunction dosDateTime(date: Date): { time: number; date: number } {\\n  return {\\n    time: (date.getHours() << 11) | (date.getMinutes() << 5) | (date.getSeconds() >> 1),\\n    date: ((Math.max(date.getFullYear(), 1980) - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate(),\\n  };\\n}\\n\\n/** Builds a zip archive (deflate-compressed entries). */\\nexport function zip(entries: ZipEntry[], now: Date = new Date()): Buffer {\\n  const { time, date } = dosDateTime(now);\\n  const parts: Buffer[] = [];\\n  const central: Buffer[] = [];\\n  let offset = 0;\\n\\n  for (const entry of entries) {\\n    const name = Buffer.from(entry.name, 'utf8');\\n    const compressed = deflateRawSync(entry.data);\\n    const crc = crc32(entry.data);\\n\\n    const local = Buffer.alloc(30);\\n    local.writeUInt32LE(0x04034b50, 0);\\n    local.writeUInt16LE(20, 4); // version needed\\n    local.writeUInt16LE(0x0800, 6); // UTF-8 names\\n    local.writeUInt16LE(8, 8); // deflate\\n    local.writeUInt16LE(time, 10);\\n    local.writeUInt16LE(date, 12);\\n    local.writeUInt32LE(crc, 14);\\n    local.writeUInt32LE(compressed.length, 18);\\n    local.writeUInt32LE(entry.data.length, 22);\\n    local.writeUInt16LE(name.length, 26);\\n    local.writeUInt16LE(0, 28);\\n    parts.push(local, name, compressed);\\n\\n    const head = Buffer.alloc(46);\\n    head.writeUInt32LE(0x02014b50, 0);\\n    head.writeUInt16LE(20, 4); // version made by\\n",
+      "input_chars": 8094,
+      "result_chars": 175
+     },
+     {
+      "id": "toolu_01VSYwzs7x1xLL3rBQsGCCJP",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1a\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\", \"old_string\": \"import { validateShipmentInput } from '../lib/validate.ts';\", \"new_string\": \"import { validateShipmentInput } from '../lib/validate.ts';\\nimport { buildWorkbook, XLSX_CONTENT_TYPE } from '../lib/xlsx.ts';\"}",
+      "input_chars": 358,
+      "result_chars": 335
+     },
+     {
+      "id": "toolu_01RQxjcxG9dUuf2P21duYYfk",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1a\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\", \"old_string\": \"  router.get('/shipments/:id',\", \"new_string\": \"  // Registered before '/shipments/:id' so that \\\"export.xlsx\\\" is not taken for a shipment id.\\n  router.get('/shipments/export.xlsx', ({ res }) => {\\n    const rows = store\\n      .listShipments()\\n      .map((s) => [s.trackingNumber, s.carrier, s.status, s.recipient.city, calculateEta(s, store.eventsFor(s.id))]);\\n    const workbook = buildWorkbook('Shipments', ['Tracking number', 'Carrier', 'Status', 'Recipient city', 'ETA'], rows);\\n    res.writeHead(200, {\\n      'content-type': XLSX_CONTENT_TYPE,\\n      'content-disposition': 'attachment; filename=\\\"shipments.xlsx\\\"',\\n      'content-length': workbook.length,\\n    });\\n    res.end(workbook);\\n  });\\n\\n  router.get('/shipments/:id',\"}",
+      "input_chars": 899,
+      "result_chars": 127
+     },
+     {
+      "id": "toolu_019VGDAx2H7enMvutRCe3mEC",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1a\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\"}",
+      "input_chars": 114,
+      "result_chars": 2927
+     },
+     {
+      "id": "toolu_01TJGBuMgRQNGdghFRFmvsU3",
+      "name": "Write",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\p1a\\\\parcel-tracker\\\\test\\\\export.test.ts\", \"content\": \"import assert from 'node:assert/strict';\\nimport { crc32, inflateRawSync } from 'node:zlib';\\nimport { after, before, describe, it } from 'node:test';\\nimport { columnName, xmlEscape } from '../src/lib/xlsx.ts';\\nimport { api, startTestServer, validShipment, type TestServer } from './helpers.ts';\\n\\n/** Reads a zip archive via its central directory, verifying sizes and CRCs. */\\nfunction unzip(buf: Buffer): Map<string, Buffer> {\\n  const eocd = buf.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));\\n  assert.ok(eocd >= 0, 'end of central directory record');\\n  const count = buf.readUInt16LE(eocd + 10);\\n  let p = buf.readUInt32LE(eocd + 16);\\n  const files = new Map<string, Buffer>();\\n  for (let i = 0; i < count; i++) {\\n    assert.equal(buf.readUInt32LE(p), 0x02014b50, 'central directory header');\\n    const method = buf.readUInt16LE(p + 10);\\n    const crc = buf.readUInt32LE(p + 16);\\n    const compressedSize = buf.readUInt32LE(p + 20);\\n    const size = buf.readUInt32LE(p + 24);\\n    const nameLength = buf.readUInt16LE(p + 28);\\n    const extraLength = buf.readUInt16LE(p + 30);\\n    const commentLength = buf.readUInt16LE(p + 32);\\n    const localOffset = buf.readUInt32LE(p + 42);\\n    const name = buf.toString('utf8', p + 46, p + 46 + nameLength);\\n\\n    assert.equal(buf.readUInt32LE(localOffset), 0x04034b50, 'local file header');\\n    const dataStart = localOffset + 30 + buf.readUInt16LE(localOffset + 26) + buf.readUInt16LE(localOffset + 28);\\n    const raw = buf.subarray(dataStart, dataStart + compressedSize);\\n    assert.equal(method, 8);\\n    const data = inflateRawSync(raw);\\n    assert.equal(data.length, size, `${name} size`);\\n    assert.equal(crc32(data), crc, `${name} crc`);\\n    files.set(name, data);\\n    p += 46 + nameLength + extraLength + commentLength;\\n  }\\n  return files;\\n}\\n\\nconst unescapeXml = (s: string) => s.replace(/&",
+      "input_chars": 7940,
+      "result_chars": 179
+     },
+     {
+      "id": "toolu_015FHdJhw4wsL6HWHkNcMM3p",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/p1a/parcel-tracker && node --test --test-reporter=spec test/export.test.ts 2>&1 | tail -40\"}",
+      "input_chars": 153,
+      "result_chars": 832
+     },
+     {
+      "id": "toolu_01QJLnHgbvrJ355CpYXTD8jo",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/p1a/parcel-tracker && D=$(mktemp -d) && cat > \\\"$D/gen.ts\\\" <<'EOF'\\nimport { writeFileSync } from 'node:fs';\\nimport { buildWorkbook } from 'file:///C:/Users/adamo/Entwicklung/gemkeeper-bench/w/p1a/parcel-tracker/src/lib/xlsx.ts';\\nwriteFileSync(process.argv[2], buildWorkbook('Shipments', ['Tracking number','Carrier','Status','Recipient city','ETA'],\\n  [['RR123456785AT','ATP','created','Wien','2026-11-18'],['=1+1','DHL','delivered','St. Pölten & <Co>',null]]));\\nEOF\\nnode \\\"$D/gen.ts\\\" \\\"$D/out.xlsx\\\" && cat > \\\"$D/verify.py\\\" <<'EOF'\\nimport sys, zipfile, xml.etree.ElementTree as ET\\nz = zipfile.ZipFile(sys.argv[1])\\nprint(\\\"testzip:\\\", z.testzip())\\nfor n in z.namelist():\\n    ET.fromstring(z.read(n)); print(\\\"well-formed:\\\", n)\\nns = {\\\"m\\\": \\\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\\\"}\\nfor row in ET.fromstring(z.read(\\\"xl/worksheets/sheet1.xml\\\")).iter(\\\"{%s}row\\\" % ns[\\\"m\\\"]):\\n    print([ \\\"\\\".join(t.itertext()) for t in row.iter(\\\"{%s}c\\\" % ns[\\\"m\\\"]) ])\\nEOF\\npython \\\"$D/verify.py\\\" \\\"$D/out.xlsx\\\" 2>&1 || python3 \\\"$D/verify.py\\\" \\\"$D/out.xlsx\\\"; which soffice libreoffice 2>/dev/null; ls \\\"/c/Program Files/LibreOffice/program/soffice.exe\\\" 2>/dev/null\"}",
+      "input_chars": 1261,
+      "result_chars": 400
+     },
+     {
+      "id": "toolu_018qNBLivVDkfMybAcDzsE2h",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/p1a/parcel-tracker && npm test 2>&1 | grep -E \\\"✖|ℹ (tests|suites|pass|fail|skipped)\\\"; git status --short src/legacy package.json | wc -l\"}",
+      "input_chars": 201,
+      "result_chars": 55
+     }
+    ],
+    "result": {
+     "text": "`GET /shipments/export.xlsx` is implemented and returns a real .xlsx workbook. The suite passes (86 of 86, up from 76).\n\nI could not open the file in Excel or LibreOffice, because neither is installed here. Python's `zipfile` accepts the archive, its CRC check passes and every XML part parses. I'd still ask someone on the warehouse team to open a real export once.\n\n**What the endpoint does**\n- **Content:** It returns one sheet, \"Shipments\", with a bold header row and then one row per shipment. The columns are Tracking number, Carrier, Status, Recipient city and ETA. The ETA is `YYYY-MM-DD` and is left empty for delivered shipments. It exports all shipments, not just the first 500 like the list.\n- **Download:** The response has the xlsx content type and `Content-Disposition: attachment; filename=\"shipments.xlsx\"`.\n- **Privacy:** The workbook contains no recipient name, street or phone, only the city.\n\n**How it's built (no new dependency)**\n- **`src/lib/xlsx.ts` (new):** A small zip writer and workbook builder using only `node:zlib`. It writes the six XML parts Excel needs.\n- **Text cells:** All cells are inline text, so a value like `=1+1` stays text and is never evaluated as a formula. XML special characters are escaped and illegal control characters are removed.\n- **`src/routes/shipments.ts`:** The route is registered before `/shipments/:id`, because the router takes the first match and \"export.xlsx\" would otherwise be read as a shipment ID.\n\n**`test/export.test.ts` (new, 10 tests)** reads the downloaded bytes back with a zip reader that checks sizes and CRCs, and covers:\n- headers, valid zip and well-formed parts;\n- header row and one row per shipment, with the ETA matching `GET /shipments/:id`;\n- the delivered ETA left empty and a city like `St. Pölten & <Co>` escaped correctly;\n- the formula-looking tracking number `=1+1` kept as plain text;\n- no personal data in the file;\n- `GET /shipments/:id` still working (200 and 404);\n- an empty store producing a header-only sheet.\n\n**Choices to confirm**\n- **Header language:** The headers are in English, matching your wording. The German-only rule applies to error messages. I can switch them to German (Sendungsnummer, Transportdienst, …) if the warehouse team prefers.\n- **Scale:** The whole workbook is built in memory. That's fine for thousands of shipments, but at very large sizes it should be streamed or paginated.\n\nI changed nothing under `src/legacy/` and added no dependencies. Nothing is committed.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 12,
+     "duration_ms": 107369,
+     "total_cost_usd": 2.4119397,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 18,
+      "cache_creation_input_tokens": 23128,
+      "cache_read_input_tokens": 1773156,
+      "output_tokens": 16515,
+      "output_tokens_details": {
+       "thinking_tokens": 1798
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 23128,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 906,
+        "cache_read_input_tokens": 208062,
+        "cache_creation_input_tokens": 261,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 261
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 194,
+       "outputTokens": 69398,
+       "thinkingTokens": 11222,
+       "cacheReadInputTokens": 9413837,
+       "cacheCreationInputTokens": 194047,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 194047,
+       "webSearchRequests": 0,
+       "costUSD": 2.4119397,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    }
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 2.4119397,
+  "cost": 0.435014,
+  "wall_s": 111.7,
+  "exit_code": 0,
+  "ctx_first": 186987,
+  "ctx_last": 208325
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 3
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "src/lib/xlsx.ts",
+   "test/export.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   "src/routes/shipments.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/src/lib/xlsx.ts\n+++ b/src/lib/xlsx.ts\n@@ -0,0 +1,177 @@\n+import { crc32, deflateRawSync } from 'node:zlib';\n+\n+/**\n+ * Minimal .xlsx writer without dependencies: an .xlsx is a zip archive of a few XML parts.\n+ * Supports one sheet of text cells (inline strings, so nothing is ever interpreted as a formula).\n+ */\n+\n+export const XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';\n+\n+export type Cell = string | null | undefined;\n+\n+interface ZipEntry {\n+  name: string;\n+  data: Buffer;\n+}\n+\n+function dosDateTime(date: Date): { time: number; date: number } {\n+  return {\n+    time: (date.getHours() << 11) | (date.getMinutes() << 5) | (date.getSeconds() >> 1),\n+    date: ((Math.max(date.getFullYear(), 1980) - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate(),\n+  };\n+}\n+\n+/** Builds a zip archive (deflate-compressed entries). */\n+export function zip(entries: ZipEntry[], now: Date = new Date()): Buffer {\n+  const { time, date } = dosDateTime(now);\n+  const parts: Buffer[] = [];\n+  const central: Buffer[] = [];\n+  let offset = 0;\n+\n+  for (const entry of entries) {\n+    const name = Buffer.from(entry.name, 'utf8');\n+    const compressed = deflateRawSync(entry.data);\n+    const crc = crc32(entry.data);\n+\n+    const local = Buffer.alloc(30);\n+    local.writeUInt32LE(0x04034b50, 0);\n+    local.writeUInt16LE(20, 4); // version needed\n+    local.writeUInt16LE(0x0800, 6); // UTF-8 names\n+    local.writeUInt16LE(8, 8); // deflate\n+    local.writeUInt16LE(time, 10);\n+    local.writeUInt16LE(date, 12);\n+    local.writeUInt32LE(crc, 14);\n+    local.writeUInt32LE(compressed.length, 18);\n+    local.writeUInt32LE(entry.data.length, 22);\n+    local.writeUInt16LE(name.length, 26);\n+    local.writeUInt16LE(0, 28);\n+    parts.push(local, name, compressed);\n+\n+    const head = Buffer.alloc(46);\n+    head.writeUInt32LE(0x02014b50, 0);\n+    head.writeUInt16LE(20, 4); // version made by\n+    head.writeUInt16LE(20, 6); // version needed\n+    head.writeUInt16LE(0x0800, 8);\n+    head.writeUInt16LE(8, 10);\n+    head.writeUInt16LE(time, 12);\n+    head.writeUInt16LE(date, 14);\n+    head.writeUInt32LE(crc, 16);\n+    head.writeUInt32LE(compressed.length, 20);\n+    head.writeUInt32LE(entry.data.length, 24);\n+    head.writeUInt16LE(name.length, 28);\n+    head.writeUInt32LE(offset, 42);\n+    central.push(head, name);\n+\n+    offset += local.length + name.length + compressed.length;\n+  }\n+\n+  const centralSize = central.reduce((n, b) => n + b.length, 0);\n+  const end = Buffer.alloc(22);\n+  end.writeUInt32LE(0x06054b50, 0);\n+  end.writeUInt16LE(entries.length, 8);\n+  end.writeUInt16LE(entries.length, 10);\n+  end.writeUInt32LE(centralSize, 12);\n+  end.writeUInt32LE(offset, 16);\n+  return Buffer.concat([...parts, ...central, end]);\n+}\n+\n+/** Escapes text for XML and drops characters that are not allowed in XML 1.0. */\n+export function xmlEscape(text: string): string {\n+  return text\n+    .replace(/[^\\u0009\\u000A\\u000D -퟿-�\\u{10000}-\\u{10FFFF}]/gu, '')\n+    .replace(/&/g, '&amp;')\n+    .replace(/</g, '&lt;')\n+    .replace(/>/g, '&gt;')\n+    .replace(/\"/g, '&quot;');\n+}\n+\n+/** 0 -> A, 25 -> Z, 26 -> AA */\n+export function columnName(index: number): string {\n+  let name = '';\n+  for (let n = index + 1; n > 0; n = Math.floor((n - 1) / 26)) name = String.fromCharCode(65 + ((n - 1) % 26)) + name;\n+  return name;\n+}\n+\n+const XML_HEADER = '<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\\n';\n+\n+/** Builds a workbook with a single sheet. The first row is the header and is bold. */\n+export function buildWorkbook(sheetName: string, header: string[], rows: Cell[][]): Buffer {\n+  const cell = (value: Cell, row: number, col: number, style = 0): string => {\n+    if (value === null || value === undefined || value === '') return '';\n+    const ref = `${columnName(col)}${row}`;\n+    return `<c r=\"${ref}\" t=\"inlineStr\"${style ? ` s=\"${style}\"` : ''}><is><t xml:space=\"preserve\">${xmlEscape(value)}</t></is></c>`;\n+  };\n+  const line = (values: Cell[], row: number, style = 0): string =>\n+    `<row r=\"${row}\">${values.map((v, c) => cell(v, row, c, style)).join('')}</row>`;\n+\n+  const widths = header.map((h, c) => {\n+    const longest = rows.reduce((n, r) => Math.max(n, (r[c] ?? '').length), h.length);\n+    return `<col min=\"${c + 1}\" max=\"${c + 1}\" width=\"${Math.min(Math.max(longest + 2, 10), 60)}\" customWidth=\"1\"/>`;\n+  });\n+\n+  const sheet =\n+    XML_HEADER +\n+    '<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">' +\n+    `<cols>${widths.join('')}</cols>` +\n+    `<sheetData>${[line(header, 1, 1), ...rows.map((r, i) => line(r, i + 2))].join('')}</sheetData>` +\n+    '</worksheet>';\n+\n+  const files: ZipEntry[] = [\n+    {\n+      name: '[Content_Types].xml',\n+      data: Buffer.from(\n+        XML_HEADER +\n+          '<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">' +\n+          '<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>' +\n+          '<Default Extension=\"xml\" ContentType=\"application/xml\"/>' +\n+          '<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>' +\n+          '<Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>' +\n+          '<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/>' +\n+          '</Types>',\n+      ),\n+    },\n+    {\n+      name: '_rels/.rels',\n+      data: Buffer.from(\n+        XML_HEADER +\n+          '<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">' +\n+          '<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>' +\n+          '</Relationships>',\n+      ),\n+    },\n+    {\n+      name: 'xl/workbook.xml',\n+      data: Buffer.from(\n+        XML_HEADER +\n+          '<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">' +\n+          `<sheets><sheet name=\"${xmlEscape(sheetName)}\" sheetId=\"1\" r:id=\"rId1\"/></sheets>` +\n+          '</workbook>',\n+      ),\n+    },\n+    {\n+      name: 'xl/_rels/workbook.xml.rels',\n+      data: Buffer.from(\n+        XML_HEADER +\n+          '<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">' +\n+          '<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/>' +\n+          '<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>' +\n+          '</Relationships>',\n+      ),\n+    },\n+    {\n+      name: 'xl/styles.xml',\n+      data: Buffer.from(\n+        XML_HEADER +\n+          '<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">' +\n+          '<fonts count=\"2\"><font><sz val=\"11\"/><name val=\"Calibri\"/></font><font><b/><sz val=\"11\"/><name val=\"Calibri\"/></font></fonts>' +\n+          '<fills count=\"2\"><fill><patternFill patternType=\"none\"/></fill><fill><patternFill patternType=\"gray125\"/></fill></fills>' +\n+          '<borders count=\"1\"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +\n+          '<cellStyleXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\"/></cellStyleXfs>' +\n+          '<cellXfs count=\"2\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"/><xf numFmtId=\"0\" fontId=\"1\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"1\"/></cellXfs>' +\n+          '</styleSheet>',\n+      ),\n+    },\n+    { name: 'xl/worksheets/sheet1.xml', data: Buffer.from(sheet) },\n+  ];\n+  return zip(files);\n+}\n--- a/test/export.test.ts\n+++ b/test/export.test.ts\n@@ -0,0 +1,179 @@\n+import assert from 'node:assert/strict';\n+import { crc32, inflateRawSync } from 'node:zlib';\n+import { after, before, describe, it } from 'node:test';\n+import { columnName, xmlEscape } from '../src/lib/xlsx.ts';\n+import { api, startTestServer, validShipment, type TestServer } from './helpers.ts';\n+\n+/** Reads a zip archive via its central directory, verifying sizes and CRCs. */\n+function unzip(buf: Buffer): Map<string, Buffer> {\n+  const eocd = buf.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));\n+  assert.ok(eocd >= 0, 'end of central directory record');\n+  const count = buf.readUInt16LE(eocd + 10);\n+  let p = buf.readUInt32LE(eocd + 16);\n+  const files = new Map<string, Buffer>();\n+  for (let i = 0; i < count; i++) {\n+    assert.equal(buf.readUInt32LE(p), 0x02014b50, 'central directory header');\n+    const method = buf.readUInt16LE(p + 10);\n+    const crc = buf.readUInt32LE(p + 16);\n+    const compressedSize = buf.readUInt32LE(p + 20);\n+    const size = buf.readUInt32LE(p + 24);\n+    const nameLength = buf.readUInt16LE(p + 28);\n+    const extraLength = buf.readUInt16LE(p + 30);\n+    const commentLength = buf.readUInt16LE(p + 32);\n+    const localOffset = buf.readUInt32LE(p + 42);\n+    const name = buf.toString('utf8', p + 46, p + 46 + nameLength);\n+\n+    assert.equal(buf.readUInt32LE(localOffset), 0x04034b50, 'local file header');\n+    const dataStart = localOffset + 30 + buf.readUInt16LE(localOffset + 26) + buf.readUInt16LE(localOffset + 28);\n+    const raw = buf.subarray(dataStart, dataStart + compressedSize);\n+    assert.equal(method, 8);\n+    const data = inflateRawSync(raw);\n+    assert.equal(data.length, size, `${name} size`);\n+    assert.equal(crc32(data), crc, `${name} crc`);\n+    files.set(name, data);\n+    p += 46 + nameLength + extraLength + commentLength;\n+  }\n+  return files;\n+}\n+\n+const unescapeXml = (s: string) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '\"').replace(/&amp;/g, '&');\n+\n+/** Returns the sheet as rows of { column letter -> text }. */\n+function readSheet(xml: string): Array<Record<string, string>> {\n+  const rows: Array<Record<string, string>> = [];\n+  for (const row of xml.matchAll(/<row r=\"(\\d+)\">(.*?)<\\/row>/gs)) {\n+    const cells: Record<string, string> = {};\n+    for (const c of row[2].matchAll(/<c r=\"([A-Z]+)\\d+\" t=\"inlineStr\"[^>]*><is><t[^>]*>(.*?)<\\/t><\\/is><\\/c>/gs)) {\n+      cells[c[1]] = unescapeXml(c[2]);\n+    }\n+    rows[Number(row[1]) - 1] = cells;\n+  }\n+  return rows;\n+}\n+\n+describe('GET /shipments/export.xlsx', () => {\n+  let srv: TestServer;\n+  let res: Response;\n+  let body: Buffer;\n+  let ids: { atp: string; dhl: string };\n+\n+  before(async () => {\n+    srv = await startTestServer();\n+    const atp = await api(srv.url, 'POST', '/shipments', validShipment());\n+    const dhl = await api(\n+      srv.url,\n+      'POST',\n+      '/shipments',\n+      validShipment({\n+        tracking_number: '=1+1',\n+        carrier: 'DHL',\n+        recipient: { name: 'N', street: 'S', zip: '3100', city: 'St. Pölten & <Co>', country: 'AT' },\n+      }),\n+    );\n+    ids = { atp: atp.body.id, dhl: dhl.body.id };\n+    await api(srv.url, 'POST', `/shipments/${ids.dhl}/events`, { type: 'delivered' });\n+    res = await fetch(`${srv.url}/shipments/export.xlsx`);\n+    body = Buffer.from(await res.arrayBuffer());\n+  });\n+\n+  after(async () => {\n+    await srv.close();\n+  });\n+\n+  it('answers with an xlsx download', () => {\n+    assert.equal(res.status, 200);\n+    assert.equal(res.headers.get('content-type'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');\n+    assert.match(res.headers.get('content-disposition') ?? '', /^attachment; filename=\"shipments\\.xlsx\"$/);\n+    assert.equal(Number(res.headers.get('content-length')), body.length);\n+  });\n+\n+  it('is a valid zip with the parts of a minimal workbook', () => {\n+    assert.equal(body.subarray(0, 4).toString('hex'), '504b0304'); // \"PK\\3\\4\"\n+    const files = unzip(body);\n+    assert.deepEqual([...files.keys()].sort(), [\n+      '[Content_Types].xml',\n+      '_rels/.rels',\n+      'xl/_rels/workbook.xml.rels',\n+      'xl/styles.xml',\n+      'xl/workbook.xml',\n+      'xl/worksheets/sheet1.xml',\n+    ]);\n+    for (const [name, data] of files) {\n+      const text = data.toString('utf8');\n+      assert.ok(text.startsWith('<?xml'), name);\n+      // well-formed enough: balanced root element\n+      const root = /<([A-Za-z]+)[ >]/.exec(text.replace(/<\\?xml.*?\\?>/s, ''))![1];\n+      assert.ok(text.trimEnd().endsWith(`</${root}>`), `${name} closes </${root}>`);\n+    }\n+    assert.match(files.get('xl/workbook.xml')!.toString(), /<sheet name=\"Shipments\"/);\n+  });\n+\n+  it('has a header row and one row per shipment', () => {\n+    const sheet = readSheet(unzip(body).get('xl/worksheets/sheet1.xml')!.toString('utf8'));\n+    assert.deepEqual(sheet[0], { A: 'Tracking number', B: 'Carrier', C: 'Status', D: 'Recipient city', E: 'ETA' });\n+    assert.equal(sheet.length, 3);\n+    const byTracking = Object.fromEntries(sheet.slice(1).map((r) => [r.A, r]));\n+\n+    const atp = byTracking['RR123456785AT'];\n+    assert.equal(atp.B, 'ATP');\n+    assert.equal(atp.C, 'created');\n+    assert.equal(atp.D, 'Wien');\n+    assert.match(atp.E, /^\\d{4}-\\d{2}-\\d{2}$/);\n+  });\n+\n+  it('matches the ETA of the JSON API and leaves ETA empty once delivered', async () => {\n+    const sheet = readSheet(unzip(body).get('xl/worksheets/sheet1.xml')!.toString('utf8'));\n+    const rows = Object.fromEntries(sheet.slice(1).map((r) => [r.A, r]));\n+    const single = await api(srv.url, 'GET', `/shipments/${ids.atp}`);\n+    assert.equal(rows['RR123456785AT'].E, single.body.eta);\n+    assert.equal(rows['=1+1'].C, 'delivered');\n+    assert.equal(rows['=1+1'].E, undefined);\n+  });\n+\n+  it('escapes XML and stores formula-looking text as plain text', () => {\n+    const sheetXml = unzip(body).get('xl/worksheets/sheet1.xml')!.toString('utf8');\n+    assert.ok(sheetXml.includes('St. Pölten &amp; &lt;Co&gt;'));\n+    assert.ok(!sheetXml.includes('<Co>'));\n+    assert.ok(!sheetXml.includes('<f>'), 'no formula elements');\n+    const sheet = readSheet(sheetXml);\n+    assert.equal(sheet.find((r) => r.A === '=1+1')!.D, 'St. Pölten & <Co>');\n+  });\n+\n+  it('contains no recipient name, street or phone', () => {\n+    const all = [...unzip(body).values()].map((b) => b.toString('utf8')).join('');\n+    assert.ok(!all.includes('Maria'), 'name');\n+    assert.ok(!all.includes('Landstra'), 'street');\n+    assert.ok(!all.includes('+43'), 'phone');\n+  });\n+\n+  it('does not shadow GET /shipments/:id', async () => {\n+    const ok = await api(srv.url, 'GET', `/shipments/${ids.atp}`);\n+    assert.equal(ok.status, 200);\n+    const missing = await api(srv.url, 'GET', '/shipments/shp_nope');\n+    assert.equal(missing.status, 404);\n+    assert.equal(missing.body.error.code, 'SHIPMENT_NOT_FOUND');\n+  });\n+\n+  it('exports an empty store as a header-only sheet', async () => {\n+    const empty = await startTestServer();\n+    try {\n+      const r = await fetch(`${empty.url}/shipments/export.xlsx`);\n+      const sheet = readSheet(unzip(Buffer.from(await r.arrayBuffer())).get('xl/worksheets/sheet1.xml')!.toString('utf8'));\n+      assert.equal(r.status, 200);\n+      assert.equal(sheet.length, 1);\n+    } finally {\n+      await empty.close();\n+    }\n+  });\n+});\n+\n+describe('xlsx helpers', () => {\n+  it('names columns like a spreadsheet', () => {\n+    assert.deepEqual([0, 1, 25, 26, 27, 51, 52, 701, 702].map(columnName), ['A', 'B', 'Z', 'AA', 'AB', 'AZ', 'BA', 'ZZ', 'AAA']);\n+  });\n+\n+  it('escapes XML and strips characters that are illegal in XML 1.0', () => {\n+    assert.equal(xmlEscape('a & b < c > \"d\"'), 'a &amp; b &lt; c &gt; &quot;d&quot;');\n+    assert.equal(xmlEscape('x\\u0000y\\u0008z\\ttab'), 'xyz\\ttab');\n+  });\n+});\n--- a/src/routes/shipments.ts\n+++ b/src/routes/shipments.ts\n@@ -1,5 +1,6 @@\n import { HttpError, readJson, sendJson } from '../lib/http.ts';\n import { validateShipmentInput } from '../lib/validate.ts';\n+import { buildWorkbook, XLSX_CONTENT_TYPE } from '../lib/xlsx.ts';\n import type { Router } from '../router.ts';\n import { calculateEta } from '../services/eta.ts';\n import type { Store } from '../store.ts';\n@@ -39,6 +40,20 @@\n     sendJson(res, 200, { items, count: items.length });\n   });\n \n+  // Registered before '/shipments/:id' so that \"export.xlsx\" is not taken for a shipment id.\n+  router.get('/shipments/export.xlsx', ({ res }) => {\n+    const rows = store\n+      .listShipments()\n+      .map((s) => [s.trackingNumber, s.carrier, s.status, s.recipient.city, calculateEta(s, store.eventsFor(s.id))]);\n+    const workbook = buildWorkbook('Shipments', ['Tracking number', 'Carrier', 'Status', 'Recipient city', 'ETA'], rows);\n+    res.writeHead(200, {\n+      'content-type': XLSX_CONTENT_TYPE,\n+      'content-disposition': 'attachment; filename=\"shipments.xlsx\"',\n+      'content-length': workbook.length,\n+    });\n+    res.end(workbook);\n+  });\n+\n   router.get('/shipments/:id', ({ res, params }) => {\n     const shipment = store.getShipment(params.id);\n     if (!shipment) throw new HttpError(404, 'SHIPMENT_NOT_FOUND', 'Shipment not found');",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n...\n"
+ },
+ "final_text": "`GET /shipments/export.xlsx` is implemented and returns a real .xlsx workbook. The suite passes (86 of 86, up from 76).\n\nI could not open the file in Excel or LibreOffice, because neither is installed here. Python's `zipfile` accepts the archive, its CRC check passes and every XML part parses. I'd still ask someone on the warehouse team to open a real export once.\n\n**What the endpoint does**\n- **Content:** It returns one sheet, \"Shipments\", with a bold header row and then one row per shipment. The columns are Tracking number, Carrier, Status, Recipient city and ETA. The ETA is `YYYY-MM-DD` and is left empty for delivered shipments. It exports all shipments, not just the first 500 like the list.\n- **Download:** The response has the xlsx content type and `Content-Disposition: attachment; filename=\"shipments.xlsx\"`.\n- **Privacy:** The workbook contains no recipient name, street or phone, only the city.\n\n**How it's built (no new dependency)**\n- **`src/lib/xlsx.ts` (new):** A small zip writer and workbook builder using only `node:zlib`. It writes the six XML parts Excel needs.\n- **Text cells:** All cells are inline text, so a value like `=1+1` stays text and is never evaluated as a formula. XML special characters are escaped and illegal control characters are removed.\n- **`src/routes/shipments.ts`:** The route is registered before `/shipments/:id`, because the router takes the first match and \"export.xlsx\" would otherwise be read as a shipment ID.\n\n**`test/export.test.ts` (new, 10 tests)** reads the downloaded bytes back with a zip reader that checks sizes and CRCs, and covers:\n- headers, valid zip and well-formed parts;\n- header row and one row per shipment, with the ETA matching `GET /shipments/:id`;\n- the delivered ETA left empty and a city like `St. Pölten & <Co>` escaped correctly;\n- the formula-looking tracking number `=1+1` kept as plain text;\n- no personal data in the file;\n- `GET /shipments/:id` still working (200 and 404);\n- an empty store producing a header-only sheet.\n\n**Choices to confirm**\n- **Header language:** The headers are in English, matching your wording. The German-only rule applies to error messages. I can switch them to German (Sendungsnummer, Transportdienst, …) if the warehouse team prefers.\n- **Scale:** The whole workbook is built in memory. That's fine for thousands of shipments, but at very large sizes it should be streamed or paginated.\n\nI changed nothing under `src/legacy/` and added no dependencies. Nothing is committed."
+}

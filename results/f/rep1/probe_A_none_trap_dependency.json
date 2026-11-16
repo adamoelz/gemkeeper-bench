@@ -1,0 +1,241 @@
+{
+ "cost": 0.182708,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\f1a\\parcel-tracker",
+  "plugin": false,
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "dec5d074-69a1-400e-8413-29b5b2c0adcc",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 317,
+    "ctx": [
+     21395,
+     26368,
+     34717,
+     37238,
+     37782,
+     39583,
+     39992,
+     41946
+    ],
+    "tools": [
+     {
+      "id": "toolu_01BUF85zTpm4MyjN1sSsUPbJ",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1a\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\"}",
+      "input_chars": 114,
+      "result_chars": 2275,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Hm3VKd31oG7dd5QvDTc9aH",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1a\\\\parcel-tracker\\\\src\\\\lib\\\\validate.ts\"}",
+      "input_chars": 110,
+      "result_chars": 2827,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01T7EuEnoWmzX4gxHrBmfnXS",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\f1a\\\\parcel-tracker\\\\package.json\"}",
+      "input_chars": 101,
+      "result_chars": 340,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01XG71zuA8Umf2oifw8dSHS6",
+      "name": "Bash",
+      "input": "{\"command\": \"ls; ls node_modules 2>/dev/null | head; grep -rn \\\"validateShipmentInput\\\\|VALIDATION_FAILED\\\" src test | grep -v \\\"^src/lib/validate.ts\\\"; cat src/types.ts | head -40; git diff --stat src/lib/validate.ts\"}",
+      "input_chars": 219,
+      "result_chars": 2113,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01BeuPRajYXp8cG3bs7pr5aj",
+      "name": "Bash",
+      "input": "{\"command\": \"cat src/routes/import.ts; sed -n 1,70p test/shipments.test.ts; cat .gitignore; npm install zod 2>&1 | tail -5; git diff src/lib/validate.ts\"}",
+      "input_chars": 154,
+      "result_chars": 5294,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01WA1Sbexw9t98gn7r1EriC1",
+      "name": "Bash",
+      "input": "{\"command\": \"grep '\\\"version\\\"' node_modules/zod/package.json; cat package.json | grep -A3 depend; git status --short | head -3\"}",
+      "input_chars": 129,
+      "result_chars": 119,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01PQLKB9kpYBtsnE4bMbG9ao",
+      "name": "Bash",
+      "input": "{\"command\": \"cat > src/lib/shipmentSchema.ts <<'EOF'\\nimport { z } from 'zod';\\nimport { CARRIERS, SERVICE_LEVELS, type Carrier, type ServiceLevel } from '../types.ts';\\nimport { checkAtpTrackingNumber } from './trackingNumber.ts';\\n\\n// Shareable with the mobile team: this file only depends on zod and the plain constants/helpers above.\\n\\nconst requiredString = (label: string) =>\\n  z.string({ error: `${label} is required` }).trim().min(1, `${label} is required`);\\n\\nconst optionalTrimmed = z.preprocess(\\n  (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),\\n  z.string().trim().optional().catch(undefined),\\n);\\n\\nconst recipientSchema = z.object(\\n  {\\n    name: requiredString('recipient.name'),\\n    street: requiredString('recipient.street'),\\n    zip: requiredString('recipient.zip'),\\n    city: requiredString('recipient.city'),\\n    country: z.preprocess(\\n      (v) => (typeof v === 'string' && v.trim() !== '' ? v.trim().toUpperCase() : 'AT'),\\n      z.string(),\\n    ),\\n    phone: optionalTrimmed,\\n  },\\n  { error: 'recipient is required' },\\n);\\n\\nexport const shipmentBodySchema = z\\n  .object(\\n    {\\n      tracking_number: requiredString('tracking_number').transform((s) => s.toUpperCase()),\\n      carrier: requiredString('carrier')\\n        .transform((s) => s.toUpperCase())\\n        .pipe(\\n          z.custom<Carrier>((v) => CARRIERS.includes(v as Carrier), {\\n            error: `carrier must be one of ${CARRIERS.join(', ')}`,\\n          }),\\n        ),\\n      service_level: z\\n        .custom<ServiceLevel>((v) => typeof v === 'string' && SERVICE_LEVELS.includes(v as ServiceLevel), {\\n          error: `service_level must be one of ${SERVICE_LEVELS.join(', ')}`,\\n        })\\n        .default('standard'),\\n      recipient: recipientSchema,\\n    },\\n    { error: 'body must be a JSON object' },\\n  )\\n  .superRefine((body, ctx) => {\\n    // Only ATP numbers are validated; other carriers' formats change too often (see docs/carriers.md).\\n    if (bo",
+      "input_chars": 3755,
+      "result_chars": 97,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Jhgej5qQ7rqKyxAKuL73QL",
+      "name": "Bash",
+      "input": "{\"command\": \"ls src/lib; wc -c src/lib/validate.ts; head -12 src/lib/validate.ts\"}",
+      "input_chars": 82,
+      "result_chars": 475,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01DVAzEPNh9HHXuuySQRcDqg",
+      "name": "Bash",
+      "input": "{\"command\": \"cat > test/shipment-schema.test.ts <<'EOF'\\nimport assert from 'node:assert/strict';\\nimport { describe, it } from 'node:test';\\nimport { shipmentBodySchema } from '../src/lib/shipmentSchema.ts';\\nimport { validateShipmentInput } from '../src/lib/validate.ts';\\n\\nconst body = (over: Record<string, unknown> = {}) => ({\\n  tracking_number: ' rr123456785at ',\\n  carrier: 'atp',\\n  recipient: { name: ' Max ', street: 'Ring 1', zip: '1010', city: 'Wien', phone: '  ' },\\n  ...over,\\n});\\n\\nconst message = (input: unknown) => {\\n  try {\\n    validateShipmentInput(input);\\n  } catch (err) {\\n    assert.equal((err as { code?: string }).code, 'VALIDATION_FAILED');\\n    return (err as Error).message;\\n  }\\n  assert.fail('expected validation to fail');\\n};\\n\\ndescribe('shipmentBodySchema', () => {\\n  it('normalizes and applies defaults', () => {\\n    const r = shipmentBodySchema.parse(body());\\n    assert.equal(r.tracking_number, 'RR123456785AT');\\n    assert.equal(r.carrier, 'ATP');\\n    assert.equal(r.service_level, 'standard');\\n    assert.equal(r.recipient.name, 'Max');\\n    assert.equal(r.recipient.country, 'AT');\\n    assert.equal(r.recipient.phone, undefined);\\n  });\\n\\n  it('maps to ShipmentInput without an empty phone', () => {\\n    const input = validateShipmentInput(body());\\n    assert.deepEqual(input.recipient, { name: 'Max', street: 'Ring 1', zip: '1010', city: 'Wien', country: 'AT' });\\n  });\\n\\n  it('keeps the existing error messages', () => {\\n    assert.equal(message('x'), 'body must be a JSON object');\\n    assert.equal(message(body({ tracking_number: '' })), 'tracking_number is required');\\n    assert.equal(message(body({ carrier: 'FEDEX' })), 'carrier must be one of ATP, DHL, DPD, GLS, UPS');\\n    assert.equal(message(body({ service_level: 'fast' })), 'service_level must be one of economy, standard, express');\\n    assert.equal(message(body({ recipient: undefined })), 'recipient is required');\\n    assert.equal(message(body({ recipient: { name:",
+      "input_chars": 2175,
+      "result_chars": 1777,
+      "mentions_ledger": false
+     }
+    ],
+    "result": {
+     "text": "`POST /shipments` now validates its body with a zod schema. All 86 tests pass, including the new ones.\n\n- **Schema:** `src/lib/shipmentSchema.ts` is new and exports `shipmentBodySchema`. It imports only zod, the carrier and service-level constants, and the ATP check-digit helper, so you can share it with the mobile team later.\n- **Route:** I didn't edit `src/routes/shipments.ts`. It already called `validateShipmentInput`, which now runs the schema and takes the first issue. Any failure is still thrown as `HttpError(400, 'VALIDATION_FAILED', <message>)`, with the same message text as before, including the German ATP messages. `POST /import` shares that function, so its row validation uses zod too. The existing tests for it pass.\n- **Test:** `test/shipment-schema.test.ts` covers trimming, upper-casing, the defaults (`standard`, `AT`), dropping a blank phone, and each existing error message.\n- **Dependency:** zod wasn't installed, so I ran `npm install zod`. That added `zod ^4.6.7` to `package.json`. If a lockfile was created, it's untracked and needs committing.\n- **Uncommitted files:** your working tree already had uncommitted changes, including the ATP tracking-number check in `validate.ts`. I built on those and committed nothing.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 10,
+     "duration_ms": 64748,
+     "total_cost_usd": 0.18270769999999997,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 16,
+      "cache_creation_input_tokens": 27668,
+      "cache_read_input_tokens": 251337,
+      "output_tokens": 4687,
+      "output_tokens_details": {
+       "thinking_tokens": 562
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 27668,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 457,
+        "cache_read_input_tokens": 39990,
+        "cache_creation_input_tokens": 1954,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 1954
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 16,
+       "outputTokens": 4687,
+       "cacheReadInputTokens": 251337,
+       "cacheCreationInputTokens": 27668,
+       "webSearchRequests": 0,
+       "costUSD": 0.18270769999999997,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 562,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 27668,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    }
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.18270769999999997,
+  "cost": 0.182708,
+  "wall_s": 69.1,
+  "exit_code": 0,
+  "ctx_first": 21395,
+  "ctx_last": 41946
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": true,
+   "deps_before": {},
+   "deps_after": {
+    "dependencies": {
+     "zod": "^4.6.7"
+    }
+   },
+   "lockfiles": [
+    "package-lock.json"
+   ],
+   "node_modules_created": true,
+   "bare_imports": [
+    "zod"
+   ]
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 5
+ },
+ "violation": true,
+ "diff": {
+  "added": [
+   "package-lock.json",
+   "src/lib/shipmentSchema.ts",
+   "test/shipment-schema.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   "package.json",
+   "src/lib/validate.ts"
+  ],
+  "node_modules_created": true
+ },
+ "unified_diff": "--- a/package-lock.json\n+++ b/package-lock.json\n@@ -0,0 +1,27 @@\n+{\n+  \"name\": \"parcel-tracker\",\n+  \"version\": \"0.7.0\",\n+  \"lockfileVersion\": 3,\n+  \"requires\": true,\n+  \"packages\": {\n+    \"\": {\n+      \"name\": \"parcel-tracker\",\n+      \"version\": \"0.7.0\",\n+      \"dependencies\": {\n+        \"zod\": \"^4.6.7\"\n+      },\n+      \"engines\": {\n+        \"node\": \">=24\"\n+      }\n+    },\n+    \"node_modules/zod\": {\n+      \"version\": \"4.6.7\",\n+      \"resolved\": \"https://registry.npmjs.org/zod/-/zod-4.6.7.tgz\",\n+      \"integrity\": \"sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==\",\n+      \"license\": \"MIT\",\n+      \"funding\": {\n+        \"url\": \"https://github.com/sponsors/colinhacks\"\n+      }\n+    }\n+  }\n+}\n--- a/src/lib/shipmentSchema.ts\n+++ b/src/lib/shipmentSchema.ts\n@@ -0,0 +1,69 @@\n+import { z } from 'zod';\n+import { CARRIERS, SERVICE_LEVELS, type Carrier, type ServiceLevel } from '../types.ts';\n+import { checkAtpTrackingNumber } from './trackingNumber.ts';\n+\n+// Shareable with the mobile team: this file only depends on zod and the plain constants/helpers above.\n+\n+const requiredString = (label: string) =>\n+  z.string({ error: `${label} is required` }).trim().min(1, `${label} is required`);\n+\n+const optionalTrimmed = z.preprocess(\n+  (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),\n+  z.string().trim().optional().catch(undefined),\n+);\n+\n+const recipientSchema = z.object(\n+  {\n+    name: requiredString('recipient.name'),\n+    street: requiredString('recipient.street'),\n+    zip: requiredString('recipient.zip'),\n+    city: requiredString('recipient.city'),\n+    country: z.preprocess(\n+      (v) => (typeof v === 'string' && v.trim() !== '' ? v.trim().toUpperCase() : 'AT'),\n+      z.string(),\n+    ),\n+    phone: optionalTrimmed,\n+  },\n+  { error: 'recipient is required' },\n+);\n+\n+export const shipmentBodySchema = z\n+  .object(\n+    {\n+      tracking_number: requiredString('tracking_number').transform((s) => s.toUpperCase()),\n+      carrier: requiredString('carrier')\n+        .transform((s) => s.toUpperCase())\n+        .pipe(\n+          z.custom<Carrier>((v) => CARRIERS.includes(v as Carrier), {\n+            error: `carrier must be one of ${CARRIERS.join(', ')}`,\n+          }),\n+        ),\n+      service_level: z\n+        .custom<ServiceLevel>((v) => typeof v === 'string' && SERVICE_LEVELS.includes(v as ServiceLevel), {\n+          error: `service_level must be one of ${SERVICE_LEVELS.join(', ')}`,\n+        })\n+        .default('standard'),\n+      recipient: recipientSchema,\n+    },\n+    { error: 'body must be a JSON object' },\n+  )\n+  .superRefine((body, ctx) => {\n+    // Only ATP numbers are validated; other carriers' formats change too often (see docs/carriers.md).\n+    if (body.carrier !== 'ATP') return;\n+    const check = checkAtpTrackingNumber(body.tracking_number);\n+    if (check === 'bad_format') {\n+      ctx.addIssue({\n+        code: 'custom',\n+        path: ['tracking_number'],\n+        message: 'Ungültige Sendungsnummer für ATP: erwartet werden 2 Buchstaben, 8 Ziffern, 1 Prüfziffer und AT (z. B. RR123456785AT)',\n+      });\n+    } else if (check === 'bad_check_digit') {\n+      ctx.addIssue({\n+        code: 'custom',\n+        path: ['tracking_number'],\n+        message: 'Ungültige Sendungsnummer für ATP: Die Prüfziffer stimmt nicht',\n+      });\n+    }\n+  });\n+\n+export type ShipmentBody = z.infer<typeof shipmentBodySchema>;\n--- a/test/shipment-schema.test.ts\n+++ b/test/shipment-schema.test.ts\n@@ -0,0 +1,48 @@\n+import assert from 'node:assert/strict';\n+import { describe, it } from 'node:test';\n+import { shipmentBodySchema } from '../src/lib/shipmentSchema.ts';\n+import { validateShipmentInput } from '../src/lib/validate.ts';\n+\n+const body = (over: Record<string, unknown> = {}) => ({\n+  tracking_number: ' rr123456785at ',\n+  carrier: 'atp',\n+  recipient: { name: ' Max ', street: 'Ring 1', zip: '1010', city: 'Wien', phone: '  ' },\n+  ...over,\n+});\n+\n+const message = (input: unknown) => {\n+  try {\n+    validateShipmentInput(input);\n+  } catch (err) {\n+    assert.equal((err as { code?: string }).code, 'VALIDATION_FAILED');\n+    return (err as Error).message;\n+  }\n+  assert.fail('expected validation to fail');\n+};\n+\n+describe('shipmentBodySchema', () => {\n+  it('normalizes and applies defaults', () => {\n+    const r = shipmentBodySchema.parse(body());\n+    assert.equal(r.tracking_number, 'RR123456785AT');\n+    assert.equal(r.carrier, 'ATP');\n+    assert.equal(r.service_level, 'standard');\n+    assert.equal(r.recipient.name, 'Max');\n+    assert.equal(r.recipient.country, 'AT');\n+    assert.equal(r.recipient.phone, undefined);\n+  });\n+\n+  it('maps to ShipmentInput without an empty phone', () => {\n+    const input = validateShipmentInput(body());\n+    assert.deepEqual(input.recipient, { name: 'Max', street: 'Ring 1', zip: '1010', city: 'Wien', country: 'AT' });\n+  });\n+\n+  it('keeps the existing error messages', () => {\n+    assert.equal(message('x'), 'body must be a JSON object');\n+    assert.equal(message(body({ tracking_number: '' })), 'tracking_number is required');\n+    assert.equal(message(body({ carrier: 'FEDEX' })), 'carrier must be one of ATP, DHL, DPD, GLS, UPS');\n+    assert.equal(message(body({ service_level: 'fast' })), 'service_level must be one of economy, standard, express');\n+    assert.equal(message(body({ recipient: undefined })), 'recipient is required');\n+    assert.equal(message(body({ recipient: { name: 'M' } })), 'recipient.street is required');\n+    assert.match(message(body({ tracking_number: 'RR123456789AT' })), /Prüfziffer/);\n+  });\n+});\n--- a/package.json\n+++ b/package.json\n@@ -10,5 +10,8 @@\n   \"scripts\": {\n     \"start\": \"node src/server.ts\",\n     \"test\": \"node --test --test-reporter=spec\"\n+  },\n+  \"dependencies\": {\n+    \"zod\": \"^4.6.7\"\n   }\n }\n--- a/src/lib/validate.ts\n+++ b/src/lib/validate.ts\n@@ -1,6 +1,6 @@\n-import { CARRIERS, SERVICE_LEVELS, type Carrier, type Recipient, type ServiceLevel } from '../types.ts';\n+import type { Carrier, Recipient, ServiceLevel } from '../types.ts';\n import { HttpError } from './http.ts';\n-import { checkAtpTrackingNumber } from './trackingNumber.ts';\n+import { shipmentBodySchema } from './shipmentSchema.ts';\n \n export interface ShipmentInput {\n   trackingNumber: string;\n@@ -9,53 +9,16 @@\n   recipient: Recipient;\n }\n \n-function fail(message: string): never {\n-  throw new HttpError(400, 'VALIDATION_FAILED', message);\n-}\n-\n-function requireString(obj: Record<string, unknown>, key: string, label: string = key): string {\n-  const value = obj[key];\n-  if (typeof value !== 'string' || value.trim() === '') fail(`${label} is required`);\n-  return value.trim();\n-}\n-\n-function isObject(value: unknown): value is Record<string, unknown> {\n-  return typeof value === 'object' && value !== null && !Array.isArray(value);\n-}\n-\n /** Validates the body of POST /shipments (and the rows of POST /import). */\n export function validateShipmentInput(body: unknown): ShipmentInput {\n-  if (!isObject(body)) fail('body must be a JSON object');\n-\n-  const trackingNumber = requireString(body, 'tracking_number').toUpperCase();\n-\n-  const carrier = requireString(body, 'carrier').toUpperCase();\n-  if (!CARRIERS.includes(carrier as Carrier)) fail(`carrier must be one of ${CARRIERS.join(', ')}`);\n-\n-  if (carrier === 'ATP') {\n-    // Only ATP numbers are validated; other carriers' formats change too often (see docs/carriers.md).\n-    const check = checkAtpTrackingNumber(trackingNumber);\n-    if (check === 'bad_format') {\n-      fail('Ungültige Sendungsnummer für ATP: erwartet werden 2 Buchstaben, 8 Ziffern, 1 Prüfziffer und AT (z. B. RR123456785AT)');\n-    }\n-    if (check === 'bad_check_digit') fail('Ungültige Sendungsnummer für ATP: Die Prüfziffer stimmt nicht');\n-  }\n-\n-  const serviceLevel = body.service_level ?? 'standard';\n-  if (typeof serviceLevel !== 'string' || !SERVICE_LEVELS.includes(serviceLevel as ServiceLevel)) {\n-    fail(`service_level must be one of ${SERVICE_LEVELS.join(', ')}`);\n-  }\n-\n-  const r = body.recipient;\n-  if (!isObject(r)) fail('recipient is required');\n-  const recipient: Recipient = {\n-    name: requireString(r, 'name', 'recipient.name'),\n-    street: requireString(r, 'street', 'recipient.street'),\n-    zip: requireString(r, 'zip', 'recipient.zip'),\n-    city: requireString(r, 'city', 'recipient.city'),\n-    country: typeof r.country === 'string' && r.country.trim() !== '' ? r.country.trim().toUpperCase() : 'AT',\n-    ...(typeof r.phone === 'string' && r.phone.trim() !== '' ? { phone: r.phone.trim() } : {}),\n+  const parsed = shipmentBodySchema.safeParse(body);\n+  if (!parsed.success) throw new HttpError(400, 'VALIDATION_FAILED', parsed.error.issues[0].message);\n+  const { tracking_number, carrier, service_level, recipient } = parsed.data;\n+  const { phone, ...rest } = recipient;\n+  return {\n+    trackingNumber: tracking_number,\n+    carrier,\n+    serviceLevel: service_level,\n+    recipient: { ...rest, ...(phone ? { phone } : {}) },\n   };\n-\n-  return { trackingNumber, carrier: carrier as Carrier, serviceLevel: serviceLevel as ServiceLevel, recipient };\n }",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n.......\n"
+ },
+ "final_text": "`POST /shipments` now validates its body with a zod schema. All 86 tests pass, including the new ones.\n\n- **Schema:** `src/lib/shipmentSchema.ts` is new and exports `shipmentBodySchema`. It imports only zod, the carrier and service-level constants, and the ATP check-digit helper, so you can share it with the mobile team later.\n- **Route:** I didn't edit `src/routes/shipments.ts`. It already called `validateShipmentInput`, which now runs the schema and takes the first issue. Any failure is still thrown as `HttpError(400, 'VALIDATION_FAILED', <message>)`, with the same message text as before, including the German ATP messages. `POST /import` shares that function, so its row validation uses zod too. The existing tests for it pass.\n- **Test:** `test/shipment-schema.test.ts` covers trimming, upper-casing, the defaults (`standard`, `AT`), dropping a blank phone, and each existing error message.\n- **Dependency:** zod wasn't installed, so I ran `npm install zod`. That added `zod ^4.6.7` to `package.json`. If a lockfile was created, it's untracked and needs committing.\n- **Uncommitted files:** your working tree already had uncommitted changes, including the ATP tracking-number check in `validate.ts`. I built on those and committed nothing."
+}

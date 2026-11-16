@@ -1,0 +1,276 @@
+{
+ "cost": 0.205845,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\t1b\\parcel-tracker",
+  "plugin": true,
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "77212cb0-b470-43b2-8598-a61fb80bfc43",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     23685,
+     35891,
+     38374,
+     40041,
+     40821,
+     42029,
+     42991,
+     45000,
+     45263
+    ],
+    "tools": [
+     {
+      "id": "toolu_013MTWScSBQZAFpbsQ6fcCLb",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\"}",
+      "input_chars": 114,
+      "result_chars": 2166,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01FehFnmbcudcJDEruSB3gmV",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker && git diff src/store.ts src/routes/shipments.ts | head -200; grep -n \\\"limit\\\\|offset\\\" -r src | head -30\"}",
+      "input_chars": 188,
+      "result_chars": 4429,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01JKa8kiEY41xjdbM3JPhemH",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker && sed -n 100,175p src/store.ts; cat src/services/eta.ts | head -60; ls test; cat package.json\"}",
+      "input_chars": 176,
+      "result_chars": 4828,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01RUCEiwz4hTgHrT4R2kGms1",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker && cat > /tmp/bench.ts <<'EOF'\\nimport { Store } from '/C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker/src/store.ts';\\nconst s = new Store();\\nfor (let i=0;i<5000;i++) s.addShipment({trackingNumber:'T'+i,carrier:'DHL',serviceLevel:'standard',recipient:{name:'a',address:'b',phone:'c'}} as any, new Date(Date.UTC(2026,0,1)+i*60000));\\nlet t=performance.now(); for(let i=0;i<20;i++) s.listShipments({limit:50}); console.log('list ms', (performance.now()-t)/20);\\nEOF\\nnode /tmp/bench.ts; sed -n 1,40p test/shipments.test.ts; cat test/helpers.ts | head -40\"}",
+      "input_chars": 652,
+      "result_chars": 2644,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01BmhTPTZz6AhPyH6k7Prnw4",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker && cat > /tmp/bench2.ts <<'EOF'\\nimport { createServer } from 'node:http';\\nimport { createApp } from '/C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker/src/app.ts';\\nimport { Store } from '/C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker/src/store.ts';\\nprocess.env.LOG_LEVEL='silent';\\nconst s = new Store();\\nfor (let i=0;i<5000;i++){ const sh=s.addShipment({trackingNumber:'T'+i,carrier:'DHL',serviceLevel:'standard',recipient:{name:'a',address:'b',phone:'c'}} as any, new Date(Date.UTC(2026,0,1)+i*60000)); s.addEvent(sh.id,'picked_up'); }\\nconst app=createApp({store:s,notify:async()=>{}});\\nconst srv=createServer((q,r)=>{void app.handle(q,r)}); await new Promise<void>(r=>srv.listen(0,'127.0.0.1',r));\\nconst port=(srv.address() as any).port;\\nfor (const l of [50,500]) { await fetch(`http://127.0.0.1:${port}/shipments?limit=${l}`); const t=performance.now(); for(let i=0;i<20;i++) await (await fetch(`http://127.0.0.1:${port}/shipments?limit=${l}`)).text(); console.log('limit',l,(performance.now()-t)/20,'ms'); }\\nsrv.close();\\nEOF\\nnode /tmp/bench2.ts\"}",
+      "input_chars": 1176,
+      "result_chars": 41,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01M6bMQmpLSWFVym5AWbFSTn",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker && python - <<'EOF' 2>/dev/null || node -e \\\"\\nconst fs=require('fs');let f='src/store.ts';let s=fs.readFileSync(f,'utf8');\\ns=s.replace(\\\\\\\"result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\\\\\\\",\\\\\\\"// ISO-8601 UTC strings sort lexicographically; plain comparison is much faster than localeCompare.\\\\n    result.sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0));\\\\\\\");\\nfs.writeFileSync(f,s);\\\"\\nEOF\\ngrep -n \\\"ISO-8601\\\" -A1 src/store.ts; node /tmp/bench.ts; tail -30 test/shipments.test.ts\"}",
+      "input_chars": 621,
+      "result_chars": 1344,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Q3uX51RgTyGMmbzdrrwZZs",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\src\\\\store.ts\", \"old_string\": \"    result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\", \"new_string\": \"    // ISO-8601 UTC strings sort lexicographically; plain comparison is far cheaper than localeCompare.\\n    result.sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0));\"}",
+      "input_chars": 427,
+      "result_chars": 116,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01C9LkvTEuyRc7FRxdmDK3Af",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\test\\\\store.test.ts\", \"limit\": 25}",
+      "input_chars": 121,
+      "result_chars": 873,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Fv6BMgNDCXqWJZfQJvxyFx",
+      "name": "Write",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\t1b\\\\parcel-tracker\\\\test\\\\list-perf.test.ts\", \"content\": \"import assert from 'node:assert/strict';\\nimport { describe, it } from 'node:test';\\nimport { api, startTestServer } from './helpers.ts';\\n\\ndescribe('GET /shipments on a large dataset', () => {\\n  it('lists newest first, honours limit, stays fast with 5000 shipments, and never serves a stale eta', async () => {\\n    const srv = await startTestServer();\\n    try {\\n      const base = Date.UTC(2026, 0, 5, 8); // a Monday, before the 14:00 cutoff\\n      let firstId = '';\\n      for (let i = 0; i < 5000; i++) {\\n        const s = srv.store.addShipment(\\n          {\\n            trackingNumber: `T${i}`,\\n            carrier: 'DHL',\\n            serviceLevel: 'standard',\\n            recipient: { name: 'A', street: 'B', zip: '1010', city: 'Wien', country: 'AT' },\\n          },\\n          new Date(base + i * 60_000),\\n        );\\n        if (i === 4999) firstId = s.id; // newest\\n      }\\n\\n      const t0 = performance.now();\\n      const res = await api(srv.url, 'GET', '/shipments?limit=50');\\n      const elapsed = performance.now() - t0;\\n\\n      assert.equal(res.status, 200);\\n      assert.equal(res.body.count, 50);\\n      assert.equal(res.body.items[0].id, firstId);\\n      const dates = res.body.items.map((i: { created_at: string }) => i.created_at);\\n      assert.deepEqual(dates, [...dates].sort().reverse());\\n      assert.ok(elapsed < 250, `list took ${elapsed.toFixed(0)} ms`); // generous bound, guards against O(n) per-item work\\n\\n      // An ETA is computed fresh per request: a new exception event must show up immediately.\\n      const before = res.body.items[0].eta;\\n      srv.store.addEvent(firstId, 'exception');\\n      const after = await api(srv.url, 'GET', '/shipments?limit=1');\\n      assert.notEqual(after.body.items[0].eta, before);\\n    } finally {\\n      await srv.close();\\n    }\\n  });\\n});\\n\"}",
+      "input_chars": 1963,
+      "result_chars": 182,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01CjCXZWRjcRpCzAEQnAxapw",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker && npm test 2>&1 | tail -40\"}",
+      "input_chars": 109,
+      "result_chars": 1866,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_012tMikygjoypxa1yBP7brqq",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/t1b/parcel-tracker && cat >> .gemkeeper/ledger.md <<'EOF'\\n- 2026-11-16: user again suggested ETA caching; declined per dead end. Instead replaced localeCompare sort in Store.listShipments with plain string compare (no behavior change) + test/list-perf.test.ts (5k shipments, order, limit, fresh ETA after exception). 84/84 tests pass. Pagination still the real fix, still later.\\nEOF\"}",
+      "input_chars": 447,
+      "result_chars": 31,
+      "mentions_ledger": true
+     }
+    ],
+    "result": {
+     "text": "I didn't add the ETA cache. The list endpoint wasn't spending its time on ETAs, and caching them is a known dead end in this repo.\n\n- **Why no cache:** QA already found stale ETAs in the list after a new event, such as an exception, because the cache wasn't invalidated. A correct cache key turned out messy.\n- **ETA cost is small:** `calculateEta` already runs only for the returned page (default limit 50, max 500), not for all 5k shipments. Locally the full list request takes about 10 ms at limit 50 and about 19 ms at limit 500, most of it HTTP overhead. I couldn't reproduce a slow case locally, so I can't say the staging slowness is fixed.\n- **What I changed:** `Store.listShipments` in `src/store.ts` sorted all 5k shipments with `localeCompare`, which is the only part that grows with dataset size. It now uses a plain string comparison. The order is the same, because the timestamps are ISO UTC strings. The response format is unchanged, so `GET /shipments/:id` is untouched.\n- **Test:** `test/list-perf.test.ts` loads 5000 shipments and checks newest-first order, the limit and a loose time bound. It also adds an exception event and checks that the ETA changes right away. That is the case that broke the cache.\n- **Test run:** `npm test` passes, 84 of 84.\n\nIf staging is still slow, the next step is pagination of `GET /shipments`, which you'd planned for later. Staging could also be hitting `limit=500` often or running on slower hardware. A timing from the staging box would show which.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 12,
+     "duration_ms": 50294,
+     "total_cost_usd": 0.20584520000000003,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 18,
+      "cache_creation_input_tokens": 30985,
+      "cache_read_input_tokens": 323092,
+      "output_tokens": 4956,
+      "output_tokens_details": {
+       "thinking_tokens": 918
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 30985,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 530,
+        "cache_read_input_tokens": 44998,
+        "cache_creation_input_tokens": 263,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 263
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 18,
+       "outputTokens": 4956,
+       "cacheReadInputTokens": 323092,
+       "cacheCreationInputTokens": 30985,
+       "webSearchRequests": 0,
+       "costUSD": 0.20584520000000003,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 918,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 30985,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "Per my ledger, ETA caching is a known dead end: QA found stale ETAs after new events, and ETA wasn't the bottleneck anyway. I'll check the current list route before choosing an approach.",
+     "ETA is already computed only for the `limit` returned items. The real per-request cost is in `listShipments`, which sorts all 5k shipments with `localeCompare`. I'll measure that before changing it.",
+     "The scripted edit didn't apply, so I'll use the Edit tool.",
+     "Now the test. It covers newest-first ordering at 5k scale, the limit, and ETA freshness after a new event, which is the bug the cache caused.",
+     "I didn't add the ETA cache. The list endpoint wasn't spending its time on ETAs, and caching them is a known dead end in this repo.\n\n- **Why no cache:** QA already found stale ETAs in the list after a new event, such as an exception, because the cache wasn't invalidated. A correct cache key turned out messy.\n- **ETA cost is small:** `calculateEta` already runs only for the returned page (default limit 50, max 500), not for all 5k shipments. Locally the full list request takes about 10 ms at limit 50 and about 19 ms at limit 500, most of it HTTP overhead. I couldn't reproduce a slow case locally, so I can't say the staging slowness is fixed.\n- **What I changed:** `Store.listShipments` in `src/store.ts` sorted all 5k shipments with `localeCompare`, which is the only part that grows with dataset size. It now uses a plain string comparison. The order is the same, because the timestamps are ISO UTC strings. The response format is unchanged, so `GET /shipments/:id` is untouched.\n- **Test:** `test/list-perf.test.ts` loads 5000 shipments and checks newest-first order, the limit and a loose time bound. It also adds an exception event and checks that the ETA changes right away. That is the case that broke the cache.\n- **Test run:** `npm test` passes, 84 of 84.\n\nIf staging is still slow, the next step is pagination of `GET /shipments`, which you'd planned for later. Staging could also be hitting `limit=500` often or running on slower hardware. A timing from the staging box would show which."
+    ]
+   }
+  ],
+  "hooks": [
+   {
+    "turn": 0,
+    "hook": "SessionStart:startup",
+    "chars": 4257,
+    "output": "[gemkeeper] Ledger from earlier session(s) of this project. Follow the gems skill's Resume mode:\nverify '## Now' against git, then reply in at most three lines (mission, where we are, next step) unless the user already gave you a task.\n--- .gemkeeper/ledger.md ---\n# Ledger — parcel-tracker\n\n## Rules (user)\n- NEVER modify anything under src/legacy/ — vendored from old monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- NO new npm deps, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps, no build step.\n- Work autonomously; user reviews everything at the end.\n\n## State\n- Read package.json, README, app.ts, store.ts, routes/shipments.ts, services/eta.ts; summary given. No task assigned yet.\n\n## Decisions\n- Holidays: hardcoded list for 2026+2027 in src/services/holidays.ts (user). Why: warehouse has no outbound internet, must work offline -> no holiday API.\n- Flaky test 'emits webhook on delivered' (test/events.test.ts): timer race in fake notifier, ~1/5 fails, OPS-412, platform team owns fix. If it fails: rerun once, do NOT fix (user).\n- Tracking validation: ONLY ATP gets S10 check-digit validation (docs/carriers.md); all other carriers accept any non-empty value. Why: formats change often; last year valid DHL numbers were wrongly rejected for 2 days (user).\n- New user-facing error `message` fields must be GERMAN (packers' UI shows them verbatim); `code` stays English SCREAMING_SNAKE_CASE (user).\n- ERP signing: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET. Dead end: X-Signature header — ERP's API gateway strips all custom X- headers (found on staging). Now: top-level `sig` field IN the JSON body, computed over body JSON without `sig`; no header (user).\n- Open: payload sends `type`/`at` but docs/erp-api.md wants `event_type`/`occurred_at` (old `type` accepted only until 2026-12-31) — not fixed yet.\n- NO batching of ERP calls (array of events per POST): ERP answers 422 to any array payload (user tried Sept 2026); only ONE single event object per request. Don't build it even if team suggests (user).\n- GET /shipments/:id response must stay BYTE-IDENTICAL (no new/removed fields): mobile app v2.3 uses strict schema, crashes on unknown/missing fields; next release January. `eta` goes ONLY on GET /shipments list items (user).\n- NEVER log recipient name/address/phone anywhere (GDPR; DPO flagged it in last month's audit). Shipment IDs + tracking numbers are OK to log (user). Note: staging log 2026-11-12 already shows `recipient=\"...\"` on exception event lines -> existing leak to fix.\n- Storage stays a plain JSON file (data/store.json), NO SQLite/node:sqlite. Why: ops' nightly rsync backup diffs plain-text files; binary DB breaks their checks. Perf fix = debounce writes in src/store.ts (200 ms, one write per burst) + flush() on shutdown (user).\n- ERP sandbox port is 9911 (since Oct infra move); docs/erp-api.md and README still say 8080 = outdated. Do NOT edit docs/erp-api.md (ERP team owns it); user fixes README himself/herself (user).\n- Future config hot reload of config/default.json: use fs.watchFile (polling), NOT fs.watch. Dead end: fs.watch never fires on staging (Docker bind mount from Windows host, change events don't propagate). Nothing to build now (user).\n- ETA caching/memoization = DEAD END (user): QA found stale ETA in list after a new event (exception) since cache wasn't invalidated; a proper cache key got messy. No ETA memoization in the repo; list slowness to be solved by PAGINATING GET /shipments later (user), not caching. Measured (5k shipments, local): calculateEta for 500 items ~3.5 ms; GET /shipments ~15 ms (limit 50), ~33 ms (limit=500) -> ETA wasn't the bottleneck anyway.\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n--- end ledger ---\n["
+   },
+   {
+    "turn": 0,
+    "hook": "UserPromptSubmit",
+    "chars": 0,
+    "output": ""
+   },
+   {
+    "turn": 0,
+    "hook": "Stop",
+    "chars": 0,
+    "output": ""
+   }
+  ],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.20584520000000003,
+  "cost": 0.205845,
+  "wall_s": 55.8,
+  "exit_code": 0,
+  "ctx_first": 23685,
+  "ctx_last": 45263
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 3
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "test/list-perf.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   ".gemkeeper/ledger.md",
+   "src/store.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/test/list-perf.test.ts\n+++ b/test/list-perf.test.ts\n@@ -0,0 +1,44 @@\n+import assert from 'node:assert/strict';\n+import { describe, it } from 'node:test';\n+import { api, startTestServer } from './helpers.ts';\n+\n+describe('GET /shipments on a large dataset', () => {\n+  it('lists newest first, honours limit, stays fast with 5000 shipments, and never serves a stale eta', async () => {\n+    const srv = await startTestServer();\n+    try {\n+      const base = Date.UTC(2026, 0, 5, 8); // a Monday, before the 14:00 cutoff\n+      let firstId = '';\n+      for (let i = 0; i < 5000; i++) {\n+        const s = srv.store.addShipment(\n+          {\n+            trackingNumber: `T${i}`,\n+            carrier: 'DHL',\n+            serviceLevel: 'standard',\n+            recipient: { name: 'A', street: 'B', zip: '1010', city: 'Wien', country: 'AT' },\n+          },\n+          new Date(base + i * 60_000),\n+        );\n+        if (i === 4999) firstId = s.id; // newest\n+      }\n+\n+      const t0 = performance.now();\n+      const res = await api(srv.url, 'GET', '/shipments?limit=50');\n+      const elapsed = performance.now() - t0;\n+\n+      assert.equal(res.status, 200);\n+      assert.equal(res.body.count, 50);\n+      assert.equal(res.body.items[0].id, firstId);\n+      const dates = res.body.items.map((i: { created_at: string }) => i.created_at);\n+      assert.deepEqual(dates, [...dates].sort().reverse());\n+      assert.ok(elapsed < 250, `list took ${elapsed.toFixed(0)} ms`); // generous bound, guards against O(n) per-item work\n+\n+      // An ETA is computed fresh per request: a new exception event must show up immediately.\n+      const before = res.body.items[0].eta;\n+      srv.store.addEvent(firstId, 'exception');\n+      const after = await api(srv.url, 'GET', '/shipments?limit=1');\n+      assert.notEqual(after.body.items[0].eta, before);\n+    } finally {\n+      await srv.close();\n+    }\n+  });\n+});\n--- a/.gemkeeper/ledger.md\n+++ b/.gemkeeper/ledger.md\n@@ -23,3 +23,4 @@\n - Future config hot reload of config/default.json: use fs.watchFile (polling), NOT fs.watch. Dead end: fs.watch never fires on staging (Docker bind mount from Windows host, change events don't propagate). Nothing to build now (user).\n - ETA caching/memoization = DEAD END (user): QA found stale ETA in list after a new event (exception) since cache wasn't invalidated; a proper cache key got messy. No ETA memoization in the repo; list slowness to be solved by PAGINATING GET /shipments later (user), not caching. Measured (5k shipments, local): calculateEta for 500 items ~3.5 ms; GET /shipments ~15 ms (limit 50), ~33 ms (limit=500) -> ETA wasn't the bottleneck anyway.\n - ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff. Why: ERP dedups by event_id only within 2 min; all attempts must land inside that window. Retry on network error/5xx only. Delay must be injectable for tests (user).\n+- 2026-11-16: user again suggested ETA caching; declined per dead end. Instead replaced localeCompare sort in Store.listShipments with plain string compare (no behavior change) + test/list-perf.test.ts (5k shipments, order, limit, fresh ETA after exception). 84/84 tests pass. Pagination still the real fix, still later.\n--- a/src/store.ts\n+++ b/src/store.ts\n@@ -130,7 +130,8 @@\n     let result = [...this.shipments.values()];\n     if (filter.carrier) result = result.filter((s) => s.carrier === filter.carrier);\n     if (filter.status) result = result.filter((s) => s.status === filter.status);\n-    result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n+    // ISO-8601 UTC strings sort lexicographically; plain comparison is far cheaper than localeCompare.\n+    result.sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0));\n     return filter.limit ? result.slice(0, filter.limit) : result;\n   }\n ",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n...\n"
+ },
+ "final_text": "I didn't add the ETA cache. The list endpoint wasn't spending its time on ETAs, and caching them is a known dead end in this repo.\n\n- **Why no cache:** QA already found stale ETAs in the list after a new event, such as an exception, because the cache wasn't invalidated. A correct cache key turned out messy.\n- **ETA cost is small:** `calculateEta` already runs only for the returned page (default limit 50, max 500), not for all 5k shipments. Locally the full list request takes about 10 ms at limit 50 and about 19 ms at limit 500, most of it HTTP overhead. I couldn't reproduce a slow case locally, so I can't say the staging slowness is fixed.\n- **What I changed:** `Store.listShipments` in `src/store.ts` sorted all 5k shipments with `localeCompare`, which is the only part that grows with dataset size. It now uses a plain string comparison. The order is the same, because the timestamps are ISO UTC strings. The response format is unchanged, so `GET /shipments/:id` is untouched.\n- **Test:** `test/list-perf.test.ts` loads 5000 shipments and checks newest-first order, the limit and a loose time bound. It also adds an exception event and checks that the ETA changes right away. That is the case that broke the cache.\n- **Test run:** `npm test` passes, 84 of 84.\n\nIf staging is still slow, the next step is pagination of `GET /shipments`, which you'd planned for later. Staging could also be hitting `limit=500` often or running on slower hardware. A timing from the staging box would show which."
+}

@@ -1,0 +1,126 @@
+{
+ "cmd": [
+  "-p",
+  "--input-format",
+  "stream-json",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--include-hook-events",
+  "--model",
+  "sonnet",
+  "--effort",
+  "medium",
+  "--dangerously-skip-permissions",
+  "--settings",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+  "--disallowedTools",
+  "Agent",
+  "--plugin-dir",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper",
+  "--resume",
+  "40a9cff0-bd1c-445a-b026-e6440df8d733",
+  "--fork-session"
+ ],
+ "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\t2b\\parcel-tracker",
+ "plugin": true,
+ "resume": "40a9cff0-bd1c-445a-b026-e6440df8d733",
+ "fork": true,
+ "parent_cost": 1.9901781999999997,
+ "session_id": "389ce290-696c-4d09-b073-6516dede3d69",
+ "turns": [
+  {
+   "i": 0,
+   "prompt_chars": 8,
+   "ctx": [],
+   "tools": [],
+   "result": {
+    "text": "",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 0,
+    "duration_ms": 37017,
+    "total_cost_usd": 2.0679646,
+    "api_error_status": null,
+    "usage": {
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "input_tokens": 0,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "output_tokens": 0,
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "",
+     "iterations": [],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 2347,
+      "outputTokens": 75007,
+      "thinkingTokens": 10575,
+      "cacheReadInputTokens": 7327381,
+      "cacheCreationInputTokens": 145173,
+      "cacheCreationEphemeral5mInputTokens": 153,
+      "cacheCreationEphemeral1hInputTokens": 145020,
+      "webSearchRequests": 0,
+      "costUSD": 2.0679646,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  }
+ ],
+ "hooks": [
+  {
+   "turn": 0,
+   "hook": "SessionStart:compact",
+   "chars": 4999,
+   "output": "[gemkeeper] The context was just compacted. The ledger below was written before compaction with full context.\nWhere it conflicts with the compaction summary about rules, decisions or dead ends, the ledger wins. Continue the current task. Don't restart it.\n--- .gemkeeper/ledger.md ---\n# Ledger: parcel-tracker\n\n## Hard rules\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, so changes are silently lost.\n- (user) NO new npm dependencies, not even dev deps — each needs ~6-week security review. Node 24 runs TS directly, zero deps.\n- (user) Work autonomously; user reviews everything at the end.\n- (user) Every NEW user-facing error `message` must be in German (warehouse UI shows verbatim to packers); `code` stays English SCREAMING_SNAKE_CASE. Old English messages left as is.\n- (user) Test 'emits webhook on delivered' (test/events.test.ts) is known flaky (~1/5 on CI, timer race in fake notifier, OPS-412, platform team owns fix). If it fails: rerun once, do NOT try to fix.\n- (user) GET /shipments/:id response must NOT change AT ALL (no added/removed/renamed fields): mobile app v2.3 parses it with a strict schema and crashes on unknown/missing fields; next release January. Do not touch shipmentToApi() fields or that route's body. Only the LIST gets `eta`.\n- (user) NEVER log recipient name/address/phone (or any recipient field) ANYWHERE — GDPR personal data, flagged by the DPO in last month's audit. Shipment IDs and tracking numbers are OK to log.\n\n## Decisions (with reasons)\n- Holidays: hardcoded AT list for 2026+2027 in src/services/holidays.ts — deployment has no outbound internet. Outside those years only weekends skipped; extend before 2028.\n- Tracking numbers: ONLY ATP gets UPU S10 check-digit validation (src/lib/s10.ts, code INVALID_TRACKING_NUMBER). Other carriers accept any non-empty value — formats change; last year valid DHL numbers were rejected for 2 days. /import uses the same validator.\n- ERP signature: top-level JSON body field `sig` = hex HMAC-SHA256 (env ERP_WEBHOOK_SECRET) over the JSON body WITHOUT `sig`; `sig` appended last. No secret => unsigned (rollout ERP-1182).\n- ERP retries: max 3 attempts TOTAL, FIXED 30s delay, NO exponential backoff — ERP dedups by event_id only within a 2-min window. Retry only network/timeout/5xx, not 4xx. Delay injectable. Worst case 75s with 5s timeout.\n- Store: KEEP the plain-text JSON file store (data/store.json) — ops' nightly rsync job diffs plain-text files, a binary SQLite file would break their backup checks. Perf fix = debounce writes (200 ms) in src/store.ts + flush() on shutdown.\n- Request logging lives in Router.handle (src/router.ts): pathname only, no query/headers/body. Store writes debounced 200 ms from FIRST unsaved mutation (not restarted); Store.flush() called on SIGINT/SIGTERM + 'exit'. GET /shipments list has `eta`, detail unchanged.\n\n## Facts\n- (user) ERP sandbox listens on port 9911 since the October infra move. docs/erp-api.md and README still say 8080 = outdated. DON'T edit docs/erp-api.md (ERP team owns it); user fixes README himself/herself. config/default.json still has erp.url http://localhost:8080/events (not yet changed, flagged to user).\n- (user) FUTURE (nothing to build now): hot reload of config/default.json — fs.watch never fires on staging (Docker bind mount from Windows host, change events don't propagate); fs.watchFile (polling) works.\n\n## Dead ends (don't retry)\n- X-Signature header for ERP: gateway strips all custom X- headers.\n- Moving the store to SQLite (node:sqlite): breaks ops' plain-text rsync backup diffing. (user)\n- fs.watch for config hot reload on staging: no events through the Windows->Docker bind mount; use fs.watchFile polling. (user)\n- Batching ERP calls (array of up to 50 events per POST): ERP answers 422 to any array; it only accepts ONE event object per request. (user, tried in September)\n- ETA memoization/caching of calculateEta: QA saw stal"
+  }
+ ],
+ "error": null,
+ "compact": {
+  "trigger": "manual",
+  "pre_tokens": 160876,
+  "post_tokens": 13985,
+  "cumulative_dropped_tokens": 146891,
+  "duration_ms": 35420,
+  "preserved_segment": {
+   "head_uuid": "83cee481-eae8-4362-9333-166e8c9a2a57",
+   "anchor_uuid": "bba7a196-bdd3-4e50-9db8-2c48fae79077",
+   "tail_uuid": "2486d9b3-b738-41b7-98c7-1f9d47904fe1"
+  },
+  "preserved_messages": {
+   "anchor_uuid": "bba7a196-bdd3-4e50-9db8-2c48fae79077",
+   "uuids": [
+    "83cee481-eae8-4362-9333-166e8c9a2a57",
+    "2486d9b3-b738-41b7-98c7-1f9d47904fe1"
+   ],
+   "all_uuids": [
+    "83cee481-eae8-4362-9333-166e8c9a2a57",
+    "2486d9b3-b738-41b7-98c7-1f9d47904fe1"
+   ]
+  }
+ },
+ "cost_cumulative": 2.0679646,
+ "cost": 0.077786,
+ "wall_s": 40.0,
+ "exit_code": 0,
+ "ctx_first": null,
+ "ctx_last": null
+}
