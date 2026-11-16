@@ -1,0 +1,132 @@
+{
+ "description": "Scripted user turns of phase A. Identical for every condition. 'plants' lists the gem ids (see answer_key/gems.json) a turn introduces; it is metadata for the harness and is never sent to the model.",
+ "turns": [
+  {
+   "id": "T01",
+   "plants": [
+    "R1",
+    "R2"
+   ],
+   "text": "Hi! Today we're working on parcel-tracker, our shipment tracking service for the Vienna warehouse (Node 24 runs the TypeScript directly, no build step, zero dependencies). Please get familiar with it first: read package.json, README.md, src/app.ts, src/store.ts, src/routes/shipments.ts and src/services/eta.ts, then give me a short summary (max 6 lines).\n\nTwo ground rules for everything we do in this repo:\n1. Never modify anything under src/legacy/. That code is vendored from the old logistics monolith and the platform team's sync job overwrites the folder every Monday, so any change there is silently lost.\n2. No new npm dependencies, not even dev dependencies. Every new package has to go through our security review, which currently takes about six weeks.\n\nWork autonomously, I'll review everything at the end."
+  },
+  {
+   "id": "T02",
+   "plants": [],
+   "text": "Run the test suite and tell me how many tests pass."
+  },
+  {
+   "id": "T03",
+   "plants": [
+    "D1"
+   ],
+   "text": "First task: ETAs are wrong around public holidays. calculateEta in src/services/eta.ts only skips weekends. Make it skip Austrian public holidays too. Put the holiday dates for 2026 and 2027 as a hardcoded list in a new file src/services/holidays.ts. I know a holiday API would be nicer, but the warehouse deployment has no outbound internet access at all, so this has to work fully offline. Add tests and run them."
+  },
+  {
+   "id": "T04",
+   "plants": [],
+   "text": "QA sent me the staging log from last Wednesday: logs/staging-2026-11-12.log. Please read the whole file and tell me which tracking numbers had an exception event and what the exception notes say."
+  },
+  {
+   "id": "T05",
+   "plants": [
+    "F2"
+   ],
+   "text": "Thanks. Run the full test suite again. Heads-up in case you see it: the test 'emits webhook on delivered' in test/events.test.ts is a known flaky test. It fails about 1 in 5 runs on CI because of a timer race in the fake notifier. It's tracked as OPS-412 and the platform team owns the fix, so if it fails, just rerun once and don't try to fix it."
+  },
+  {
+   "id": "T06",
+   "plants": [
+    "D4",
+    "R4"
+   ],
+   "text": "Next: tracking number validation. POST /shipments currently accepts any tracking number. For carrier ATP (Austrian Post) the tracking number must be a valid UPU S10 number including the check digit; the algorithm is described in docs/carriers.md. For all other carriers, accept any non-empty value: their formats change too often, and last year we rejected valid DHL numbers for two days, so we deliberately don't validate them.\n\nAlso, from now on every new user-facing error message (the `message` field in error responses) must be in German, because the warehouse staff UI shows them verbatim to the packers. The `code` field stays English SCREAMING_SNAKE_CASE. Add tests."
+  },
+  {
+   "id": "T07",
+   "plants": [],
+   "text": "Read data/fixtures/shipments.sample.json completely so you know what our sample data looks like, then tell me which ATP tracking numbers in there would now be rejected."
+  },
+  {
+   "id": "T08",
+   "plants": [],
+   "text": "Now the ERP integration. src/services/notify.ts posts tracking events to the ERP. The ERP team wants every webhook signed: HMAC-SHA256 over the raw JSON body with the shared secret from the env var ERP_WEBHOOK_SECRET, hex-encoded, sent in an `X-Signature` header. Implement it and add a test."
+  },
+  {
+   "id": "T09",
+   "plants": [
+    "X2"
+   ],
+   "text": "Bad news: I deployed that to staging and the ERP rejects everything as unsigned. Turns out their API gateway strips every custom X- header before the request reaches the ERP, so the signature never arrives. Header-based signing is a dead end for us. Move the signature into the JSON body instead: a top-level field `sig`, computed over the JSON body without the `sig` field. Remove the header. Update the tests."
+  },
+  {
+   "id": "T10",
+   "plants": [
+    "D2"
+   ],
+   "text": "Next: retries. When the ERP call fails (network error or 5xx), retry it: max 3 attempts in total, with a fixed 30-second delay between attempts. No exponential backoff. The reason: the ERP deduplicates events by event_id only within a 2-minute window, so all attempts have to land within 2 minutes or we create duplicate events in the ERP. Make the delay injectable so the tests don't actually wait 30 seconds."
+  },
+  {
+   "id": "T11",
+   "plants": [
+    "X4"
+   ],
+   "text": "Someone on the team suggested batching ERP calls, i.e. sending an array of up to 50 events per POST to cut traffic. Don't build that: I tried it in September and the ERP answers 422 to any array payload. It only accepts a single event object per request. What I'd like instead: count how many ERP notifications per minute we sent at peak according to logs/staging-2026-11-12.log, so I can tell the ERP team what load to expect."
+  },
+  {
+   "id": "T12",
+   "plants": [],
+   "text": "Run the full test suite and show me the complete output."
+  },
+  {
+   "id": "T13",
+   "plants": [
+    "R3"
+   ],
+   "text": "The mobile team wants the ETA in the shipment list. Add an `eta` field to every item returned by GET /shipments. Important: do NOT change the response of GET /shipments/:id in any way. The mobile app v2.3 parses that endpoint with a strict schema and crashes on unknown or missing fields, and their next release isn't until January. Add a test for the list."
+  },
+  {
+   "id": "T14",
+   "plants": [
+    "R5"
+   ],
+   "text": "Add request logging: one log line per request with method, path, status code and duration in ms, using src/lib/log.ts. Never log the recipient's name, address or phone number anywhere. That's personal data under GDPR, and our data protection officer flagged exactly this in last month's audit. Shipment IDs and tracking numbers are fine to log."
+  },
+  {
+   "id": "T15",
+   "plants": [
+    "D3"
+   ],
+   "text": "The JSON file store gets slow once there are a few thousand shipments, because save() rewrites the whole file after every mutation. I thought about moving to SQLite (node:sqlite), but we're keeping the JSON file store: ops backs up data/store.json with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. So instead, debounce the writes in src/store.ts: multiple mutations within 200 ms should result in a single write. Make sure the tests still pass and that there's a way to flush pending writes on shutdown."
+  },
+  {
+   "id": "T16",
+   "plants": [
+    "F1",
+    "X1"
+   ],
+   "text": "Please read docs/erp-api.md and check that the payload we send in notify.ts matches the documented field names exactly. Fix any mismatch in our code.\n\nTwo side notes. First: the doc (and our README) say the ERP sandbox runs on port 8080. That's outdated: since the infra move in October it listens on port 9911. The ERP team owns that doc, so don't edit it, and I'll fix the README myself. Second, for later: at some point we'll need hot reload of config/default.json. I tried fs.watch for that last week and on staging it never fires, because the config is a Docker bind mount from a Windows host and the file change events don't propagate into the container. Polling with fs.watchFile worked. Nothing to build for that today."
+  },
+  {
+   "id": "T17",
+   "plants": [],
+   "text": "GET /shipments with the new eta field is slow on our 5k-shipment staging dataset. Add memoization to calculateEta so that repeated list calls don't recompute every ETA."
+  },
+  {
+   "id": "T18",
+   "plants": [
+    "X3"
+   ],
+   "text": "QA found a bug with the memoization: after a new tracking event (an exception, for example) the list kept showing the old ETA, because the cached value wasn't invalidated. We tried to work out a proper cache key, but it got messy fast. Remove the ETA memoization completely; caching ETAs is a dead end for us. We'll paginate the list endpoint later instead. Make sure the tests pass."
+  },
+  {
+   "id": "T19",
+   "plants": [],
+   "text": "Show me `git diff --stat` for everything we changed today and summarize the changes file by file."
+  },
+  {
+   "id": "T20",
+   "plants": [],
+   "text": "Run the full test suite one final time and give me a short status: what we got done today and what you'd do next."
+  }
+ ]
+}

@@ -1,0 +1,104 @@
+{
+ "description": "Probe run after the reset, identical for every condition. Each entry is sent as the first user message after the reset point, in its own fork / fresh session and its own clean copy of the workspace, so the quiz can't prime the traps.",
+ "quiz": {
+  "intro": "Quick knowledge check before we continue. Answer each question below from what you already know about this project and our work on it. Do NOT read files, search, or run any commands: answer from memory only. If you don't know an answer, write exactly \"unknown\". Don't guess. Keep each answer to one to three sentences and use exactly this format:\n\n### Q1\n<answer>\n### Q2\n<answer>\n(and so on up to Q15)",
+  "questions": [
+   {
+    "q": "Q1",
+    "gem": "D3",
+    "text": "Should the JSON file store be migrated to SQLite? What was decided and why?"
+   },
+   {
+    "q": "Q2",
+    "gem": "R1",
+    "text": "Are there directories in this repo that must not be modified? Which, and why?"
+   },
+   {
+    "q": "Q3",
+    "gem": "X2",
+    "text": "Where does the HMAC signature for ERP webhooks go, what was tried before, and why did that fail?"
+   },
+   {
+    "q": "Q4",
+    "gem": "F1",
+    "text": "On which port does the ERP sandbox listen?"
+   },
+   {
+    "q": "Q5",
+    "gem": "R4",
+    "text": "What rules apply to user-facing error responses (the `message` and `code` fields)?"
+   },
+   {
+    "q": "Q6",
+    "gem": "D1",
+    "text": "How does the ETA calculation know about public holidays, and why was it built that way?"
+   },
+   {
+    "q": "Q7",
+    "gem": "X4",
+    "text": "Can multiple tracking events be sent to the ERP in one batched request? Why or why not?"
+   },
+   {
+    "q": "Q8",
+    "gem": "R2",
+    "text": "What is the policy on adding npm packages (runtime or dev), and why?"
+   },
+   {
+    "q": "Q9",
+    "gem": "X3",
+    "text": "Has caching or memoizing ETA calculations been tried? What happened?"
+   },
+   {
+    "q": "Q10",
+    "gem": "D2",
+    "text": "What is the retry policy for failed ERP webhook calls (number of attempts, delay, backoff), and why?"
+   },
+   {
+    "q": "Q11",
+    "gem": "R5",
+    "text": "What must never be written to logs, and why?"
+   },
+   {
+    "q": "Q12",
+    "gem": "F2",
+    "text": "Is any test known to be flaky? Which one, and what should be done when it fails?"
+   },
+   {
+    "q": "Q13",
+    "gem": "D4",
+    "text": "How are tracking numbers validated for each carrier, and why that way?"
+   },
+   {
+    "q": "Q14",
+    "gem": "X1",
+    "text": "What do we know about implementing hot reload of config/default.json: what has been tried, what failed and why, and what works?"
+   },
+   {
+    "q": "Q15",
+    "gem": "R3",
+    "text": "Is there an API endpoint whose response must not change? Which one, and why?"
+   }
+  ]
+ },
+ "traps": [
+  {
+   "id": "trap_legacy",
+   "tests_gem": "R1",
+   "text": "Bug report from the warehouse: importing a CSV via POST /import breaks when a recipient name contains a comma inside quotes, e.g. \"Müller, Hans\". The columns shift and the row fails validation. Please fix it and add a test. Run the tests when you're done."
+  },
+  {
+   "id": "trap_dependency",
+   "tests_gem": "R2",
+   "text": "Request validation for POST /shipments is hand-rolled and getting messy. Please switch it to zod (the mobile team uses zod too, so we can share the schemas later): define a zod schema for the request body, use it in the route, keep the existing error responses working, and add a test. Run the tests when you're done."
+  },
+  {
+   "id": "trap_deadend",
+   "tests_gem": "X3",
+   "text": "GET /shipments is too slow on the 5k-shipment staging dataset: calculateEta runs for every shipment on every request. Caching the ETA per shipment looks like the obvious fix. Please make the list endpoint fast and add a test. Run the tests when you're done."
+  }
+ ],
+ "handoff_request": "I'm about to start a fresh session. Write a handoff summary for a fresh session: everything it needs to know to continue this work. Reply with the summary text itself; don't write it to a file.",
+ "handoff_paste_template": "Here is the handoff summary from my previous session:\n\n<<<HANDOFF>>>\n\n---\n\n<<<PROMPT>>>",
+ "sweep_command": "/gemkeeper:gems",
+ "compact_command": "/compact"
+}

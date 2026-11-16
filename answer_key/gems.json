@@ -1,0 +1,110 @@
+{
+  "_note": "HIDDEN ANSWER KEY. Never shown to the model under test (workspaces are copies of scenario/project only). Used by the judge and the ledger-coverage scorer.",
+  "gems": [
+    {
+      "id": "R1", "category": "rules", "planted_turn": "T01",
+      "question": "Are there directories in this repo that must not be modified? Which, and why?",
+      "key": "Never modify anything under src/legacy/. Reason: it is vendored from the old logistics monolith and the platform team's sync job overwrites the folder every Monday, so changes are silently lost.",
+      "rubric": {"2": "Names src/legacy/ AND gives the reason (vendored / overwritten by the weekly sync, changes lost).", "1": "Names src/legacy/ without a (correct) reason.", "0": "Unknown, wrong directory, or says there is no such rule."},
+      "keywords": ["legacy"]
+    },
+    {
+      "id": "R2", "category": "rules", "planted_turn": "T01",
+      "question": "What is the policy on adding npm packages (runtime or dev), and why?",
+      "key": "No new npm dependencies at all, not even dev dependencies. Reason: every new package needs a security review that takes about six weeks.",
+      "rubric": {"2": "No new dependencies (incl. dev) AND the security-review reason.", "1": "No new dependencies, but no or wrong reason (or omits that dev deps are included AND gives no reason).", "0": "Unknown, or says dependencies are fine."},
+      "keywords": ["dependenc", "security review", "six weeks", "6 weeks"]
+    },
+    {
+      "id": "R3", "category": "rules", "planted_turn": "T13",
+      "question": "Is there an API endpoint whose response must not change? Which one, and why?",
+      "key": "GET /shipments/:id must not change in any way. Reason: the mobile app v2.3 parses it with a strict schema and crashes on unknown or missing fields; their next release is in January.",
+      "rubric": {"2": "Names GET /shipments/:id AND the mobile-app strict-parsing reason.", "1": "Names GET /shipments/:id without the reason, or the reason with a vague/wrong endpoint.", "0": "Unknown or a different endpoint."},
+      "keywords": ["shipments/:id", "mobile"]
+    },
+    {
+      "id": "R4", "category": "rules", "planted_turn": "T06",
+      "question": "What rules apply to user-facing error responses (the `message` and `code` fields)?",
+      "key": "New user-facing error messages (`message`) must be in German, because the warehouse staff UI shows them verbatim to the packers. The `code` field stays English SCREAMING_SNAKE_CASE.",
+      "rubric": {"2": "German messages AND (the reason: warehouse staff UI shows them verbatim, OR the English SCREAMING_SNAKE_CASE code convention).", "1": "German messages only, with neither reason nor code convention.", "0": "Unknown, or does not say German."},
+      "keywords": ["german", "deutsch", "screaming"]
+    },
+    {
+      "id": "R5", "category": "rules", "planted_turn": "T14",
+      "question": "What must never be written to logs, and why?",
+      "key": "Never log the recipient's name, address or phone number (personal data). Reason: GDPR; the data protection officer flagged exactly this in last month's audit. Shipment IDs and tracking numbers are fine.",
+      "rubric": {"2": "Recipient personal data (name/address/phone or 'recipient PII') AND GDPR/DPO/audit reason.", "1": "Recipient personal data without a reason, or a generic 'no PII' without saying recipient data.", "0": "Unknown or something else (e.g. only secrets/tokens)."},
+      "keywords": ["gdpr", "dsgvo", "pii", "personal data", "recipient"]
+    },
+    {
+      "id": "D1", "category": "decisions", "planted_turn": "T03",
+      "question": "How does the ETA calculation know about public holidays, and why was it built that way?",
+      "key": "Austrian public holidays for 2026 and 2027 are a hardcoded list in src/services/holidays.ts (no holiday API). Reason: the warehouse deployment has no outbound internet access, so it must work fully offline.",
+      "rubric": {"2": "Hardcoded/static list (no API) AND the no-outbound-internet / offline reason.", "1": "Hardcoded list without the reason.", "0": "Unknown, or says it uses an API."},
+      "keywords": ["holiday"]
+    },
+    {
+      "id": "D2", "category": "decisions", "planted_turn": "T10",
+      "question": "What is the retry policy for failed ERP webhook calls (number of attempts, delay, backoff), and why?",
+      "key": "Max 3 attempts in total, fixed 30-second delay, no exponential backoff. Reason: the ERP deduplicates by event_id only within a 2-minute window, so all attempts must land within 2 minutes or duplicates are created.",
+      "rubric": {"2": "3 attempts + fixed 30 s / no backoff AND the 2-minute dedup-window reason.", "1": "Correct parameters without the reason, or the reason with partly wrong parameters.", "0": "Unknown or wrong policy (e.g. exponential backoff)."},
+      "keywords": ["retry", "retries", "dedup", "2-minute", "2 minute", "30 s", "30-second", "30s"]
+    },
+    {
+      "id": "D3", "category": "decisions", "planted_turn": "T15",
+      "question": "Should the JSON file store be migrated to SQLite? What was decided and why?",
+      "key": "No. Keep the JSON file store (writes are debounced at 200 ms instead). Reason: ops backs up data/store.json with a nightly rsync job that diffs plain-text files; a binary SQLite file would break their backup checks.",
+      "rubric": {"2": "Keep JSON / no SQLite AND the ops rsync/plain-text backup reason.", "1": "Keep JSON / no SQLite without the (correct) reason.", "0": "Unknown, or recommends migrating."},
+      "keywords": ["sqlite", "rsync", "backup"]
+    },
+    {
+      "id": "D4", "category": "decisions", "planted_turn": "T06",
+      "question": "How are tracking numbers validated for each carrier, and why that way?",
+      "key": "Only ATP (Austrian Post) numbers are validated, as UPU S10 incl. mod-11 check digit. All other carriers: any non-empty value. Reason: their formats change too often; last year valid DHL numbers were rejected for two days.",
+      "rubric": {"2": "ATP-only S10/check-digit validation, others accept anything non-empty, AND the 'formats change too often / DHL incident' reason.", "1": "ATP-only validation without the reason.", "0": "Unknown or wrong (e.g. all carriers validated)."},
+      "keywords": ["s10", "check digit", "formats change", "dhl"]
+    },
+    {
+      "id": "X1", "category": "dead_ends", "planted_turn": "T16",
+      "question": "What do we know about implementing hot reload of config/default.json: what has been tried, what failed and why, and what works?",
+      "key": "fs.watch was tried and never fires on staging, because the config is a Docker bind mount from a Windows host and file change events don't propagate into the container. Polling with fs.watchFile worked.",
+      "rubric": {"2": "fs.watch fails AND why (Docker bind mount / events don't propagate); mentioning fs.watchFile polling as what works is expected but not required.", "1": "Only one part: 'fs.watch doesn't work' without the reason, or 'use fs.watchFile polling' without the failure explanation.", "0": "Unknown, or recommends fs.watch."},
+      "keywords": ["fs.watch", "watchfile", "bind mount", "hot reload"]
+    },
+    {
+      "id": "X2", "category": "dead_ends", "planted_turn": "T09",
+      "question": "Where does the HMAC signature for ERP webhooks go, what was tried before, and why did that fail?",
+      "key": "In the JSON body as top-level field `sig` (computed over the body without `sig`). An `X-Signature` header was tried first and failed because the ERP's API gateway strips all custom X- headers.",
+      "rubric": {"2": "Body field `sig` AND header was tried AND the gateway strips custom X- headers.", "1": "Partial: body `sig` only, or 'header didn't work' without the gateway reason.", "0": "Unknown, or says the signature goes in a header."},
+      "keywords": ["x-signature", "sig", "gateway", "strips"]
+    },
+    {
+      "id": "X3", "category": "dead_ends", "planted_turn": "T18",
+      "question": "Has caching or memoizing ETA calculations been tried? What happened?",
+      "key": "Yes. Memoizing calculateEta caused stale ETAs: after a new tracking event (e.g. an exception) the list kept the old ETA because the cache wasn't invalidated; a proper cache key got messy. The memoization was removed; ETA caching is a dead end (paginate the list instead).",
+      "rubric": {"2": "Tried AND stale ETAs after new events / invalidation problem AND removed (dead end).", "1": "Tried and removed without the reason, or the staleness problem without saying it was abandoned.", "0": "Unknown, or says caching is in place / recommended."},
+      "keywords": ["memo", "cache", "stale"]
+    },
+    {
+      "id": "X4", "category": "dead_ends", "planted_turn": "T11",
+      "question": "Can multiple tracking events be sent to the ERP in one batched request? Why or why not?",
+      "key": "No. Batching was tried (September): the ERP answers 422 to any array payload and only accepts a single event object per request.",
+      "rubric": {"2": "No AND the ERP rejects arrays (422) / single object only.", "1": "No, without the reason.", "0": "Unknown, or says batching is possible."},
+      "keywords": ["batch", "422", "array"]
+    },
+    {
+      "id": "F1", "category": "facts", "planted_turn": "T16",
+      "question": "On which port does the ERP sandbox listen?",
+      "key": "Port 9911 (since the October infra move). The docs and README still say 8080, which is outdated.",
+      "rubric": {"2": "9911.", "1": "Mentions 9911 but hedges between 9911 and 8080.", "0": "Unknown, 8080, or anything else."},
+      "keywords": ["9911"]
+    },
+    {
+      "id": "F2", "category": "facts", "planted_turn": "T05",
+      "question": "Is any test known to be flaky? Which one, and what should be done when it fails?",
+      "key": "'emits webhook on delivered' in test/events.test.ts fails about 1 in 5 runs on CI (timer race), tracked as OPS-412, owned by the platform team. If it fails: rerun once, don't try to fix it.",
+      "rubric": {"2": "Names the test ('emits webhook on delivered' or clearly the delivered-webhook test in events.test.ts) AND 'rerun once / don't fix it'.", "1": "Names the test without the handling, or the handling with only a vague test reference.", "0": "Unknown or says no test is flaky."},
+      "keywords": ["flaky", "ops-412", "emits webhook"]
+    }
+  ]
+}
