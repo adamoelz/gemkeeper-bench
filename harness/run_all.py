@@ -74,6 +74,14 @@ def main() -> int:
                 print(f"[driver] rep{rep} complete  cost=${rep_cost(costs, a.run, rep):.2f}  spent=${budget.spent():.2f}", flush=True)
                 break
             limited = [e for e in errors.values() if "RateLimited" in e]
+            transient = [e for e in errors.values() if "timed out" in e or "process exited" in e]
+            if limited and len(limited) + len(transient) == len(errors):
+                wait_for_reset(limited[0])
+                continue
+            if transient and len(transient) == len(errors):  # API hiccup or hung session: pause, then resume
+                print(f"[driver] transient error in rep{rep}, retrying in 5 min: {transient[0][:160]}", flush=True)
+                time.sleep(300)
+                continue
             if len(limited) != len(errors):
                 print(f"[driver] STOP: non-rate-limit error in rep{rep}: {errors}", flush=True)
                 return 2

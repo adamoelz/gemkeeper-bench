@@ -20,32 +20,17 @@
 
 ---
 
-> **Status: interim.** One repetition per condition so far; repetitions 2–3 are running.
-> Numbers will move. See [RESULTS.md](RESULTS.md).
+<p align="center"><img src="results/benchmark.svg" width="800" alt="Recall after a session reset per condition"></p>
 
-## TL;DR (interim, n = 1)
+## TL;DR
 
-Recall of 15 planted facts after a reset (max 30), and behaviour traps fallen into (max 3):
-
-| Condition | gemkeeper 0.1.0 | gemkeeper 0.2.0 | Traps | Context after reset |
-|---|---|---|---|---|
-| A — no memory (`/clear`) | 0 | | 3/3 | 22k |
-| B — `/compact` once | 30 | | 0/3 | 35k |
-| B2 — `/compact` twice | 29 | | 0/3 | 33k |
-| C — handoff summary pasted into a fresh session | 25 | | 0/3 | 25k |
-| D — gemkeeper, fresh session | 28 | **30** | 0/3 | 25k |
-| D2 — gemkeeper + `/gems` sweep, fresh session | 30 | 30 | 0/3 | 25k |
-| D3 — gemkeeper, fresh session after turn 10 *and* turn 20 | **22** | **30** | 0/3 | 24k |
-| F — `/compact` + gemkeeper | | 30 | 0/3 | 40k |
-| E — no reset (upper bound) | 29 | | 0/3 | 142k |
-
-What it says so far:
-
-- **`/compact` is a strong baseline** in this scenario: it kept almost everything, even twice in a row.
-- **gemkeeper 0.1.0 fell short over two sessions** (D3: 22/30). The second, fresh session stopped writing
-  new facts to the ledger. **0.2.0** captures by content instead of only on a timer and reached 30/30 here.
-- **gemkeeper's edge is the size of what survives**: ~1k tokens of ledger instead of a ~14k token summary,
-  and it survives `/clear` and new sessions, where `/compact` doesn't exist.
+- **gemkeeper 0.2.0 kept all 15 planted facts** after a reset into a fresh session (30/30, 3 of 3 reps),
+  also across **two** fresh sessions, from a ~1.4k-token ledger. 0.1.0 managed only 22/30 over two sessions.
+- **`/compact` is a strong baseline**: 29.5/30 once, 29/30 twice, but it only exists inside one session and
+  carries ~15k tokens. A handoff summary lost the *why* and the dead ends (25/30). No memory: 0/30 and
+  2.5 of 3 behaviour traps fallen into; every condition with memory avoided all traps.
+- **The cost of 0.2.0's better capture**: about +21% cost and +10% context during the work session, and
+  false-positive gem checks on question-only prompts. Details and next steps: [RESULTS.md](RESULTS.md).
 
 ## What it measures
 
@@ -108,6 +93,7 @@ git -C gemkeeper checkout <commit from results/<run>/plugin.json>   # the plugin
 
 python harness/run_all.py --run myrun --reps 1 2 3 --budget 40       # waits out usage limits, resumable
 python harness/summarize.py --run myrun                              # tables -> results/myrun/summary.md
+python harness/make_chart.py                                         # results/benchmark.svg (runs f + t)
 ```
 
 - `--budget` is a hard cap in USD (API-equivalent `total_cost_usd`) over everything in `results/costs.jsonl`.
@@ -140,7 +126,7 @@ gemkeeper/    the plugin under test (submodule)
 ## Limitations
 
 - **One synthetic scenario.** Real sessions are messier, and the gems here are stated quite explicitly.
-- **Small n** (1 so far, 3 planned) and an **LLM judge** (blind, but still an LLM).
+- **Small n** (0.1.0: 1, baselines: 2, 0.2.0: 3) and an **LLM judge** (blind, but still an LLM).
 - The 0.2.0 trigger words were written before checking them against the scenario; they fire on 11 of the 12
   turns that plant a gem. Still, the scenario's phrasing ("never", "because", "tried") suits them well.
 - Two Claude accounts were used (usage limits). They were aligned (same CLI, model, tools, no connectors),

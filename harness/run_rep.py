@@ -132,6 +132,9 @@ class Rep:
             self.budget.add(f"{self.run_name}/rep{self.rep}/{name}#aborted", getattr(e, "cost", None))
             raise
         self.budget.add(f"{self.run_name}/rep{self.rep}/{name}", res.get("cost") if isinstance(res, dict) else None)
+        err = (res.get("error") or (res.get("session") or {}).get("error")) if isinstance(res, dict) else None
+        if err:  # never cache a failed step: a rerun must retry it
+            raise RuntimeError(f"{name} failed: {err}")
         f.write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
         cost = res.get("cost") if isinstance(res, dict) else None
         print(f"[rep{self.rep}] {name} done  cost=${cost}  budget spent=${self.budget.spent():.2f}", flush=True)

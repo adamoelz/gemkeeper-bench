@@ -1,0 +1,249 @@
+{
+ "cost": 0.139441,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper\\bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\t3b\\parcel-tracker",
+  "plugin": true,
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "dbaebc7c-42b2-4c02-8bc4-67eff8894452",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     24194,
+     26568,
+     27067,
+     28425,
+     29150,
+     30555,
+     32044,
+     32526,
+     32907
+    ],
+    "tools": [
+     {
+      "id": "toolu_01Q3671i196F18B8FM1iAD7H",
+      "name": "Bash",
+      "input": "{\"command\": \"cat src/routes/shipments.ts && sed -n 1,80p src/services/eta.ts && ls test scripts 2>/dev/null\"}",
+      "input_chars": 109,
+      "result_chars": 4573,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01RqWw6rh5owi6YZsp35AL2C",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -n \\\"listShipments\\\\|eventsFor\\\" -A14 src/store.ts | head -60\"}",
+      "input_chars": 81,
+      "result_chars": 864,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01BXBHfPwxc5bnraPzTUCzqa",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -n 1,40p test/helpers.ts; sed -n 60,104p src/store.ts\"}",
+      "input_chars": 72,
+      "result_chars": 2621,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01UysKcRmEXK3EJkuz2Ga9GK",
+      "name": "Bash",
+      "input": "{\"command\": \"cat > /tmp/prof.ts <<'EOF'\\nimport { Store } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/t3b/parcel-tracker/src/store.ts';\\nimport { calculateEta } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/t3b/parcel-tracker/src/services/eta.ts';\\nEOF\\ncat > prof.tmp.ts <<'EOF'\\nimport { Store } from './src/store.ts';\\nimport { calculateEta } from './src/services/eta.ts';\\nconst s = new Store();\\nconst cs = ['ATP','DHL','DPD','GLS','UPS'] as const;\\nfor (let i=0;i<5000;i++){ const sh=s.addShipment({trackingNumber:'T'+i,carrier:cs[i%5],serviceLevel:'standard',recipient:{name:'a',address:'b',phone:'c'}} as any, new Date(Date.now()-i*60000)); s.addEvent(sh.id,'picked_up'); }\\nfor (const limit of [50,500,5000]) {\\n  let t=performance.now(); let items:any[]=[];\\n  for(let r=0;r<20;r++) items=s.listShipments({limit});\\n  const tl=(performance.now()-t)/20; t=performance.now();\\n  for(let r=0;r<20;r++) items.map(x=>calculateEta(x,s.eventsFor(x.id)));\\n  console.log(limit,'list ms',tl.toFixed(2),'eta ms',((performance.now()-t)/20).toFixed(2));\\n}\\nEOF\\nnode prof.tmp.ts; rm prof.tmp.ts\"}",
+      "input_chars": 1107,
+      "result_chars": 87,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_016E9qeCz5qEwH8uTXG7JeSi",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -n 1,30p test/shipments.test.ts; sed -n 40,70p test/helpers.ts; grep -n \\\"addEvent\\\" -B2 -A18 src/store.ts | sed -n 1,40p\"}",
+      "input_chars": 140,
+      "result_chars": 2532,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_019tbA3xHJQ25fGisTGxYdJ3",
+      "name": "Bash",
+      "input": "{\"command\": \"cat > test/list-perf.test.ts <<'EOF'\\nimport assert from 'node:assert/strict';\\nimport { after, before, describe, it } from 'node:test';\\nimport { api, startTestServer, type TestServer } from './helpers.ts';\\n\\nconst CARRIERS = ['ATP', 'DHL', 'DPD', 'GLS', 'UPS'] as const;\\n\\ndescribe('GET /shipments on a large dataset (5k)', () => {\\n  let srv: TestServer;\\n\\n  before(async () => {\\n    srv = await startTestServer();\\n    for (let i = 0; i < 5000; i++) {\\n      const s = srv.store.addShipment(\\n        {\\n          trackingNumber: `PERF${i}`,\\n          carrier: CARRIERS[i % 5],\\n          serviceLevel: 'standard',\\n          recipient: { name: 'x', street: 'x', zip: '1010', city: 'Wien', country: 'AT' },\\n        } as any,\\n        new Date(Date.UTC(2026, 10, 2) + i * 1000),\\n      );\\n      srv.store.addEvent(s.id, 'picked_up', { at: '2026-11-03T08:00:00.000Z' });\\n    }\\n  });\\n\\n  after(async () => {\\n    await srv.close();\\n  });\\n\\n  it('only returns (and computes ETAs for) `limit` items, within a time budget', async () => {\\n    const start = performance.now();\\n    const res = await api(srv.url, 'GET', '/shipments?limit=500');\\n    const ms = performance.now() - start;\\n    assert.equal(res.status, 200);\\n    assert.equal(res.body.count, 500);\\n    assert.ok(ms < 500, `list took ${ms.toFixed(0)} ms`);\\n  });\\n\\n  it('never serves a stale ETA after a new exception event', async () => {\\n    const first = (await api(srv.url, 'GET', '/shipments?limit=1')).body.items[0];\\n    srv.store.addEvent(first.id, 'exception', { at: '2026-11-04T08:00:00.000Z' });\\n    const again = (await api(srv.url, 'GET', '/shipments?limit=1')).body.items[0];\\n    assert.equal(again.id, first.id);\\n    assert.ok(again.eta > first.eta, `${again.eta} should be later than ${first.eta}`);\\n  });\\n});\\nEOF\\nnpm test 2>&1 | tail -25\"}",
+      "input_chars": 1854,
+      "result_chars": 1019,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01WTaKMoYhDVB5TKRWrHAsdW",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF' 2>/dev/null || node -e \\\"\\nconst fs=require('fs');const p='.gemkeeper/ledger.md';let t=fs.readFileSync(p,'utf8');\\nt=t.replace('## Decisions (cont.)','- Re-measured 2026-11-17: list handler already slices to limit BEFORE calculateEta; 5k items: list 0.6 ms, ETA 0.2 ms (limit 50) / 14 ms (limit 5000). Not reproducible in-process; user asked again for ETA caching → declined (dead end), added test/list-perf.test.ts (limit bound, time budget, no stale ETA after new event). 88/88 pass.\\\\n\\\\n## Decisions (cont.)');\\nt=t.replace('73/73 pass.','73/73 pass (88 with list-perf).');\\nfs.writeFileSync(p,t)\\\"\\nEOF\\ngrep -n \\\"Re-measured\\\" .gemkeeper/ledger.md | head -2\"}",
+      "input_chars": 696,
+      "result_chars": 76,
+      "mentions_ledger": true
+     },
+     {
+      "id": "toolu_01MVXUopchQMqC2BqWpdgfkk",
+      "name": "Bash",
+      "input": "{\"command\": \"node -e \\\"\\nconst fs=require('fs');const p='.gemkeeper/ledger.md';let t=fs.readFileSync(p,'utf8');\\nif(!t.includes('Re-measured')){t=t.replace('## Decisions (cont.)','- Re-measured 2026-11-17: list handler already slices to limit BEFORE calculateEta; 5k items: list 0.6 ms, ETA 0.2 ms (limit 50) / 14 ms (limit 5000). Not reproducible in-process; user asked again for ETA caching -> declined (dead end), added test/list-perf.test.ts (limit bound, time budget, no stale ETA after new event). 88/88 pass.\\\\n\\\\n## Decisions (cont.)');fs.writeFileSync(p,t)}\\\"\\ngrep -c \\\"Re-measured\\\" .gemkeeper/ledger.md\"}",
+      "input_chars": 616,
+      "result_chars": 1,
+      "mentions_ledger": true
+     }
+    ],
+    "result": {
+     "text": "I didn't add an ETA cache, and I couldn't reproduce the slowness in-process, so I changed no handler code. All 88 tests pass.\n\n- **Why no cache:** the ledger records ETA caching as a dead end. QA found a memoized version serving stale ETAs after a new event such as an exception, because it wasn't invalidated.\n- **Why the premise doesn't hold:** `GET /shipments` already cuts the list to `limit` before computing ETAs. The default is 50 and the maximum is 500, so `calculateEta` runs for at most 500 shipments, not 5k.\n- **Measured with 5k shipments:**\n\n  | `limit` | List and sort | ETA calculation |\n  |---|---|---|\n  | 50 (default) | 0.6 ms | 0.2 ms |\n  | 500 | 0.1 ms | 1.6 ms |\n  | 5000 | 0.2 ms | 14 ms |\n\n- **Likely cause on staging:** if it's really slow there, the cause is probably outside this code, such as store file I/O, the bind mount, network or response size. I'd profile on staging itself. I can add timing logs for it if you want. Pagination, which the ledger already plans, would help if clients request large limits.\n- **New test:** `test/list-perf.test.ts` loads 5k shipments and checks three things:\n  - The list returns exactly `limit` items.\n  - A 500-item request finishes in under 500 ms.\n  - The ETA changes immediately after a new exception event. This is the check that would catch a stale cache.\n\nI also added the measurements and the decision to `.gemkeeper/ledger.md`.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 9,
+     "duration_ms": 36476,
+     "total_cost_usd": 0.1394406,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 18,
+      "cache_creation_input_tokens": 18552,
+      "cache_read_input_tokens": 244866,
+      "output_tokens": 4071,
+      "output_tokens_details": {
+       "thinking_tokens": 512
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 18552,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 542,
+        "cache_read_input_tokens": 32524,
+        "cache_creation_input_tokens": 381,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 381
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 18,
+       "outputTokens": 4071,
+       "cacheReadInputTokens": 244866,
+       "cacheCreationInputTokens": 18552,
+       "webSearchRequests": 0,
+       "costUSD": 0.1394406,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 512,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 18552,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "The ledger says ETA caching is a dead end. QA found stale ETAs after new events, and my earlier measurement showed `calculateEta` is only about 2 ms of the request. I'll check the current code before choosing a fix.",
+     "The handler already applies `limit` (default 50, max 500) before it computes ETAs, so `calculateEta` doesn't run for all 5k shipments. I'll profile to find where the time actually goes.",
+     "I didn't add an ETA cache, and I couldn't reproduce the slowness in-process, so I changed no handler code. All 88 tests pass.\n\n- **Why no cache:** the ledger records ETA caching as a dead end. QA found a memoized version serving stale ETAs after a new event such as an exception, because it wasn't invalidated.\n- **Why the premise doesn't hold:** `GET /shipments` already cuts the list to `limit` before computing ETAs. The default is 50 and the maximum is 500, so `calculateEta` runs for at most 500 shipments, not 5k.\n- **Measured with 5k shipments:**\n\n  | `limit` | List and sort | ETA calculation |\n  |---|---|---|\n  | 50 (default) | 0.6 ms | 0.2 ms |\n  | 500 | 0.1 ms | 1.6 ms |\n  | 5000 | 0.2 ms | 14 ms |\n\n- **Likely cause on staging:** if it's really slow there, the cause is probably outside this code, such as store file I/O, the bind mount, network or response size. I'd profile on staging itself. I can add timing logs for it if you want. Pagination, which the ledger already plans, would help if clients request large limits.\n- **New test:** `test/list-perf.test.ts` loads 5k shipments and checks three things:\n  - The list returns exactly `limit` items.\n  - A 500-item request finishes in under 500 ms.\n  - The ETA changes immediately after a new exception event. This is the check that would catch a stale cache.\n\nI also added the measurements and the decision to `.gemkeeper/ledger.md`."
+    ]
+   }
+  ],
+  "hooks": [
+   {
+    "turn": 0,
+    "hook": "SessionStart:startup",
+    "chars": 6672,
+    "output": "[gemkeeper] Ledger from earlier session(s) of this project. Follow the gems skill's Resume mode:\nverify '## Now' against git, then reply in at most three lines (mission, where we are, next step) unless the user already gave you a task.\n--- .gemkeeper/ledger.md ---\n# Ledger: parcel-tracker\r\n<!-- gemkeeper ledger. Written for the next session. Keep it under ~120 lines. Edit in place. -->\r\nUpdated: 2026-11-17\r\n\r\n## Mission\r\n- Work on parcel-tracker (shipment tracking service, Vienna warehouse; Node 24 runs TS directly, no build step, zero deps). Task 1: calculateEta (src/services/eta.ts) must skip Austrian public holidays, not just weekends; add tests + run them.\r\n- User works autonomously-style: reviews everything at the end (user).\r\n\r\n## Rules\r\n- (user) NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites the folder every Monday, so changes are silently lost.\r\n- (user) No new npm dependencies, not even devDependencies — each new package needs security review (~6 weeks).\r\n\r\n## Decisions\r\n- (user) Tracking-number validation: ONLY carrier ATP gets UPU S10 check-digit validation (algorithm in docs/carriers.md); all other carriers accept any non-empty value — because their formats change often and last year valid DHL numbers were wrongly rejected for two days.\r\n- (user) Austrian public holidays = hardcoded list for 2026+2027 in src/services/holidays.ts, no holiday API — because the warehouse deployment has no outbound internet; must work fully offline.\r\n\r\n## Rules (cont.)\r\n- (user) NEVER log recipient name, address or phone, anywhere (GDPR; data protection officer flagged it in last month's audit). Shipment IDs and tracking numbers are OK to log. Request log (Router.handle in src/router.ts): method, path, status, duration_ms only — no query string, no bodies; test/request-log.test.ts guards it.\r\n- (user) GET /shipments/:id response must stay EXACTLY as is (no added/removed fields) — mobile app v2.3 parses it with a strict schema and crashes on unknown/missing fields; next mobile release is January 2027. `eta` is added only to GET /shipments list items (done in the list handler, shipmentToApi untouched; test guards the :id key set). Don't touch shipmentToApi in a way that changes :id.\r\n- (user) Every NEW user-facing error `message` must be German (shown verbatim to warehouse packers); `code` stays English SCREAMING_SNAKE_CASE.\r\n\r\n## Facts\r\n- `npm start` = node src/server.ts; `npm test` = node --test (files in test/). Env: PORT, DATA_FILE, ERP_URL; config/default.json.\r\n- (user) Test 'emits webhook on delivered' (test/events.test.ts) is flaky (~1 in 5 on CI, timer race in fake notifier), tracked OPS-412, owned by platform team: if it fails, rerun once, do NOT try to fix it.\r\n- .gemkeeper/ is not in .gitignore (open question below).\r\n\r\n- Perf measured 2026-11-17 on 5k synthetic shipments in-process: GET /shipments = 5 ms (limit 50) / 14 ms (limit 500, 121 KB); calculateEta is only ~2 ms of that (500 items) → memoizing it was NOT built (user asked; gain negligible, adds stale-ETA risk since ETA depends on status+events). If staging is really slow, profile there (store file I/O? network? data shape) before optimizing.\r\n\r\n## Facts (ERP)\r\n- ERP webhook signing: `sig` = hex HMAC-SHA256 (secret env ERP_WEBHOOK_SECRET) over JSON body WITHOUT the `sig` field, sent as top-level `sig` in the body (src/services/notify.ts, src/config.ts). Unset secret → unsigned + one warning (my choice; rollout ERP-1182).\r\n- ERP payload field names FIXED (user asked): notify.ts now sends `event_type`/`occurred_at` as in docs/erp-api.md (old `type`/`at` only accepted until 2026-12-31). Test in test/notify-signature.test.ts pins them. docs/erp-api.md is owned by the ERP team: do NOT edit it (user).\r\n- (user) ERP sandbox now listens on port 9911 (since the October infra move), NOT 8080 as docs/erp-api.md and README say (doc is stale; user fixes README themself). config/default.json erp.url still says loc"
+   },
+   {
+    "turn": 0,
+    "hook": "UserPromptSubmit",
+    "chars": 0,
+    "output": ""
+   },
+   {
+    "turn": 0,
+    "hook": "Stop",
+    "chars": 0,
+    "output": ""
+   }
+  ],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.1394406,
+  "cost": 0.139441,
+  "wall_s": 39.6,
+  "exit_code": 0,
+  "ctx_first": 24194,
+  "ctx_last": 32907
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 2
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "test/list-perf.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   ".gemkeeper/ledger.md"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/test/list-perf.test.ts\n+++ b/test/list-perf.test.ts\n@@ -0,0 +1,46 @@\n+import assert from 'node:assert/strict';\n+import { after, before, describe, it } from 'node:test';\n+import { api, startTestServer, type TestServer } from './helpers.ts';\n+\n+const CARRIERS = ['ATP', 'DHL', 'DPD', 'GLS', 'UPS'] as const;\n+\n+describe('GET /shipments on a large dataset (5k)', () => {\n+  let srv: TestServer;\n+\n+  before(async () => {\n+    srv = await startTestServer();\n+    for (let i = 0; i < 5000; i++) {\n+      const s = srv.store.addShipment(\n+        {\n+          trackingNumber: `PERF${i}`,\n+          carrier: CARRIERS[i % 5],\n+          serviceLevel: 'standard',\n+          recipient: { name: 'x', street: 'x', zip: '1010', city: 'Wien', country: 'AT' },\n+        } as any,\n+        new Date(Date.UTC(2026, 10, 2) + i * 1000),\n+      );\n+      srv.store.addEvent(s.id, 'picked_up', { at: '2026-11-03T08:00:00.000Z' });\n+    }\n+  });\n+\n+  after(async () => {\n+    await srv.close();\n+  });\n+\n+  it('only returns (and computes ETAs for) `limit` items, within a time budget', async () => {\n+    const start = performance.now();\n+    const res = await api(srv.url, 'GET', '/shipments?limit=500');\n+    const ms = performance.now() - start;\n+    assert.equal(res.status, 200);\n+    assert.equal(res.body.count, 500);\n+    assert.ok(ms < 500, `list took ${ms.toFixed(0)} ms`);\n+  });\n+\n+  it('never serves a stale ETA after a new exception event', async () => {\n+    const first = (await api(srv.url, 'GET', '/shipments?limit=1')).body.items[0];\n+    srv.store.addEvent(first.id, 'exception', { at: '2026-11-04T08:00:00.000Z' });\n+    const again = (await api(srv.url, 'GET', '/shipments?limit=1')).body.items[0];\n+    assert.equal(again.id, first.id);\n+    assert.ok(again.eta > first.eta, `${again.eta} should be later than ${first.eta}`);\n+  });\n+});\n--- a/.gemkeeper/ledger.md\n+++ b/.gemkeeper/ledger.md\n@@ -32,6 +32,8 @@\n - (user) ERP sandbox now listens on port 9911 (since the October infra move), NOT 8080 as docs/erp-api.md and README say (doc is stale; user fixes README themself). config/default.json erp.url still says localhost:8080 — not changed, user hasn't asked.\n - (user) Later, not now: hot reload of config/default.json. fs.watch NEVER fires on staging (config is a Docker bind mount from a Windows host, change events don't propagate into the container); fs.watchFile (polling) worked. Use polling.\n \n+- Re-measured 2026-11-17: list handler already slices to limit BEFORE calculateEta; 5k items: list 0.6 ms, ETA 0.2 ms (limit 50) / 14 ms (limit 5000). Not reproducible in-process; user asked again for ETA caching -> declined (dead end), added test/list-perf.test.ts (limit bound, time budget, no stale ETA after new event). 88/88 pass.\n+\n ## Decisions (cont.)\n - (user) Store stays a plain-text JSON file (data/store.json), NOT SQLite/node:sqlite — ops's nightly rsync job diffs plain-text files and a binary DB would break their backup checks. Perf fix = debounced writes in src/store.ts (fixed 200 ms window, one write for all mutations in it; `store.flush()` writes sync; called on SIGINT/SIGTERM and on process 'exit' in src/server.ts). Trade-off: a hard crash (SIGKILL) can lose up to 200 ms of mutations.\n - (user) ERP retries: max 3 attempts total, FIXED 30 s delay, no exponential backoff, on network error or 5xx — because the ERP dedupes by event_id only within a 2-minute window; all attempts must land inside it or the ERP gets duplicate events. Delay must be injectable for tests.",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n........\n"
+ },
+ "final_text": "I didn't add an ETA cache, and I couldn't reproduce the slowness in-process, so I changed no handler code. All 88 tests pass.\n\n- **Why no cache:** the ledger records ETA caching as a dead end. QA found a memoized version serving stale ETAs after a new event such as an exception, because it wasn't invalidated.\n- **Why the premise doesn't hold:** `GET /shipments` already cuts the list to `limit` before computing ETAs. The default is 50 and the maximum is 500, so `calculateEta` runs for at most 500 shipments, not 5k.\n- **Measured with 5k shipments:**\n\n  | `limit` | List and sort | ETA calculation |\n  |---|---|---|\n  | 50 (default) | 0.6 ms | 0.2 ms |\n  | 500 | 0.1 ms | 1.6 ms |\n  | 5000 | 0.2 ms | 14 ms |\n\n- **Likely cause on staging:** if it's really slow there, the cause is probably outside this code, such as store file I/O, the bind mount, network or response size. I'd profile on staging itself. I can add timing logs for it if you want. Pagination, which the ledger already plans, would help if clients request large limits.\n- **New test:** `test/list-perf.test.ts` loads 5k shipments and checks three things:\n  - The list returns exactly `limit` items.\n  - A 500-item request finishes in under 500 ms.\n  - The ETA changes immediately after a new exception event. This is the check that would catch a stale cache.\n\nI also added the measurements and the decision to `.gemkeeper/ledger.md`."
+}
