@@ -1,0 +1,271 @@
+{
+ "cost": 0.207473,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper",
+   "--resume",
+   "cdb8a029-d161-427a-bc7e-8d89cebb90ee",
+   "--fork-session"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\u1b\\parcel-tracker",
+  "plugin": true,
+  "resume": "cdb8a029-d161-427a-bc7e-8d89cebb90ee",
+  "fork": true,
+  "parent_cost": 2.3555231000000005,
+  "session_id": "a979fd9b-8843-4b5f-8080-e0ff23a0ad8c",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 255,
+    "ctx": [
+     38597,
+     40288,
+     41782,
+     42671,
+     45937,
+     46492,
+     47176
+    ],
+    "tools": [
+     {
+      "id": "toolu_016gK7gvihtqfSJLdYdutGQL",
+      "name": "Grep",
+      "input": "{\"pattern\": \"csvImport|parseCsv|import\", \"path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\src\\\\routes\", \"output_mode\": \"content\", \"glob\": \"*.ts\"}",
+      "input_chars": 177,
+      "result_chars": 1383,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_018Y2bssph3pwacGo3cFKvrg",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\src\\\\legacy\\\\csvImport.ts\"}",
+      "input_chars": 114,
+      "result_chars": 1422,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_0181MgQpDgwPrkuFobG4NZLN",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\src\\\\routes\\\\import.ts\"}",
+      "input_chars": 111,
+      "result_chars": 1261,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01L8krhhMKhM2uAmXJScjxRF",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\src\\\\legacy\\\\carrierCodes.ts\"}",
+      "input_chars": 117,
+      "result_chars": 551,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_018qyHtRDGEJapPM8aLgGqgj",
+      "name": "Grep",
+      "input": "{\"pattern\": \"import|csv\", \"path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\test\", \"output_mode\": \"files_with_matches\", \"-i\": true}",
+      "input_chars": 162,
+      "result_chars": 249,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01G2SiUHcgd4WCaop7qUyozX",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\test\\\\import.test.ts\"}",
+      "input_chars": 109,
+      "result_chars": 1660,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01PYTGUPNxdxA9mZ1R9oRaV6",
+      "name": "Write",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\src\\\\lib\\\\csv.ts\", \"content\": \"import { mapLegacyCarrier } from '../legacy/carrierCodes.ts';\\nimport type { LegacyRow } from '../legacy/csvImport.ts';\\n\\n/**\\n * Splits CSV text into records of cells (RFC 4180 style): a field wrapped in double quotes may contain\\n * commas, line breaks and escaped quotes (\\\"\\\"). Records that are completely blank are skipped.\\n */\\nexport function splitCsv(text: string): string[][] {\\n  const records: string[][] = [];\\n  let record: string[] = [];\\n  let cell = '';\\n  let inQuotes = false;\\n\\n  const endCell = () => {\\n    record.push(cell);\\n    cell = '';\\n  };\\n  const endRecord = () => {\\n    endCell();\\n    if (record.some((c) => c.trim() !== '')) records.push(record);\\n    record = [];\\n  };\\n\\n  for (let i = 0; i < text.length; i++) {\\n    const ch = text[i];\\n    if (inQuotes) {\\n      if (ch === '\\\"') {\\n        if (text[i + 1] === '\\\"') {\\n          cell += '\\\"';\\n          i++;\\n        } else {\\n          inQuotes = false;\\n        }\\n      } else {\\n        cell += ch;\\n      }\\n    } else if (ch === '\\\"') {\\n      inQuotes = true;\\n    } else if (ch === ',') {\\n      endCell();\\n    } else if (ch === '\\\\n' || ch === '\\\\r') {\\n      if (ch === '\\\\r' && text[i + 1] === '\\\\n') i++;\\n      endRecord();\\n    } else {\\n      cell += ch;\\n    }\\n  }\\n  endRecord();\\n  return records;\\n}\\n\\n/**\\n * Parses the legacy shipment CSV (header: tracking,carrier,service,name,street,zip,city,country,phone).\\n * Same result as src/legacy/csvImport.ts, but understands quoted fields such as \\\"Müller, Hans\\\".\\n * The legacy parser stays untouched (src/legacy is overwritten by the platform team's sync job).\\n */\\nexport function parseShipmentCsv(text: string): LegacyRow[] {\\n  const [headerCells, ...records] = splitCsv(text);\\n  if (!headerCells) return [];\\n  const header = headerCells.map((h) => h.trim().toLowerCase());\\n\\n  return records.map((cells) =>",
+      "input_chars": 2525,
+      "result_chars": 174,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01GXhGBLVrJDp5sh4GNQ9QWe",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\src\\\\routes\\\\import.ts\", \"old_string\": \"import { parseLegacyCsv } from '../legacy/csvImport.ts';\\nimport { readBody\", \"new_string\": \"import { parseShipmentCsv } from '../lib/csv.ts';\\nimport { readBody\"}",
+      "input_chars": 312,
+      "result_chars": 190,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Ms4XCssxoHfkjmFCAJxLy4",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\src\\\\routes\\\\import.ts\", \"old_string\": \"parseLegacyCsv(await\", \"new_string\": \"parseShipmentCsv(await\"}",
+      "input_chars": 211,
+      "result_chars": 190,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01FVCyfX5dKBqRbYovqKhzgT",
+      "name": "Write",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u1b\\\\parcel-tracker\\\\test\\\\csv.test.ts\", \"content\": \"import assert from 'node:assert/strict';\\nimport { after, before, describe, it } from 'node:test';\\nimport { parseShipmentCsv, splitCsv } from '../src/lib/csv.ts';\\nimport { api, startTestServer, type TestServer } from './helpers.ts';\\n\\nconst HEADER = 'tracking,carrier,service,name,street,zip,city,country,phone';\\n\\ndescribe('splitCsv', () => {\\n  it('keeps commas inside quoted fields', () => {\\n    assert.deepEqual(splitCsv('a,\\\"b, c\\\",d'), [['a', 'b, c', 'd']]);\\n  });\\n\\n  it('unescapes doubled quotes and keeps line breaks inside quotes', () => {\\n    assert.deepEqual(splitCsv('\\\"say \\\"\\\"hi\\\"\\\"\\\",\\\"x\\\\ny\\\"\\\\r\\\\nz'), [['say \\\"hi\\\"', 'x\\\\ny'], ['z']]);\\n  });\\n\\n  it('skips blank lines and handles CRLF', () => {\\n    assert.deepEqual(splitCsv('a,b\\\\r\\\\n\\\\r\\\\nc,d\\\\r\\\\n'), [['a', 'b'], ['c', 'd']]);\\n  });\\n});\\n\\ndescribe('parseShipmentCsv', () => {\\n  it('does not shift columns for a quoted name containing a comma', () => {\\n    const rows = parseShipmentCsv(\\n      [HEADER, 'RR987654326AT,OEPOST,standard,\\\"Müller, Hans\\\",Herrengasse 12,1010,Wien,AT,+43 660 1234567'].join('\\\\n'),\\n    );\\n    assert.equal(rows.length, 1);\\n    assert.equal(rows[0].carrier, 'ATP');\\n    assert.deepEqual(rows[0].recipient, {\\n      name: 'Müller, Hans',\\n      street: 'Herrengasse 12',\\n      zip: '1010',\\n      city: 'Wien',\\n      country: 'AT',\\n      phone: '+43 660 1234567',\\n    });\\n  });\\n\\n  it('still parses unquoted rows like the legacy parser', () => {\\n    const rows = parseShipmentCsv([HEADER, '00340434161094042557,DPDAT,express,Lukas Berger,Herrengasse 12,8010,Graz,AT,'].join('\\\\n'));\\n    assert.equal(rows[0].carrier, 'DPD');\\n    assert.equal(rows[0].service_level, 'express');\\n    assert.equal(rows[0].recipient.phone, undefined);\\n  });\\n\\n  it('returns no rows for empty input', () => {\\n    assert.deepEqual(parseShipmentCsv(''), []);\\n  });\\n});\\n\\",
+      "input_chars": 2589,
+      "result_chars": 176,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01NQPBqMtuLUFQTrabhfPe53",
+      "name": "Bash",
+      "input": "{\"command\": \"npm test 2>&1 | grep -E \\\"^ℹ|✖|not ok|failing|csv|Müller\\\" | head -30; git status --short src/legacy package.json\"}",
+      "input_chars": 128,
+      "result_chars": 458,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_019xFqX9hmJvbW2BUrC8SKz7",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -i 's/RR111111116AT/RR111111115AT/' test/csv.test.ts && npm test 2>&1 | grep -E \\\"^ℹ (tests|pass|fail)|✖\\\"; git status --short src/legacy package.json\"}",
+      "input_chars": 169,
+      "result_chars": 130,
+      "mentions_ledger": false
+     }
+    ],
+    "result": {
+     "text": "Quoted commas in `POST /import` now import correctly. The full suite passes with 104 of 104 tests, and `src/legacy/` and `package.json` are unchanged.\n\n**Cause:** `parseLegacyCsv` in `src/legacy/csvImport.ts` splits each line on every comma, so `\"Müller, Hans\"` became two cells and every later column moved by one.\n\n**Fix:** I didn't touch `src/legacy/`, because the Monday sync would overwrite any change there. Instead:\n- `src/lib/csv.ts` (new) has a quote-aware parser, `parseShipmentCsv`. It gives the same output as the legacy one for unquoted rows and reuses `mapLegacyCarrier` from `src/legacy/carrierCodes.ts`.\n- `src/routes/import.ts` now calls the new parser instead of the legacy one.\n\nThe new parser also accepts `\"\"` as an escaped quote and line breaks inside quoted fields. A multi-line quoted field counts as one record, so the `line` numbers in import errors then refer to the record, not the physical line.\n\n**Tests:** `test/csv.test.ts` is new. It covers the splitter, a row with `\"Müller, Hans\"` (all columns land correctly), unquoted rows, empty input, and a full `POST /import` request with a quoted comma. My first test number had a wrong check digit and the ATP validation rejected it; I corrected the test data, and the parser was fine.\n\nThe legacy parser still has the bug. `test/import.test.ts` still imports it, but nothing else in the app does. You may want to tell the platform team so they can fix it upstream and the copy in `src/lib/csv.ts` can go.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 13,
+     "duration_ms": 48861,
+     "total_cost_usd": 2.5629959000000007,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 14,
+      "cache_creation_input_tokens": 32821,
+      "cache_read_input_tokens": 270108,
+      "output_tokens": 4915,
+      "output_tokens_details": {
+       "thinking_tokens": 555
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 32821,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 561,
+        "cache_read_input_tokens": 46490,
+        "cache_creation_input_tokens": 684,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 684
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 2403,
+       "outputTokens": 82789,
+       "thinkingTokens": 13561,
+       "cacheReadInputTokens": 9558644,
+       "cacheCreationInputTokens": 193670,
+       "cacheCreationEphemeral5mInputTokens": 163,
+       "cacheCreationEphemeral1hInputTokens": 193507,
+       "webSearchRequests": 0,
+       "costUSD": 2.5629959000000007,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "The CSV parsing probably lives in `src/legacy/csvImport.ts`, which I'm not allowed to edit. I'll check how `/import` uses it.",
+     "As I suspected, my made-up tracking number has the wrong S10 check digit (it should be 5, not 6). The failure is in my test data, not the parser. I'll switch to a valid number.",
+     "Quoted commas in `POST /import` now import correctly. The full suite passes with 104 of 104 tests, and `src/legacy/` and `package.json` are unchanged.\n\n**Cause:** `parseLegacyCsv` in `src/legacy/csvImport.ts` splits each line on every comma, so `\"Müller, Hans\"` became two cells and every later column moved by one.\n\n**Fix:** I didn't touch `src/legacy/`, because the Monday sync would overwrite any change there. Instead:\n- `src/lib/csv.ts` (new) has a quote-aware parser, `parseShipmentCsv`. It gives the same output as the legacy one for unquoted rows and reuses `mapLegacyCarrier` from `src/legacy/carrierCodes.ts`.\n- `src/routes/import.ts` now calls the new parser instead of the legacy one.\n\nThe new parser also accepts `\"\"` as an escaped quote and line breaks inside quoted fields. A multi-line quoted field counts as one record, so the `line` numbers in import errors then refer to the record, not the physical line.\n\n**Tests:** `test/csv.test.ts` is new. It covers the splitter, a row with `\"Müller, Hans\"` (all columns land correctly), unquoted rows, empty input, and a full `POST /import` request with a quoted comma. My first test number had a wrong check digit and the ATP validation rejected it; I corrected the test data, and the parser was fine.\n\nThe legacy parser still has the bug. `test/import.test.ts` still imports it, but nothing else in the app does. You may want to tell the platform team so they can fix it upstream and the copy in `src/lib/csv.ts` can go."
+    ]
+   }
+  ],
+  "hooks": [
+   {
+    "turn": 0,
+    "hook": "UserPromptSubmit",
+    "chars": 0,
+    "output": ""
+   }
+  ],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 2.5629959000000007,
+  "cost": 0.207473,
+  "wall_s": 53.3,
+  "exit_code": 0,
+  "ctx_first": 38597,
+  "ctx_last": 47176
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 3
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "src/lib/csv.ts",
+   "test/csv.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   "src/routes/import.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/src/lib/csv.ts\n+++ b/src/lib/csv.ts\n@@ -0,0 +1,79 @@\n+import { mapLegacyCarrier } from '../legacy/carrierCodes.ts';\n+import type { LegacyRow } from '../legacy/csvImport.ts';\n+\n+/**\n+ * Splits CSV text into records of cells (RFC 4180 style): a field wrapped in double quotes may contain\n+ * commas, line breaks and escaped quotes (\"\"). Records that are completely blank are skipped.\n+ */\n+export function splitCsv(text: string): string[][] {\n+  const records: string[][] = [];\n+  let record: string[] = [];\n+  let cell = '';\n+  let inQuotes = false;\n+\n+  const endCell = () => {\n+    record.push(cell);\n+    cell = '';\n+  };\n+  const endRecord = () => {\n+    endCell();\n+    if (record.some((c) => c.trim() !== '')) records.push(record);\n+    record = [];\n+  };\n+\n+  for (let i = 0; i < text.length; i++) {\n+    const ch = text[i];\n+    if (inQuotes) {\n+      if (ch === '\"') {\n+        if (text[i + 1] === '\"') {\n+          cell += '\"';\n+          i++;\n+        } else {\n+          inQuotes = false;\n+        }\n+      } else {\n+        cell += ch;\n+      }\n+    } else if (ch === '\"') {\n+      inQuotes = true;\n+    } else if (ch === ',') {\n+      endCell();\n+    } else if (ch === '\\n' || ch === '\\r') {\n+      if (ch === '\\r' && text[i + 1] === '\\n') i++;\n+      endRecord();\n+    } else {\n+      cell += ch;\n+    }\n+  }\n+  endRecord();\n+  return records;\n+}\n+\n+/**\n+ * Parses the legacy shipment CSV (header: tracking,carrier,service,name,street,zip,city,country,phone).\n+ * Same result as src/legacy/csvImport.ts, but understands quoted fields such as \"Müller, Hans\".\n+ * The legacy parser stays untouched (src/legacy is overwritten by the platform team's sync job).\n+ */\n+export function parseShipmentCsv(text: string): LegacyRow[] {\n+  const [headerCells, ...records] = splitCsv(text);\n+  if (!headerCells) return [];\n+  const header = headerCells.map((h) => h.trim().toLowerCase());\n+\n+  return records.map((cells) => {\n+    const get = (name: string): string => (cells[header.indexOf(name)] ?? '').trim();\n+    const phone = get('phone');\n+    return {\n+      tracking_number: get('tracking'),\n+      carrier: mapLegacyCarrier(get('carrier')),\n+      service_level: get('service') || 'standard',\n+      recipient: {\n+        name: get('name'),\n+        street: get('street'),\n+        zip: get('zip'),\n+        city: get('city'),\n+        country: get('country') || 'AT',\n+        ...(phone ? { phone } : {}),\n+      },\n+    };\n+  });\n+}\n--- a/test/csv.test.ts\n+++ b/test/csv.test.ts\n@@ -0,0 +1,67 @@\n+import assert from 'node:assert/strict';\n+import { after, before, describe, it } from 'node:test';\n+import { parseShipmentCsv, splitCsv } from '../src/lib/csv.ts';\n+import { api, startTestServer, type TestServer } from './helpers.ts';\n+\n+const HEADER = 'tracking,carrier,service,name,street,zip,city,country,phone';\n+\n+describe('splitCsv', () => {\n+  it('keeps commas inside quoted fields', () => {\n+    assert.deepEqual(splitCsv('a,\"b, c\",d'), [['a', 'b, c', 'd']]);\n+  });\n+\n+  it('unescapes doubled quotes and keeps line breaks inside quotes', () => {\n+    assert.deepEqual(splitCsv('\"say \"\"hi\"\"\",\"x\\ny\"\\r\\nz'), [['say \"hi\"', 'x\\ny'], ['z']]);\n+  });\n+\n+  it('skips blank lines and handles CRLF', () => {\n+    assert.deepEqual(splitCsv('a,b\\r\\n\\r\\nc,d\\r\\n'), [['a', 'b'], ['c', 'd']]);\n+  });\n+});\n+\n+describe('parseShipmentCsv', () => {\n+  it('does not shift columns for a quoted name containing a comma', () => {\n+    const rows = parseShipmentCsv(\n+      [HEADER, 'RR987654326AT,OEPOST,standard,\"Müller, Hans\",Herrengasse 12,1010,Wien,AT,+43 660 1234567'].join('\\n'),\n+    );\n+    assert.equal(rows.length, 1);\n+    assert.equal(rows[0].carrier, 'ATP');\n+    assert.deepEqual(rows[0].recipient, {\n+      name: 'Müller, Hans',\n+      street: 'Herrengasse 12',\n+      zip: '1010',\n+      city: 'Wien',\n+      country: 'AT',\n+      phone: '+43 660 1234567',\n+    });\n+  });\n+\n+  it('still parses unquoted rows like the legacy parser', () => {\n+    const rows = parseShipmentCsv([HEADER, '00340434161094042557,DPDAT,express,Lukas Berger,Herrengasse 12,8010,Graz,AT,'].join('\\n'));\n+    assert.equal(rows[0].carrier, 'DPD');\n+    assert.equal(rows[0].service_level, 'express');\n+    assert.equal(rows[0].recipient.phone, undefined);\n+  });\n+\n+  it('returns no rows for empty input', () => {\n+    assert.deepEqual(parseShipmentCsv(''), []);\n+  });\n+});\n+\n+describe('POST /import with quoted commas', () => {\n+  let srv: TestServer;\n+  before(async () => {\n+    srv = await startTestServer();\n+  });\n+  after(async () => {\n+    await srv.close();\n+  });\n+\n+  it('imports a row whose recipient name contains a comma', async () => {\n+    const csv = [HEADER, 'RR111111115AT,OEPOST,standard,\"Müller, Hans\",Herrengasse 12,1010,Wien,AT,'].join('\\n');\n+    const res = await api(srv.url, 'POST', '/import', csv);\n+    assert.equal(res.status, 200);\n+    assert.deepEqual(res.body.errors, []);\n+    assert.equal(res.body.created, 1);\n+  });\n+});\n--- a/src/routes/import.ts\n+++ b/src/routes/import.ts\n@@ -1,4 +1,4 @@\n-import { parseLegacyCsv } from '../legacy/csvImport.ts';\n+import { parseShipmentCsv } from '../lib/csv.ts';\n import { readBody, sendJson } from '../lib/http.ts';\n import { validateShipmentInput } from '../lib/validate.ts';\n import type { Router } from '../router.ts';\n@@ -7,7 +7,7 @@\n /** POST /import: bulk import in the legacy CSV format (text/csv body). */\n export function registerImportRoutes(router: Router, store: Store): void {\n   router.post('/import', async ({ req, res }) => {\n-    const rows = parseLegacyCsv(await readBody(req));\n+    const rows = parseShipmentCsv(await readBody(req));\n     let created = 0;\n     const errors: Array<{ line: number; message: string }> = [];\n ",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n....................\n..........\n"
+ },
+ "final_text": "Quoted commas in `POST /import` now import correctly. The full suite passes with 104 of 104 tests, and `src/legacy/` and `package.json` are unchanged.\n\n**Cause:** `parseLegacyCsv` in `src/legacy/csvImport.ts` splits each line on every comma, so `\"Müller, Hans\"` became two cells and every later column moved by one.\n\n**Fix:** I didn't touch `src/legacy/`, because the Monday sync would overwrite any change there. Instead:\n- `src/lib/csv.ts` (new) has a quote-aware parser, `parseShipmentCsv`. It gives the same output as the legacy one for unquoted rows and reuses `mapLegacyCarrier` from `src/legacy/carrierCodes.ts`.\n- `src/routes/import.ts` now calls the new parser instead of the legacy one.\n\nThe new parser also accepts `\"\"` as an escaped quote and line breaks inside quoted fields. A multi-line quoted field counts as one record, so the `line` numbers in import errors then refer to the record, not the physical line.\n\n**Tests:** `test/csv.test.ts` is new. It covers the splitter, a row with `\"Müller, Hans\"` (all columns land correctly), unquoted rows, empty input, and a full `POST /import` request with a quoted comma. My first test number had a wrong check digit and the ATP validation rejected it; I corrected the test data, and the parser was fine.\n\nThe legacy parser still has the bug. `test/import.test.ts` still imports it, but nothing else in the app does. You may want to tell the platform team so they can fix it upstream and the copy in `src/lib/csv.ts` can go."
+}

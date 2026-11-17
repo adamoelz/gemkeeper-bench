@@ -1,0 +1,124 @@
+{
+ "cmd": [
+  "-p",
+  "--input-format",
+  "stream-json",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--include-hook-events",
+  "--model",
+  "sonnet",
+  "--effort",
+  "medium",
+  "--dangerously-skip-permissions",
+  "--settings",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+  "--disallowedTools",
+  "Agent",
+  "--plugin-dir",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper",
+  "--resume",
+  "a542c1ae-3fd8-47cf-ba41-985912238783",
+  "--fork-session"
+ ],
+ "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\u2b\\parcel-tracker",
+ "plugin": true,
+ "resume": "a542c1ae-3fd8-47cf-ba41-985912238783",
+ "fork": true,
+ "parent_cost": 1.9525186999999995,
+ "session_id": "5d35229d-bd63-4f1c-92f9-eb12698493e8",
+ "turns": [
+  {
+   "i": 0,
+   "prompt_chars": 8,
+   "ctx": [],
+   "tools": [],
+   "result": {
+    "text": "",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 0,
+    "duration_ms": 35843,
+    "total_cost_usd": 2.0257415999999995,
+    "api_error_status": null,
+    "usage": {
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "input_tokens": 0,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "output_tokens": 0,
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "",
+     "iterations": [],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 2359,
+      "outputTokens": 74271,
+      "thinkingTokens": 12019,
+      "cacheReadInputTokens": 7335206,
+      "cacheCreationInputTokens": 136271,
+      "cacheCreationEphemeral5mInputTokens": 194,
+      "cacheCreationEphemeral1hInputTokens": 136077,
+      "webSearchRequests": 0,
+      "costUSD": 2.0257415999999995,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  }
+ ],
+ "hooks": [
+  {
+   "turn": 0,
+   "hook": "SessionStart:compact",
+   "chars": 6465,
+   "output": "[gemkeeper] The context was just compacted. The ledger below was written before compaction with full context.\nWhere it conflicts with the compaction summary about rules, decisions or dead ends, the ledger wins. Continue the current task. Don't restart it.\n--- .gemkeeper/ledger.md ---\n# Ledger\n\n## Goal\n- parcel-tracker: shipment tracking service, Vienna warehouse. Node 24 runs TS directly (no build), zero deps. User reviews everything at the end; work autonomously. (user)\n\n## Rules\n- NEVER log recipient name, address or phone anywhere (GDPR; data protection officer flagged it in last month's audit). Shipment IDs and tracking numbers are OK to log. (user)\n- GET /shipments/:id response must stay EXACTLY as is (no added/removed/renamed fields) — mobile app v2.3 parses it with a strict schema and crashes on unknown/missing fields; next mobile release is January 2027. Do not touch shipmentToApi in a way that changes it. (user)\n- Every NEW user-facing error `message` must be German (warehouse staff UI shows them verbatim to packers); `code` stays English SCREAMING_SNAKE_CASE. (user)\n- NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, so changes are silently lost. (user)\n- NO new npm dependencies, not even devDependencies — every package needs security review (~6 weeks). (user)\n\n## Decisions\n- Store stays a plain JSON file (data/store.json); NOT moving to SQLite (node:sqlite) — ops backs it up with a nightly rsync job that diffs plain-text files and a binary file would break their backup checks. Perf fix = debounce writes in src/store.ts (mutations within 200 ms -> one write) + flush() on shutdown. (user)\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff, because the ERP dedupes by event_id only within a 2-minute window; all attempts must land inside it (worst case 3x5s timeout + 2x30s = 75s). Delay must be injectable for tests. Retry only network errors/5xx. (user)\n- ERP webhooks signed: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, never in default.json), delivered as top-level body field `sig` computed over the JSON body WITHOUT `sig` (sig appended last, so verifier = parse, drop sig, JSON.stringify). Unset secret -> send unsigned + warn once (my choice, not user-decided). (user spec)\n- Tracking-number validation only for carrier ATP (UPU S10 incl. check digit, see docs/carriers.md); all other carriers accept any non-empty value — their formats change often and last year valid DHL numbers were wrongly rejected for 2 days. (user)\n- Holidays: hardcoded AT list for 2026+2027 in src/services/holidays.ts, no holiday API — warehouse deployment has no outbound internet, must work fully offline. (user)\n\n## Dead ends\n- ETA memoization in calculateEta (built by me, per user request, to speed up GET /shipments) -> REMOVED: QA reported the list kept showing the old ETA after a new tracking event (exception) because the cached value was not invalidated; getting a correct cache key got messy. Do not cache ETAs again. Plan instead: paginate the list endpoint later. (user)\n- Batching ERP calls (array of up to 50 events per POST, suggested by a teammate) -> DO NOT BUILD: ERP answers 422 to any array payload, only one event object per request. User tried it in Sept 2026. (user)\n- X-Signature header for ERP signing (built by me, deployed to staging, now removed) -> ERP API gateway strips every custom X- header, so ERP saw all requests as unsigned. Never use custom headers for ERP auth. (user)\n\n## Facts\n- Perf (5k synthetic shipments, local): ETA for a 500-item page costs ~2 ms of a ~15-20 ms GET /shipments?limit=500, so ETA is not the main cost. Staging log 2026-11-12 (pre-eta, ~30 shipments) already showed GET /shipments?limit=50 at 166-348 ms -> real cause unknown, needs profiling on staging. Fix direction per user: paginate the list later.\n- ERP sandbox now listens on port 9911 (since the October infra move"
+  }
+ ],
+ "error": null,
+ "compact": {
+  "trigger": "manual",
+  "pre_tokens": 152289,
+  "post_tokens": 13749,
+  "cumulative_dropped_tokens": 138540,
+  "duration_ms": 34603,
+  "preserved_segment": {
+   "head_uuid": "c988e20a-5222-4386-ad9c-163c803ebf8c",
+   "anchor_uuid": "b3179a33-947c-4edc-a29f-1cfa0e5cf4d9",
+   "tail_uuid": "c988e20a-5222-4386-ad9c-163c803ebf8c"
+  },
+  "preserved_messages": {
+   "anchor_uuid": "b3179a33-947c-4edc-a29f-1cfa0e5cf4d9",
+   "uuids": [
+    "c988e20a-5222-4386-ad9c-163c803ebf8c"
+   ],
+   "all_uuids": [
+    "c988e20a-5222-4386-ad9c-163c803ebf8c"
+   ]
+  }
+ },
+ "cost_cumulative": 2.0257415999999995,
+ "cost": 0.073223,
+ "wall_s": 40.3,
+ "exit_code": 0,
+ "ctx_first": null,
+ "ctx_last": null
+}

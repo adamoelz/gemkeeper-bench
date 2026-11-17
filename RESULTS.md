@@ -2,13 +2,15 @@
 
 <p align="center"><img src="results/benchmark.svg" width="800" alt="Recall after a session reset per condition"></p>
 
-**Bottom line.** With gemkeeper 0.2.0, a fresh session knew all 15 planted facts (30/30 in 3 of 3
-repetitions), also after **two** resets into fresh sessions. That is what `/compact` reaches inside one
-session (29–29.5), from an injected ledger of ~1.4k tokens instead of a ~15k-token summary, and it works
-where `/compact` can't help: `/clear`, a new session, the next day. gemkeeper 0.1.0 did **not** get
-there over two sessions (22/30). The price of 0.2.0: about **+21% cost and +10% context** during the
-work session, and a false-positive gem check on question-only prompts. `/compact` turned out to be a much
-stronger baseline than the gemkeeper README claims.
+<p align="center"><img src="results/tokens.svg" width="820" alt="Tokens carried into the next session vs facts still known"></p>
+
+**Bottom line.** With gemkeeper 0.2.1, a fresh session knew all 15 planted facts (30/30 in 3 of 3
+repetitions), also after **two** resets into fresh sessions, while carrying only **~2.6k tokens** into the
+next session: 85% less than `/compact` (~17k), 98% less than not resetting at all, and a bit less than a
+handoff summary that lost the *why* and the dead ends (25/30). `/compact` is a strong baseline for recall
+(29–29.5) but only lives inside one session. gemkeeper 0.1.0 did **not** hold up over two sessions (22/30).
+The price of the continuous capture: about **+11% cost** during the work session with 0.2.1 (0.2.0: +21%),
+with a wide spread between runs.
 
 Model: Sonnet (`claude-sonnet-5-5`, effort medium) via `claude -p`, Claude Code 2.1.325. Costs are the
 API-equivalent `total_cost_usd` reported by the CLI.
@@ -32,42 +34,48 @@ Cost: phase A + reset + the four probes, per condition.
 | D2 gemkeeper + `/gems` | 0.2.0 | 3 | 29.7 ± 0.6 | 10 | 8 | 7.7 | 4 | 0 | 24.7k | $2.73 |
 | D3 gemkeeper, 2 fresh sessions | 0.2.0 | 3 | **30.0 ± 0.0** | 10 | 8 | 8 | 4 | 0 | 24.8k | $2.17 |
 | F `/compact` + gemkeeper | 0.2.0 | 3 | 30.0 ± 0.0 | 10 | 8 | 8 | 4 | 0 | 37.5k | $2.88 |
+| D gemkeeper | **0.2.1** | 3 | **30.0 ± 0.0** | 10 | 8 | 8 | 4 | 0 | 24.4k | $2.44 |
+| D2 gemkeeper + `/gems` | 0.2.1 | 3 | 29.3 ± 1.2 | 10 | 8 | 7.3 | 4 | 0 | 24.7k | $2.47 |
+| D3 gemkeeper, 2 fresh sessions | **0.2.1** | 3 | **30.0 ± 0.0** | 10 | 8 | 8 | 4 | 0 | 24.0k | $2.14 |
+| F `/compact` + gemkeeper | 0.2.1 | 3 | 29.7 ± 0.6 | 10 | 8 | 7.7 | 4 | 0 | 37.9k | $2.63 |
 | E no reset (upper bound) | – | 2 | 29.0 ± 0.0 | 10 | 8 | 7 | 4 | 0 | 144.9k | $2.18 |
 
-Baselines and gemkeeper 0.1.0 come from run `f`, gemkeeper 0.2.0 from run `t` (same scenario, probes and
-judge; `t` re-runs only the gemkeeper side). Generated per-run tables: `results/f/summary.md`,
-`results/t/summary.md`, raw data in `results/<run>/rep<N>/`.
+Baselines and gemkeeper 0.1.0 come from run `f`, gemkeeper 0.2.0 from run `t`, 0.2.1 from run `u` (same
+scenario, probes and judge; `t` and `u` re-run only the gemkeeper side). Generated per-run tables:
+`results/<run>/summary.md`, raw data in `results/<run>/rep<N>/`. The only items 0.2.x ever missed were the
+ETA-memoization and fs.watch dead ends, and only with the explicit `/gems` sweep or `/compact` (D2, F).
 
 ### Behaviour traps
 
 | Condition | `src/legacy/` touched | dependency added (`zod`) | dead end (ETA cache) | tests green after |
 |---|---|---|---|---|
 | A none | 2/2 | 2/2 | 1/2 | 6/6 |
-| every other condition (B, B2, C, D, D2, D3, F, E; both versions) | 0 | 0 | 0 | all |
+| every other condition (B, B2, C, D, D2, D3, F, E; all versions) | 0 | 0 | 0 | all |
 
 The traps discriminate (no memory falls into them), but every condition with *any* memory avoided all
 three. They separate "remembers" from "doesn't", not one memory mechanism from another.
 
 ### gemkeeper internals
 
-| | 0.1.0 (n=1) | 0.2.0 (n=3) |
-|---|---|---|
-| Gems fully in the ledger without `/gems` (judge) | 14 / 15 | **15 / 15** (all reps) |
-| Gems fully in the ledger after the 2nd fresh session (D3) | 11 / 15 | **15 / 15** (all reps) |
-| Ledger size, end of session (D) | 37 lines, ~1.4k tokens | 44 ± 15 lines, ~1.3k tokens |
-| Ledger size after 2nd session (D3) | 35 lines, ~1.0k tokens | 50 ± 25 lines (25–74), ~1.4k tokens |
-| Turns in which the ledger changed (of 20) | 13 | 13.7 |
-| Tool calls touching the ledger (mostly Bash edits) | 25, ~14k tokens | 25 ± 7, ~12k tokens |
-| Hook text injected during the session | ~350 tokens | ~930 tokens (10 gem checks) |
-| Stop-hook blocks during the work session | – | 0 |
-| Phase A cost (base without plugin: $1.78, n=2) | $1.76 (−1%) | **$2.15 (+21%)** |
-| Context at end of phase A (base: 142k) | 139k | **157k (+10%)** |
-| `/gems` sweep | – | $0.11 |
+| | 0.1.0 (n=1) | 0.2.0 (n=3) | 0.2.1 (n=3) |
+|---|---|---|---|
+| Gems fully in the ledger without `/gems` (judge) | 14 / 15 | **15 / 15** | 14.7 / 15 (15 / 15 at least partly) |
+| Gems fully in the ledger after the 2nd fresh session (D3) | 11 / 15 | **15 / 15** | **15 / 15** |
+| Ledger size, end of session (D) | 37 lines, ~1.4k tokens | 44 ± 15 lines, ~1.3k tokens | 35 ± 4 lines, ~1.3k tokens |
+| Ledger size after 2nd session (D3) | 35 lines, ~1.0k tokens | 50 ± 25 lines (25–74), ~1.4k tokens | **34 ± 3 lines, ~1.0k tokens** |
+| Turns in which the ledger changed (of 20) | 13 | 13.7 | 13.7 |
+| Tool calls touching the ledger (mostly Bash edits) | 25, ~14k tokens | 25 ± 7, ~12k tokens | 22 ± 7, ~12k tokens |
+| Hook text injected during the session | ~350 tokens | ~930 tokens | ~1.3k tokens |
+| Model steps in phase A (base: 77–90) | 77 | 99–108 | 85–108 |
+| Phase A cost (base without plugin: $1.78, n=2) | $1.76 (−1%) | $2.15 (+21%) | **$1.98 (+11%)**, range $1.70–2.29 |
+| Context at end of phase A (base: 142k) | 139k | 157k (+10%) | 150k (+5%) |
+| `/gems` sweep | – | $0.11 | $0.10 |
 
-The +21% holds within each account (+23% on account 1, +19% on account 2), so it is not an account
-artifact. The extra context accumulates mainly in turns 13–17; the ledger tool calls themselves are not
-larger than in 0.1.0, so the cause is not yet isolated (candidates: work done in response to the gem
-checks, longer turns).
+Where the overhead comes from: each gem check makes Claude save the gem as its **own model step** before the
+work, and every extra step re-reads the whole context (0.2.0: ~20 extra steps per 20 turns, cache reads
+6M → 8.5M tokens). 0.2.1 asks for the save as a parallel tool call next to the first action; in a small
+test that removed the extra step, but in the full scenario most saves stayed separate steps (rep 1: 24 of
+25). The spread between runs ($1.70–2.29) is as large as the effect, so n=3 can't pin it down further.
 
 ## What was forgotten (failure examples)
 
@@ -108,23 +116,21 @@ replaced before run `f`, which also shortened phase A from ~187k to ~140k tokens
 
 ## Budget
 
-Total spent: **$44.88** API-equivalent (cap $50): CLI checks $0.60, pilot $8.94, run `f` $15.86,
-run `t` $19.48 (incl. the two aborted reps). One full rep costs ~$10, a gemkeeper-only rep ~$6.
+Total spent: **$59.61** API-equivalent (cap raised to $62): CLI checks $0.60, pilot $8.94, run `f` $15.86,
+run `t` $19.48 (incl. two aborted reps), run `u` $14.73. One full rep costs ~$10, a gemkeeper-only rep ~$6.
 
 ## What to change in the skill and hooks next (ranked by expected impact)
 
-Already done in 0.2.0 and measured above: gem check by content, Stop-hook safety net, "the ledger is not
-read-only" at session start, a sweep that walks every user message, one topic = one bullet.
+Done and measured: gem check by content (0.2.0), "the ledger is not read-only" at session start (0.2.0),
+a sweep that walks every user message (0.2.0), one topic = one bullet (0.2.0), no gem check on question
+sentences (0.2.1), Stop hook removed (0.2.1: it never caught a real miss, only fired on questions).
 
-1. **Don't gem-check questions.** The gem check fired on all 12 quiz prompts ("what was decided and why?"),
-   and the Stop hook then forced an extra model step each time. Skip the check when the message is mostly
-   questions, or let the Stop hook block only when the turn did work (tool calls) without saving.
-2. **Cut the capture overhead (+21% cost).** Batch all gems of a turn into one ledger edit, avoid
-   re-reading the whole ledger before each edit, and measure which turns add the extra context.
-3. **Bound the ledger size.** 25–74 lines for the same facts: enforce "one topic, one bullet" with a
-   prune step when it grows past ~50 lines.
-4. **Drop or justify the Stop hook.** It never fired during real work (0 blocks in 3 sessions); all its
-   firings were the false positives in item 1. Keep it only if a messier scenario shows it catching misses.
-5. **Fix the README claim.** gemkeeper's README says `/compact` "quietly drops the why, the dead ends";
-   here it kept 29–30 of 30. gemkeeper's honest advantages: it survives `/clear` and new sessions
-   (0.1.0 → 0.2.0: 22 → 30 there), ~1.4k instead of ~15k tokens carried over, and it beats a handoff summary.
+1. **Make the save a side effect, not a step.** The remaining overhead (+11%, wide spread) is the extra model
+   step per saved gem. Options: let the UserPromptSubmit hook append a stub the model only has to fill in,
+   or batch the turn's gems into the last tool call of the turn. Measure with model steps, not only cost.
+2. **A messier scenario.** The gems here are stated explicitly ("never", "because", "tried"); real users
+   are vaguer. A second scenario with implicit gems would show how much the keyword trigger misses.
+3. **Bound the ledger size** with a prune step above ~50 lines (0.2.1 stayed at 34–38 lines here, 0.2.0
+   varied 25–74).
+4. **Keep the README honest**: `/compact` keeps the facts (29–30/30); gemkeeper's edge is surviving `/clear`
+   and new sessions with ~2.6k instead of ~17k tokens, and beating a handoff summary on the *why*.

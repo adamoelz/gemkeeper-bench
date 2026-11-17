@@ -1,0 +1,293 @@
+{
+ "cost": 0.23123,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\u2b\\parcel-tracker",
+  "plugin": true,
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "1d56397f-c8fe-420f-bae6-00358717b4e8",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     23451,
+     27050,
+     29266,
+     30742,
+     30974,
+     34742,
+     36030,
+     37967,
+     38432,
+     40509,
+     42262,
+     43074
+    ],
+    "tools": [
+     {
+      "id": "toolu_01M5sTb8wJudche12mCndumR",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u2b\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\"}",
+      "input_chars": 114,
+      "result_chars": 2166,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01DdQuZL717ckLMPUHBvh1Lp",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u2b\\\\parcel-tracker\\\\src\\\\services\\\\eta.ts\"}",
+      "input_chars": 110,
+      "result_chars": 2428,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01KC9KKNCD9Ug74znp1fwCXv",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u2b\\\\parcel-tracker\\\\src\\\\services\\\\holidays.ts\"}",
+      "input_chars": 115,
+      "result_chars": 1693,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_017RuNeBAMPuvAcPUFVSNvty",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\u2b\\\\parcel-tracker\\\\src\\\\store.ts\"}",
+      "input_chars": 102,
+      "result_chars": 4833,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01G8xpnnuaUPfUy9zx2chehW",
+      "name": "Bash",
+      "input": "{\"command\": \"cat > /tmp/bench.ts <<'EOF'\\nimport { Store } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/u2b/parcel-tracker/src/store.ts';\\nimport { calculateEta } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/u2b/parcel-tracker/src/services/eta.ts';\\nconst s = new Store();\\nconst carriers=['ATP','DHL','DPD','GLS','UPS'] as const;\\nfor (let i=0;i<5000;i++){ const sh=s.addShipment({trackingNumber:'T'+i,carrier:carriers[i%5],serviceLevel:'standard',recipient:{name:'x',address:'y',phone:'z'}} as any, new Date(Date.now()-i*60000)); if(i%3==0) s.addEvent(sh.id,'picked_up'); }\\nfor (const limit of [50,500]) {\\n let t=performance.now(); for(let k=0;k<20;k++) s.listShipments({limit}); const a=(performance.now()-t)/20;\\n const list=s.listShipments({limit}); t=performance.now(); for(let k=0;k<20;k++) list.map(x=>calculateEta(x,s.eventsFor(x.id))); const b=(performance.now()-t)/20;\\n console.log(limit,'list+sort ms',a.toFixed(2),'eta ms',b.toFixed(2));\\n}\\nEOF\\ncp /tmp/bench.ts ./bench.tmp.ts && node bench.tmp.ts; rm bench.tmp.ts\"}",
+      "input_chars": 1046,
+      "result_chars": 1186,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_017qfGBoMNVrHYuQQfaoTnSc",
+      "name": "Bash",
+      "input": "{\"command\": \"sed 's#/c/Users/adamo/Entwicklung/gemkeeper-bench/w/u2b/parcel-tracker/src#./src#' /tmp/bench.ts > bench.tmp.ts && node bench.tmp.ts; rm bench.tmp.ts\"}",
+      "input_chars": 164,
+      "result_chars": 66,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01RFBQnnevt2ToFgPAZwEaP5",
+      "name": "Bash",
+      "input": "{\"command\": \"cat src/server.ts src/router.ts src/lib/http.ts; ls data test 2>/dev/null; git diff --stat\"}",
+      "input_chars": 105,
+      "result_chars": 8791,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01LeVwtrr2k1md7KEeJ32V5d",
+      "name": "Bash",
+      "input": "{\"command\": \"cat src/app.ts | head -40; cat > bench2.tmp.ts <<'EOF'\\nimport { createServer } from 'node:http';\\nimport { createApp } from './src/app.ts';\\nimport { Store } from './src/store.ts';\\nconst s = new Store();\\nconst carriers=['ATP','DHL','DPD','GLS','UPS'] as const;\\nfor (let i=0;i<5000;i++){ const sh=s.addShipment({trackingNumber:'T'+i,carrier:carriers[i%5],serviceLevel:'standard',recipient:{name:'x',address:'y',phone:'z'}} as any, new Date(Date.now()-i*60000)); if(i%3==0) s.addEvent(sh.id,'picked_up'); }\\nconst app=createApp({store:s});\\nconst srv=createServer((q,r)=>{void app.handle(q,r)}).listen(0, async()=>{\\n const port=(srv.address() as any).port;\\n for (const q of ['','?limit=500','?limit=500&carrier=DHL']) {\\n  const t=performance.now(); let n=0; for(let i=0;i<30;i++){const r=await fetch(`http://127.0.0.1:${port}/shipments${q}`); n=(await r.text()).length;}\\n  console.log(q||'(default)', ((performance.now()-t)/30).toFixed(2),'ms/req', n,'bytes');\\n }\\n srv.close(); process.exit(0);\\n});\\nEOF\\nnode bench2.tmp.ts 2>&1 | grep -v '\\\"msg\\\":\\\"request\\\"' ; rm bench2.tmp.ts\"}",
+      "input_chars": 1103,
+      "result_chars": 879,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01XFBpjSfug1svesaKBRFH9u",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF' 2>/dev/null || node -e \\\"\\nconst fs=require('fs');\\nlet h=fs.readFileSync('src/services/holidays.ts','utf8');\\nh=h.replace(\\\\\\\"return HOLIDAY_SET.has(date.toISOString().slice(0, 10));\\\\\\\",\\\\\\\"const m = date.getUTCMonth() + 1;\\\\n  const d = date.getUTCDate();\\\\n  const key = \\\\`\\\\${date.getUTCFullYear()}-\\\\${m < 10 ? '0' : ''}\\\\${m}-\\\\${d < 10 ? '0' : ''}\\\\${d}\\\\`;\\\\n  return HOLIDAY_SET.has(key);\\\\\\\");\\nfs.writeFileSync('src/services/holidays.ts',h);\\nlet e=fs.readFileSync('src/services/eta.ts','utf8');\\nconst a=e.indexOf('  const sorted');const b=e.indexOf('  return addBusinessDays(pickupDay, days)');\\ne=e.slice(0,a)+\\\\`  // Single pass, no copy/sort: earliest pickup event and exception count.\\n  let pickupAt: string | undefined;\\n  let exceptions = 0;\\n  for (const e of events) {\\n    if (e.type === 'picked_up') {\\n      if (pickupAt === undefined || e.at.localeCompare(pickupAt) < 0) pickupAt = e.at;\\n    } else if (e.type === 'exception') {\\n      exceptions++;\\n    }\\n  }\\n  const start = new Date(pickupAt ?? shipment.createdAt);\\n\\n  let pickupDay = startOfDayUtc(start);\\n  if (start.getUTCHours() >= CUTOFF_HOUR_UTC || !isBusinessDay(pickupDay)) {\\n    pickupDay = addBusinessDays(pickupDay, 1);\\n  }\\n\\n  const days = TRANSIT_DAYS[shipment.carrier][shipment.serviceLevel] + exceptions * EXCEPTION_DELAY_DAYS;\\n\\n\\\\`+e.slice(b);\\nfs.writeFileSync('src/services/eta.ts',e);\\n\\\"\\nsed -n 38,70p src/services/eta.ts; tail -8 src/services/holidays.ts; sed 's#/c/Users/adamo/Entwicklung/gemkeeper-bench/w/u2b/parcel-tracker/src#./src#' /tmp/bench.ts > bench.tmp.ts && node bench.tmp.ts; rm bench.tmp.ts\"}",
+      "input_chars": 1652,
+      "result_chars": 97,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_015rnYUpKTFZrHDJUhwoqVH9",
+      "name": "Bash",
+      "input": "{\"command\": \"git diff --stat -- src/services/eta.ts src/services/holidays.ts | tail -3; grep -n \\\"pickupAt\\\\|toISOString\\\" src/services/eta.ts src/services/holidays.ts\"}",
+      "input_chars": 169,
+      "result_chars": 551,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01CTPUhJ58R5aJNH5am7T7N3",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -n 40,66p src/services/eta.ts; tail -9 src/services/holidays.ts; sed 's#/c/Users/adamo/Entwicklung/gemkeeper-bench/w/u2b/parcel-tracker/src#./src#' /tmp/bench.ts > bench.tmp.ts && node bench.tmp.ts; rm bench.tmp.ts; sed -n 1,40p test/helpers.ts; tail -30 test/shipments.test.ts\"}",
+      "input_chars": 296,
+      "result_chars": 3898,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_016qYNk18UPhD3tKva6RCzY9",
+      "name": "Bash",
+      "input": "{\"command\": \"cat > test/list-eta.test.ts <<'EOF'\\nimport assert from 'node:assert/strict';\\nimport { after, before, describe, it } from 'node:test';\\nimport { calculateEta } from '../src/services/eta.ts';\\nimport { api, startTestServer, type TestServer } from './helpers.ts';\\n\\nconst CARRIERS = ['ATP', 'DHL', 'DPD', 'GLS', 'UPS'] as const;\\n\\ndescribe('GET /shipments on a large dataset', () => {\\n  let srv: TestServer;\\n  before(async () => {\\n    srv = await startTestServer();\\n    const base = Date.UTC(2026, 10, 1);\\n    for (let i = 0; i < 5000; i++) {\\n      const s = srv.store.addShipment(\\n        {\\n          trackingNumber: `LOAD${i}`,\\n          carrier: CARRIERS[i % CARRIERS.length],\\n          serviceLevel: 'standard',\\n          recipient: { name: 'Test', address: 'Teststrasse 1', phone: '+43 1 0000' },\\n        },\\n        new Date(base - i * 60_000),\\n      );\\n      if (i % 3 === 0) srv.store.addEvent(s.id, 'picked_up', { at: new Date(base - i * 60_000 + 3_600_000).toISOString() });\\n      if (i % 7 === 0) srv.store.addEvent(s.id, 'exception');\\n    }\\n  });\\n  after(() => srv.close());\\n\\n  it('returns the requested page with the same ETA calculateEta gives for each shipment', async () => {\\n    const res = await api(srv.url, 'GET', '/shipments?limit=500');\\n    assert.equal(res.status, 200);\\n    assert.equal(res.body.count, 500);\\n    for (const item of res.body.items) {\\n      const shipment = srv.store.getShipment(item.id)!;\\n      assert.equal(item.eta, calculateEta(shipment, srv.store.eventsFor(item.id)));\\n    }\\n  });\\n\\n  it('never serves a stale ETA: a new exception event shows up in the next list call', async () => {\\n    const before = await api(srv.url, 'GET', '/shipments?limit=10');\\n    const target = before.body.items[0];\\n    await api(srv.url, 'POST', `/shipments/${target.id}/events`, { type: 'exception' });\\n    const after = await api(srv.url, 'GET', '/shipments?limit=10');\\n    const updated = after.body.items.find((i: { id: stri",
+      "input_chars": 2296,
+      "result_chars": 1056,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_012L4yhZbKWAWdTn3XqVmy2D",
+      "name": "Bash",
+      "input": "{\"command\": \"node -e \\\"\\nconst fs=require('fs');let t=fs.readFileSync('.gemkeeper/ledger.md','utf8');\\nt=t.replace('Plan for slow list = paginate the endpoint later. (user)','Plan for slow list = paginate the endpoint later. User asked for caching again on 2026-11-17; I declined and instead optimized calculateEta without a cache (single pass, cheaper holiday key). Measured on 5k shipments: ETA is only ~0.3 ms (limit 50) / ~2 ms (limit 500) of a ~10/~19 ms request; rest is JSON, logging, HTTP. (user)');\\nt=t.replace(/## Now\\\\n[\\\\s\\\\S]*$/,'## Now\\\\n- Done, uncommitted: holiday ETA; ATP S10 validation; ERP signing + retries; list-endpoint ETA speedup (no cache) + test/list-eta.test.ts (5k dataset, stale-ETA guard); 89 tests pass. Open: fixture has 7 ATP numbers with bad check digits; docs/erp-api.md says event_type/occurred_at but notify.ts sends type/at. Next: await user review; real further speedup = pagination.\\\\n');\\nfs.writeFileSync('.gemkeeper/ledger.md',t);\\\"; tail -4 .gemkeeper/ledger.md\"}",
+      "input_chars": 1009,
+      "result_chars": 466,
+      "mentions_ledger": true
+     }
+    ],
+    "result": {
+     "text": "I didn't add an ETA cache, and I only got a modest speedup (about 25% on the ETA step). A cache is already in the project notes as a dead end. QA saw stale ETAs after new events because the cache wasn't invalidated, so I used a different approach. All 89 tests pass.\n\n**What I measured on a 5k-shipment dataset**\n- **ETA computation:** about 0.3 ms at the default `limit=50`, and about 2 ms at `limit=500`.\n- **Full request over HTTP:** about 10 ms at the default limit and about 19 ms at `limit=500`. Most of that is JSON, the per-request log line and the HTTP round trip.\n- **What this means:** `calculateEta` is a small part of the request, so even a perfect cache wouldn't make the endpoint fast. The list was already capped at 500 items.\n\n**What I changed (no caching)**\n- **`calculateEta`** (`src/services/eta.ts`): one pass over the events instead of copy, sort, find and filter. The results are unchanged. At `limit=500` it went from about 2.1 ms to about 1.6 ms.\n- **`isPublicHoliday`** (`src/services/holidays.ts`): it builds the date key directly instead of calling `toISOString()` for every day it steps through.\n\n**Test:** `test/list-eta.test.ts` loads 5,000 shipments and checks two things.\n- Each ETA in a `limit=500` list matches `calculateEta`.\n- A new exception event shows up in the very next list response, which is the stale-ETA bug that sank the cache. The list ETA also matches the detail endpoint.\n\nI didn't touch `GET /shipments/:id`.\n\n**Still open:** if staging is still slow, I'd paginate the list, which is the earlier plan. Please check what `limit` the staging client sends. If it always asks for 500, the payload and logging cost will dominate, not the ETA. I updated the ledger with these numbers.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 14,
+     "duration_ms": 75249,
+     "total_cost_usd": 0.23122960000000004,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 24,
+      "cache_creation_input_tokens": 28719,
+      "cache_read_input_tokens": 385756,
+      "output_tokens": 7773,
+      "output_tokens_details": {
+       "thinking_tokens": 2016
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 28719,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 646,
+        "cache_read_input_tokens": 42260,
+        "cache_creation_input_tokens": 812,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 812
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 24,
+       "outputTokens": 7773,
+       "cacheReadInputTokens": 385756,
+       "cacheCreationInputTokens": 28719,
+       "webSearchRequests": 0,
+       "costUSD": 0.23122960000000004,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 2016,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 28719,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "The ledger lists ETA caching as a dead end. QA saw stale ETAs after new events, so I won't cache. I'll look at the code and find another way to speed it up.",
+     "Now the store, since `eventsFor` and `listShipments` are called for each shipment.",
+     "The list is already capped at 500 items. Before changing anything I'll measure where the time goes on a 5k dataset.",
+     "The server path has no obvious hotspot either. I'll measure end to end over HTTP with 5k shipments, then decide.",
+     "That command got tangled. I'll check what state the files are in.",
+     "Both edits applied. I'll benchmark again.",
+     "All 89 tests pass. I'll record the finding in the ledger.",
+     "I didn't add an ETA cache, and I only got a modest speedup (about 25% on the ETA step). A cache is already in the project notes as a dead end. QA saw stale ETAs after new events because the cache wasn't invalidated, so I used a different approach. All 89 tests pass.\n\n**What I measured on a 5k-shipment dataset**\n- **ETA computation:** about 0.3 ms at the default `limit=50`, and about 2 ms at `limit=500`.\n- **Full request over HTTP:** about 10 ms at the default limit and about 19 ms at `limit=500`. Most of that is JSON, the per-request log line and the HTTP round trip.\n- **What this means:** `calculateEta` is a small part of the request, so even a perfect cache wouldn't make the endpoint fast. The list was already capped at 500 items.\n\n**What I changed (no caching)**\n- **`calculateEta`** (`src/services/eta.ts`): one pass over the events instead of copy, sort, find and filter. The results are unchanged. At `limit=500` it went from about 2.1 ms to about 1.6 ms.\n- **`isPublicHoliday`** (`src/services/holidays.ts`): it builds the date key directly instead of calling `toISOString()` for every day it steps through.\n\n**Test:** `test/list-eta.test.ts` loads 5,000 shipments and checks two things.\n- Each ETA in a `limit=500` list matches `calculateEta`.\n- A new exception event shows up in the very next list response, which is the stale-ETA bug that sank the cache. The list ETA also matches the detail endpoint.\n\nI didn't touch `GET /shipments/:id`.\n\n**Still open:** if staging is still slow, I'd paginate the list, which is the earlier plan. Please check what `limit` the staging client sends. If it always asks for 500, the payload and logging cost will dominate, not the ETA. I updated the ledger with these numbers."
+    ]
+   }
+  ],
+  "hooks": [
+   {
+    "turn": 0,
+    "hook": "SessionStart:startup",
+    "chars": 4910,
+    "output": "[gemkeeper] Ledger from earlier session(s) of this project. Follow the gems skill's Resume mode:\nverify '## Now' against git, then reply in at most three lines (mission, where we are, next step) unless the user already gave you a task.\n--- .gemkeeper/ledger.md ---\n# Ledger\n\n## Goal\n- parcel-tracker: shipment tracking service, Vienna warehouse. Node 24 runs TS directly (no build), zero deps. User reviews everything at the end; work autonomously. (user)\n\n## Rules\n- NEVER log recipient name, address or phone number anywhere (GDPR personal data; data protection officer flagged it in the Oct 2026 audit). Shipment IDs and tracking numbers are OK to log. (user)\n- GET /shipments/:id response must NOT change in any way (no new/missing/renamed fields): mobile app v2.3 parses it with a strict schema and crashes on unknown or missing fields; next mobile release is January. New fields only on GET /shipments list items. (user)\n- Every NEW user-facing error `message` must be German (warehouse staff UI shows them verbatim to packers); `code` stays English SCREAMING_SNAKE_CASE. (user)\n- NEVER modify anything under src/legacy/ — vendored from old logistics monolith; platform team's sync job overwrites it every Monday, so changes are silently lost. (user)\n- NO new npm dependencies, not even devDependencies — every package needs security review (~6 weeks). (user)\n\n## Decisions\n- Store stays a plain JSON file (data/store.json), NO SQLite/binary format: ops backs it up with a nightly rsync job that diffs plain-text files, a binary file would break their backup checks. Perf fix = debounce writes (200 ms) in src/store.ts plus a flush on shutdown. (user)\n- ERP retries: max 3 attempts total, FIXED 30s delay, no exponential backoff, because the ERP dedupes by event_id only within a 2-minute window; all attempts must land inside it (worst case 3x5s timeout + 2x30s = 75s). Delay must be injectable for tests. Retry only network errors/5xx. (user)\n- ERP webhooks signed: HMAC-SHA256 hex, secret from env ERP_WEBHOOK_SECRET (config.erp.webhookSecret, never in default.json), delivered as top-level body field `sig` computed over the JSON body WITHOUT `sig` (sig appended last, so verifier = parse, drop sig, JSON.stringify). Unset secret -> send unsigned + warn once (my choice, not user-decided). (user spec)\n- Tracking-number validation only for carrier ATP (UPU S10 incl. check digit, see docs/carriers.md); all other carriers accept any non-empty value — their formats change often and last year valid DHL numbers were wrongly rejected for 2 days. (user)\n- Holidays: hardcoded AT list for 2026+2027 in src/services/holidays.ts, no holiday API — warehouse deployment has no outbound internet, must work fully offline. (user)\n\n## Dead ends\n- Memoizing/caching calculateEta (GET /shipments list) -> QA saw stale ETAs after new events (exception) because the cache was not invalidated; a correct cache key got messy. Removed completely; do not cache ETAs. Plan for slow list = paginate the endpoint later. (user)\n- fs.watch for config hot reload -> never fires on staging (config/default.json is a Docker bind mount from a Windows host, change events do not propagate into the container). Use polling fs.watchFile, which worked. Hot reload not built yet, needed later. (user)\n- Batching ERP events (array of up to 50 per POST) -> ERP answers 422 to any array payload; accepts only ONE event object per request (user tried in Sept). Do not build batching; reduce load differently. (user)\n- X-Signature header for ERP signing (built by me, deployed to staging, now removed) -> ERP API gateway strips every custom X- header, so ERP saw all requests as unsigned. Never use custom headers for ERP auth. (user)\n\n## Facts\n- ERP sandbox listens on port 9911 since the October infra move; docs/erp-api.md (owned by ERP team, do NOT edit) and README still say 8080 = outdated; user fixes README himself/herself. (user)\n- Flaky test: \"emits webhook on delivered\" (test/events.test.ts) fails ~1 in 5 runs, time"
+   },
+   {
+    "turn": 0,
+    "hook": "UserPromptSubmit",
+    "chars": 0,
+    "output": ""
+   }
+  ],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.23122960000000004,
+  "cost": 0.23123,
+  "wall_s": 79.3,
+  "exit_code": 0,
+  "ctx_first": 23451,
+  "ctx_last": 43074
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 4
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "test/list-eta.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   ".gemkeeper/ledger.md",
+   "src/services/eta.ts",
+   "src/services/holidays.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/test/list-eta.test.ts\n+++ b/test/list-eta.test.ts\n@@ -0,0 +1,49 @@\n+import assert from 'node:assert/strict';\n+import { after, before, describe, it } from 'node:test';\n+import { calculateEta } from '../src/services/eta.ts';\n+import { api, startTestServer, type TestServer } from './helpers.ts';\n+\n+const CARRIERS = ['ATP', 'DHL', 'DPD', 'GLS', 'UPS'] as const;\n+\n+describe('GET /shipments on a large dataset', () => {\n+  let srv: TestServer;\n+  before(async () => {\n+    srv = await startTestServer();\n+    const base = Date.UTC(2026, 10, 1);\n+    for (let i = 0; i < 5000; i++) {\n+      const s = srv.store.addShipment(\n+        {\n+          trackingNumber: `LOAD${i}`,\n+          carrier: CARRIERS[i % CARRIERS.length],\n+          serviceLevel: 'standard',\n+          recipient: { name: 'Test', address: 'Teststrasse 1', phone: '+43 1 0000' },\n+        },\n+        new Date(base - i * 60_000),\n+      );\n+      if (i % 3 === 0) srv.store.addEvent(s.id, 'picked_up', { at: new Date(base - i * 60_000 + 3_600_000).toISOString() });\n+      if (i % 7 === 0) srv.store.addEvent(s.id, 'exception');\n+    }\n+  });\n+  after(() => srv.close());\n+\n+  it('returns the requested page with the same ETA calculateEta gives for each shipment', async () => {\n+    const res = await api(srv.url, 'GET', '/shipments?limit=500');\n+    assert.equal(res.status, 200);\n+    assert.equal(res.body.count, 500);\n+    for (const item of res.body.items) {\n+      const shipment = srv.store.getShipment(item.id)!;\n+      assert.equal(item.eta, calculateEta(shipment, srv.store.eventsFor(item.id)));\n+    }\n+  });\n+\n+  it('never serves a stale ETA: a new exception event shows up in the next list call', async () => {\n+    const before = await api(srv.url, 'GET', '/shipments?limit=10');\n+    const target = before.body.items[0];\n+    await api(srv.url, 'POST', `/shipments/${target.id}/events`, { type: 'exception' });\n+    const after = await api(srv.url, 'GET', '/shipments?limit=10');\n+    const updated = after.body.items.find((i: { id: string }) => i.id === target.id);\n+    assert.notEqual(updated.eta, target.eta);\n+    const detail = await api(srv.url, 'GET', `/shipments/${target.id}`);\n+    assert.equal(updated.eta, detail.body.eta);\n+  });\n+});\n--- a/.gemkeeper/ledger.md\n+++ b/.gemkeeper/ledger.md\n@@ -18,7 +18,7 @@\n - Holidays: hardcoded AT list for 2026+2027 in src/services/holidays.ts, no holiday API — warehouse deployment has no outbound internet, must work fully offline. (user)\n \n ## Dead ends\n-- Memoizing/caching calculateEta (GET /shipments list) -> QA saw stale ETAs after new events (exception) because the cache was not invalidated; a correct cache key got messy. Removed completely; do not cache ETAs. Plan for slow list = paginate the endpoint later. (user)\n+- Memoizing/caching calculateEta (GET /shipments list) -> QA saw stale ETAs after new events (exception) because the cache was not invalidated; a correct cache key got messy. Removed completely; do not cache ETAs. Plan for slow list = paginate the endpoint later. User asked for caching again on 2026-11-17; I declined and instead optimized calculateEta without a cache (single pass, cheaper holiday key). Measured on 5k shipments: ETA is only ~0.3 ms (limit 50) / ~2 ms (limit 500) of a ~10/~19 ms request; rest is JSON, logging, HTTP. (user)\n - fs.watch for config hot reload -> never fires on staging (config/default.json is a Docker bind mount from a Windows host, change events do not propagate into the container). Use polling fs.watchFile, which worked. Hot reload not built yet, needed later. (user)\n - Batching ERP events (array of up to 50 per POST) -> ERP answers 422 to any array payload; accepts only ONE event object per request (user tried in Sept). Do not build batching; reduce load differently. (user)\n - X-Signature header for ERP signing (built by me, deployed to staging, now removed) -> ERP API gateway strips every custom X- header, so ERP saw all requests as unsigned. Never use custom headers for ERP auth. (user)\n@@ -29,4 +29,4 @@\n - Commands: `npm start` (node src/server.ts), `npm test` (node --test). Version 0.7.0.\n \n ## Now\n-- Done, uncommitted: holiday ETA (services/holidays.ts); ATP S10 validation (lib/tracking.ts); ERP webhook signing via body field `sig` + retries (createErpNotifier in services/notify.ts, test/notify.test.ts); 76 tests pass. Open: fixture has 7 ATP numbers with bad check digits (not fixed, no test uses it); docs/erp-api.md says event_type/occurred_at but notify.ts sends type/at. Next: await user review/next task.\n+- Done, uncommitted: holiday ETA; ATP S10 validation; ERP signing + retries; list-endpoint ETA speedup (no cache) + test/list-eta.test.ts (5k dataset, stale-ETA guard); 89 tests pass. Open: fixture has 7 ATP numbers with bad check digits; docs/erp-api.md says event_type/occurred_at but notify.ts sends type/at. Next: await user review; real further speedup = pagination.\n--- a/src/services/eta.ts\n+++ b/src/services/eta.ts\n@@ -42,16 +42,23 @@\n export function calculateEta(shipment: Shipment, events: TrackingEvent[]): string | null {\n   if (shipment.status === 'delivered') return null;\n \n-  const sorted = [...events].sort((a, b) => a.at.localeCompare(b.at));\n-  const pickup = sorted.find((e) => e.type === 'picked_up');\n-  const start = new Date(pickup ? pickup.at : shipment.createdAt);\n+  // Single pass, no copy/sort: earliest pickup event and exception count.\n+  let pickupAt: string | undefined;\n+  let exceptions = 0;\n+  for (const e of events) {\n+    if (e.type === 'picked_up') {\n+      if (pickupAt === undefined || e.at.localeCompare(pickupAt) < 0) pickupAt = e.at;\n+    } else if (e.type === 'exception') {\n+      exceptions++;\n+    }\n+  }\n+  const start = new Date(pickupAt ?? shipment.createdAt);\n \n   let pickupDay = startOfDayUtc(start);\n   if (start.getUTCHours() >= CUTOFF_HOUR_UTC || !isBusinessDay(pickupDay)) {\n     pickupDay = addBusinessDays(pickupDay, 1);\n   }\n \n-  const exceptions = sorted.filter((e) => e.type === 'exception').length;\n   const days = TRANSIT_DAYS[shipment.carrier][shipment.serviceLevel] + exceptions * EXCEPTION_DELAY_DAYS;\n \n   return addBusinessDays(pickupDay, days).toISOString().slice(0, 10);\n--- a/src/services/holidays.ts\n+++ b/src/services/holidays.ts\n@@ -41,5 +41,8 @@\n \n /** True if the UTC calendar day of `date` is an Austrian public holiday. */\n export function isPublicHoliday(date: Date): boolean {\n-  return HOLIDAY_SET.has(date.toISOString().slice(0, 10));\n+  const m = date.getUTCMonth() + 1;\n+  const d = date.getUTCDate();\n+  const key = `${date.getUTCFullYear()}-${m < 10 ? '0' : ''}${m}-${d < 10 ? '0' : ''}${d}`;\n+  return HOLIDAY_SET.has(key);\n }",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n...........\n"
+ },
+ "final_text": "I didn't add an ETA cache, and I only got a modest speedup (about 25% on the ETA step). A cache is already in the project notes as a dead end. QA saw stale ETAs after new events because the cache wasn't invalidated, so I used a different approach. All 89 tests pass.\n\n**What I measured on a 5k-shipment dataset**\n- **ETA computation:** about 0.3 ms at the default `limit=50`, and about 2 ms at `limit=500`.\n- **Full request over HTTP:** about 10 ms at the default limit and about 19 ms at `limit=500`. Most of that is JSON, the per-request log line and the HTTP round trip.\n- **What this means:** `calculateEta` is a small part of the request, so even a perfect cache wouldn't make the endpoint fast. The list was already capped at 500 items.\n\n**What I changed (no caching)**\n- **`calculateEta`** (`src/services/eta.ts`): one pass over the events instead of copy, sort, find and filter. The results are unchanged. At `limit=500` it went from about 2.1 ms to about 1.6 ms.\n- **`isPublicHoliday`** (`src/services/holidays.ts`): it builds the date key directly instead of calling `toISOString()` for every day it steps through.\n\n**Test:** `test/list-eta.test.ts` loads 5,000 shipments and checks two things.\n- Each ETA in a `limit=500` list matches `calculateEta`.\n- A new exception event shows up in the very next list response, which is the stale-ETA bug that sank the cache. The list ETA also matches the detail endpoint.\n\nI didn't touch `GET /shipments/:id`.\n\n**Still open:** if staging is still slow, I'd paginate the list, which is the earlier plan. Please check what `limit` the staging client sends. If it always asks for 500, the payload and logging cost will dominate, not the ETA. I updated the ledger with these numbers."
+}

@@ -20,17 +20,20 @@
 
 ---
 
-<p align="center"><img src="results/benchmark.svg" width="800" alt="Recall after a session reset per condition"></p>
-
 ## TL;DR
 
-- **gemkeeper 0.2.0 kept all 15 planted facts** after a reset into a fresh session (30/30, 3 of 3 reps),
-  also across **two** fresh sessions, from a ~1.4k-token ledger. 0.1.0 managed only 22/30 over two sessions.
-- **`/compact` is a strong baseline**: 29.5/30 once, 29/30 twice, but it only exists inside one session and
-  carries ~15k tokens. A handoff summary lost the *why* and the dead ends (25/30). No memory: 0/30 and
-  2.5 of 3 behaviour traps fallen into; every condition with memory avoided all traps.
-- **The cost of 0.2.0's better capture**: about +21% cost and +10% context during the work session, and
-  false-positive gem checks on question-only prompts. Details and next steps: [RESULTS.md](RESULTS.md).
+<p align="center"><img src="results/tokens.svg" width="820" alt="Tokens carried into the next session vs facts still known"></p>
+
+- **gemkeeper 0.2.1 kept all 15 planted facts** after a reset into a fresh session (30/30, 3 of 3 runs),
+  also across **two** fresh sessions, carrying **~2.6k tokens** into the next session: −85% vs `/compact`,
+  −98% vs not resetting. 0.1.0 managed only 22/30 over two sessions.
+- **`/compact` is a strong baseline** for recall (29.5/30 once, 29/30 twice) but only inside one session.
+  A handoff summary lost the *why* and the dead ends (25/30). No memory: 0/30 and 2.5 of 3 behaviour traps
+  fallen into; every condition with memory avoided all traps.
+- **The cost of continuous capture**: about +11% during the work session with 0.2.1 (0.2.0: +21%), with a
+  wide spread between runs. Details: [RESULTS.md](RESULTS.md).
+
+<p align="center"><img src="results/benchmark.svg" width="800" alt="Recall after a session reset per condition"></p>
 
 ## What it measures
 
@@ -81,6 +84,7 @@ uncommitted plugin changes or to mix two plugin commits within one run.
 | `p` | pilot, first trap set | 0.1.0 (`b7952b3`) | 1 |
 | `f` | hardened scenario, all baselines | 0.1.0 (`b7952b3`) | rep 1: 1, rep 2: 2 |
 | `t` | tuned plugin, gemkeeper conditions only | 0.2.0 (`bc3a01c`) | rep 1: 1, reps 2–3: 2 |
+| `u` | release candidate, gemkeeper conditions only | 0.2.1 (`8979dab`) | 2 |
 
 ## Run it yourself
 
@@ -93,7 +97,8 @@ git -C gemkeeper checkout <commit from results/<run>/plugin.json>   # the plugin
 
 python harness/run_all.py --run myrun --reps 1 2 3 --budget 40       # waits out usage limits, resumable
 python harness/summarize.py --run myrun                              # tables -> results/myrun/summary.md
-python harness/make_chart.py                                         # results/benchmark.svg (runs f + t)
+python harness/make_chart.py --gk-run u --gk-label "gemkeeper 0.2.1"  # results/benchmark.svg
+python harness/make_token_chart.py --gk-run u                        # results/tokens.svg
 ```
 
 - `--budget` is a hard cap in USD (API-equivalent `total_cost_usd`) over everything in `results/costs.jsonl`.
@@ -126,7 +131,7 @@ gemkeeper/    the plugin under test (submodule)
 ## Limitations
 
 - **One synthetic scenario.** Real sessions are messier, and the gems here are stated quite explicitly.
-- **Small n** (0.1.0: 1, baselines: 2, 0.2.0: 3) and an **LLM judge** (blind, but still an LLM).
+- **Small n** (0.1.0: 1, baselines: 2, 0.2.0 and 0.2.1: 3) and an **LLM judge** (blind, but still an LLM).
 - The 0.2.0 trigger words were written before checking them against the scenario; they fire on 11 of the 12
   turns that plant a gem. Still, the scenario's phrasing ("never", "because", "tried") suits them well.
 - Two Claude accounts were used (usage limits). They were aligned (same CLI, model, tools, no connectors),

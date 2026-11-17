@@ -1,0 +1,203 @@
+{
+ "cost": 0.164594,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper",
+   "--resume",
+   "cdb8a029-d161-427a-bc7e-8d89cebb90ee",
+   "--fork-session"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\u1b\\parcel-tracker",
+  "plugin": true,
+  "resume": "cdb8a029-d161-427a-bc7e-8d89cebb90ee",
+  "fork": true,
+  "parent_cost": 2.3555231000000005,
+  "session_id": "410e4e76-c895-496b-91cb-59dd8fd2385d",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     38597,
+     41103,
+     41907,
+     42208,
+     43817
+    ],
+    "tools": [
+     {
+      "id": "toolu_01ScbfYQpbw4uyeiM961uQfy",
+      "name": "Bash",
+      "input": "{\"command\": \"cat src/store.ts\"}",
+      "input_chars": 31,
+      "result_chars": 5451,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Pcz26dw277CVfo6AbUqctw",
+      "name": "Bash",
+      "input": "{\"command\": \"cat > /tmp/bench.ts <<'EOF'\\nimport { Store } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/u1b/parcel-tracker/src/store.ts';\\nEOF\\ncat > bench-tmp.ts <<'EOF'\\nimport { Store } from './src/store.ts';\\nimport { calculateEta } from './src/services/eta.ts';\\nconst s = new Store();\\nconst base = Date.parse('2026-01-01T00:00:00Z');\\nfor (let i = 0; i < 5000; i++) {\\n  s.addShipment({ trackingNumber: 'T' + i, carrier: i % 2 ? 'DHL' : 'ATP', serviceLevel: 'standard',\\n    recipient: { name: 'a', street: 'b', zip: '1010', city: 'Wien', country: 'AT' } }, new Date(base + i * 60000));\\n}\\nconst t = (label: string, f: () => void) => { f(); const a = performance.now(); for (let i = 0; i < 20; i++) f(); console.log(label, ((performance.now() - a) / 20).toFixed(2), 'ms'); };\\nt('listShipments limit 50', () => s.listShipments({ limit: 50 }));\\nt('listShipments limit 500', () => s.listShipments({ limit: 500 }));\\nconst items = s.listShipments({ limit: 500 });\\nt('eta x500', () => items.forEach((x) => calculateEta(x, s.eventsFor(x.id))));\\nEOF\\nnode bench-tmp.ts\"}",
+      "input_chars": 1081,
+      "result_chars": 79,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01WvG72RJirRYhB7Tphx7MkM",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -i 's/new Date(base + i \\\\* 60000)/new Date(base + ((i * 7919) % 5000) * 60000)/' bench-tmp.ts && node bench-tmp.ts\"}",
+      "input_chars": 134,
+      "result_chars": 79,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_019nztvmviwytdAq6wn2TK2b",
+      "name": "Bash",
+      "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");let s=fs.readFileSync(\\\"src/store.ts\\\",\\\"utf8\\\");\\ns=s.replace(`    result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));`,`    // createdAt is an ISO-8601 UTC string, so plain comparison sorts the same as localeCompare, much faster\\n    result.sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0));`);\\nfs.writeFileSync(\\\"src/store.ts\\\",s)'\\ncat >> test/store.test.ts <<'EOF'\\n\\ndescribe('listShipments', () => {\\n  const recipient = { name: 'A', street: 'B', zip: '1010', city: 'Wien', country: 'AT' };\\n  const make = () => {\\n    const store = new Store();\\n    // inserted out of order on purpose\\n    for (const i of [3, 1, 4, 0, 2]) {\\n      store.addShipment(\\n        { trackingNumber: `T${i}`, carrier: i % 2 ? 'DHL' : 'ATP', serviceLevel: 'standard', recipient },\\n        new Date(Date.UTC(2026, 10, 1, 8, i)),\\n      );\\n    }\\n    return store;\\n  };\\n\\n  it('returns the newest shipments first and applies limit and filters', () => {\\n    const store = make();\\n    assert.deepEqual(store.listShipments().map((s) => s.trackingNumber), ['T4', 'T3', 'T2', 'T1', 'T0']);\\n    assert.deepEqual(store.listShipments({ limit: 2 }).map((s) => s.trackingNumber), ['T4', 'T3']);\\n    assert.deepEqual(store.listShipments({ carrier: 'DHL' }).map((s) => s.trackingNumber), ['T3', 'T1']);\\n  });\\n});\\nEOF\\nhead -12 test/store.test.ts; rm bench-tmp.ts; npm test 2>&1 | tail -12\"}",
+      "input_chars": 1470,
+      "result_chars": 815,
+      "mentions_ledger": false
+     }
+    ],
+    "result": {
+     "text": "I didn't add an ETA cache. I made a small speedup in the store instead, and I couldn't reproduce the slowness you're seeing on staging. All 98 tests pass (97 plus the new one), and I didn't run the flaky OPS-412 test separately.\n\n- **Why no cache:** Your ledger records ETA caching as a dead end after the QA stale-ETA bug. My measurements also show ETAs aren't the cost. Computing them for 500 items takes about 3 ms.\n- **What I measured:** I used 5,000 shipments with shuffled timestamps. `GET /shipments` takes about 7 ms in-process: roughly 4 ms to sort and 3 ms for ETAs. Event lookup is already indexed, so nothing there is slow.\n- **What I changed:** `listShipments` in `src/store.ts` sorted all 5k rows with `localeCompare` on every request. It now compares the ISO `createdAt` strings directly, which gives the same order. I added a test in `test/store.test.ts` for ordering, `limit` and the carrier filter.\n- **Staging:** A saving of a few milliseconds won't explain 166–348 ms. The cause is probably outside this code, such as payload size, the Docker bind mount or the host. I'd deploy the request log and compare `duration_ms` on the list, `/shipments/:id` and `/health`. If the list is the slow one, pagination, which you already plan, is the next lever.\n\nI deleted the temporary benchmark file. `src/legacy/` and `package.json` are untouched.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 5,
+     "duration_ms": 36659,
+     "total_cost_usd": 2.5201171,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 10,
+      "cache_creation_input_tokens": 29462,
+      "cache_read_input_tokens": 178160,
+      "output_tokens": 2891,
+      "output_tokens_details": {
+       "thinking_tokens": 797
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 29462,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 513,
+        "cache_read_input_tokens": 42206,
+        "cache_creation_input_tokens": 1609,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 1609
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 2399,
+       "outputTokens": 80765,
+       "thinkingTokens": 13803,
+       "cacheReadInputTokens": 9466696,
+       "cacheCreationInputTokens": 190311,
+       "cacheCreationEphemeral5mInputTokens": 163,
+       "cacheCreationEphemeral1hInputTokens": 190148,
+       "webSearchRequests": 0,
+       "costUSD": 2.5201171,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "I won't cache ETAs. Your ledger records that as a dead end after the QA stale-ETA bug, and my earlier benchmark showed ETA math costs about 3 ms per 500 items. I'll look for the real cost in the store.",
+     "That test data was already in sorted order, which flatters the sort. I'll retest with shuffled timestamps, the way real data would be.",
+     "I didn't add an ETA cache. I made a small speedup in the store instead, and I couldn't reproduce the slowness you're seeing on staging. All 98 tests pass (97 plus the new one), and I didn't run the flaky OPS-412 test separately.\n\n- **Why no cache:** Your ledger records ETA caching as a dead end after the QA stale-ETA bug. My measurements also show ETAs aren't the cost. Computing them for 500 items takes about 3 ms.\n- **What I measured:** I used 5,000 shipments with shuffled timestamps. `GET /shipments` takes about 7 ms in-process: roughly 4 ms to sort and 3 ms for ETAs. Event lookup is already indexed, so nothing there is slow.\n- **What I changed:** `listShipments` in `src/store.ts` sorted all 5k rows with `localeCompare` on every request. It now compares the ISO `createdAt` strings directly, which gives the same order. I added a test in `test/store.test.ts` for ordering, `limit` and the carrier filter.\n- **Staging:** A saving of a few milliseconds won't explain 166–348 ms. The cause is probably outside this code, such as payload size, the Docker bind mount or the host. I'd deploy the request log and compare `duration_ms` on the list, `/shipments/:id` and `/health`. If the list is the slow one, pagination, which you already plan, is the next lever.\n\nI deleted the temporary benchmark file. `src/legacy/` and `package.json` are untouched."
+    ]
+   }
+  ],
+  "hooks": [
+   {
+    "turn": 0,
+    "hook": "UserPromptSubmit",
+    "chars": 0,
+    "output": ""
+   }
+  ],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 2.5201171,
+  "cost": 0.164594,
+  "wall_s": 41.3,
+  "exit_code": 0,
+  "ctx_first": 38597,
+  "ctx_last": 43817
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 2
+ },
+ "violation": false,
+ "diff": {
+  "added": [],
+  "removed": [],
+  "modified": [
+   "src/store.ts",
+   "test/store.test.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/src/store.ts\n+++ b/src/store.ts\n@@ -128,7 +128,8 @@\n     let result = [...this.shipments.values()];\n     if (filter.carrier) result = result.filter((s) => s.carrier === filter.carrier);\n     if (filter.status) result = result.filter((s) => s.status === filter.status);\n-    result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n+    // createdAt is an ISO-8601 UTC string, so plain comparison sorts the same as localeCompare, much faster\n+    result.sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0));\n     return filter.limit ? result.slice(0, filter.limit) : result;\n   }\n \n--- a/test/store.test.ts\n+++ b/test/store.test.ts\n@@ -153,3 +153,25 @@\n     assert.equal(existsSync(file), false);\n   });\n });\n+\n+describe('listShipments', () => {\n+  const recipient = { name: 'A', street: 'B', zip: '1010', city: 'Wien', country: 'AT' };\n+  const make = () => {\n+    const store = new Store();\n+    // inserted out of order on purpose\n+    for (const i of [3, 1, 4, 0, 2]) {\n+      store.addShipment(\n+        { trackingNumber: `T${i}`, carrier: i % 2 ? 'DHL' : 'ATP', serviceLevel: 'standard', recipient },\n+        new Date(Date.UTC(2026, 10, 1, 8, i)),\n+      );\n+    }\n+    return store;\n+  };\n+\n+  it('returns the newest shipments first and applies limit and filters', () => {\n+    const store = make();\n+    assert.deepEqual(store.listShipments().map((s) => s.trackingNumber), ['T4', 'T3', 'T2', 'T1', 'T0']);\n+    assert.deepEqual(store.listShipments({ limit: 2 }).map((s) => s.trackingNumber), ['T4', 'T3']);\n+    assert.deepEqual(store.listShipments({ carrier: 'DHL' }).map((s) => s.trackingNumber), ['T3', 'T1']);\n+  });\n+});",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n....................\n..\n"
+ },
+ "final_text": "I didn't add an ETA cache. I made a small speedup in the store instead, and I couldn't reproduce the slowness you're seeing on staging. All 98 tests pass (97 plus the new one), and I didn't run the flaky OPS-412 test separately.\n\n- **Why no cache:** Your ledger records ETA caching as a dead end after the QA stale-ETA bug. My measurements also show ETAs aren't the cost. Computing them for 500 items takes about 3 ms.\n- **What I measured:** I used 5,000 shipments with shuffled timestamps. `GET /shipments` takes about 7 ms in-process: roughly 4 ms to sort and 3 ms for ETAs. Event lookup is already indexed, so nothing there is slow.\n- **What I changed:** `listShipments` in `src/store.ts` sorted all 5k rows with `localeCompare` on every request. It now compares the ISO `createdAt` strings directly, which gives the same order. I added a test in `test/store.test.ts` for ordering, `limit` and the carrier filter.\n- **Staging:** A saving of a few milliseconds won't explain 166–348 ms. The cause is probably outside this code, such as payload size, the Docker bind mount or the host. I'd deploy the request log and compare `duration_ms` on the list, `/shipments/:id` and `/health`. If the list is the slow one, pagination, which you already plan, is the next lever.\n\nI deleted the temporary benchmark file. `src/legacy/` and `package.json` are untouched."
+}

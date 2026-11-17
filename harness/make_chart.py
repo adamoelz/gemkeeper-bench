@@ -1,6 +1,6 @@
 """Renders results/benchmark.svg (recall after reset per condition) straight from the summaries.
 
-    python harness/make_chart.py            # baselines from run f, gemkeeper 0.1.0 from f, 0.2.0 from t
+    python harness/make_chart.py --gk-run u --gk-label "gemkeeper 0.2.1"   # baselines + 0.1.0 from run f
 
 Static SVG for READMEs: light/dark via prefers-color-scheme, values labelled on every bar
 (no hover in an <img>), the full numbers live in RESULTS.md.
@@ -22,17 +22,18 @@ ROWS = [
     ("/compact twice", "f", "B2_compact2", "base"),
     ("gemkeeper 0.1.0", "f", "D_gemkeeper", "v010"),
     ("gemkeeper 0.1.0, two fresh sessions", "f", "D3_gemkeeper_2sess", "v010"),
-    ("gemkeeper 0.2.0", "t", "D_gemkeeper", "v020"),
-    ("gemkeeper 0.2.0, two fresh sessions", "t", "D3_gemkeeper_2sess", "v020"),
-    ("/compact + gemkeeper 0.2.0", "t", "F_compact_gemkeeper", "v020"),
+    ("{gk}", "{run}", "D_gemkeeper", "v020"),
+    ("{gk}, two fresh sessions", "{run}", "D3_gemkeeper_2sess", "v020"),
+    ("/compact + {gk}", "{run}", "F_compact_gemkeeper", "v020"),
     ("No reset (upper bound)", "f", "E_noreset", "base"),
 ]
-LEGEND = [("base", "built-in / no plugin"), ("v010", "gemkeeper 0.1.0"), ("v020", "gemkeeper 0.2.0")]
+LEGEND = [("base", "built-in / no plugin"), ("v010", "gemkeeper 0.1.0"), ("v020", "{gk}")]
 
 
-def collect():
+def collect(gk_run: str, gk: str):
     out = []
     for label, run, cond, group in ROWS:
+        label, run = label.format(gk=gk), run.format(run=gk_run)
         reps = [json.loads(p.read_text(encoding="utf-8"))["conditions"].get(cond)
                 for p in sorted((RES / run).glob("rep*/summary.json"))]
         reps = [r for r in reps if r]
@@ -56,7 +57,7 @@ def bar_path(x: float, y: float, w: float, h: float, r: float = 4) -> str:
             f"V{y + h - r:.1f} Q{x + w:.1f},{y + h:.1f} {x + w - r:.1f},{y + h:.1f} H{x:.1f} Z")
 
 
-def render(rows) -> str:
+def render(rows, gk: str) -> str:
     W, LX, BX, BW = 800, 24, 300, 300          # label column, bar origin, bar width for 30 points
     CX = BX + BW + 64                          # context column
     ROW, BAR = 30, 14
@@ -96,6 +97,7 @@ def render(rows) -> str:
          f'<text class="sub" x="{LX}" y="70">Score out of 30, blind LLM judge, mean over n repetitions.</text>']
     lx = LX
     for key, text in LEGEND:                     # legend row
+        text = text.format(gk=gk)
         p.append(f'<rect class="{key}" x="{lx}" y="84" width="12" height="12" rx="3"/>')
         p.append(f'<text x="{lx + 18}" y="94.5">{esc(text)}</text>')
         lx += 18 + len(text) * 7.1 + 22
@@ -123,6 +125,11 @@ def render(rows) -> str:
 
 
 if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--gk-run", default="u")
+    ap.add_argument("--gk-label", default="gemkeeper 0.2.1")
+    a = ap.parse_args()
     out = RES / "benchmark.svg"
-    out.write_text(render(collect()), encoding="utf-8")
+    out.write_text(render(collect(a.gk_run, a.gk_label), a.gk_label), encoding="utf-8")
     print(out)
