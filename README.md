@@ -22,7 +22,7 @@
 
 ## TL;DR
 
-<p align="center"><img src="results/tokens.svg" width="820" alt="Tokens carried into the next session vs facts still known"></p>
+<p align="center"><img src="results/tokens.svg" width="640" alt="Tokens carried into the next session vs facts still known"></p>
 
 - **gemkeeper 0.2.1 kept all 15 planted facts** after a reset into a fresh session (30/30, 3 of 3 runs),
   also across **two** fresh sessions, carrying **~2.6k tokens** into the next session: −85% vs `/compact`,
@@ -33,7 +33,7 @@
 - **The cost of continuous capture**: about +11% during the work session with 0.2.1 (0.2.0: +21%), with a
   wide spread between runs. Details: [RESULTS.md](RESULTS.md).
 
-<p align="center"><img src="results/benchmark.svg" width="800" alt="Recall after a session reset per condition"></p>
+<p align="center"><img src="results/benchmark.svg" width="640" alt="Recall after a session reset per condition"></p>
 
 ## What it measures
 
@@ -97,8 +97,7 @@ git -C gemkeeper checkout <commit from results/<run>/plugin.json>   # the plugin
 
 python harness/run_all.py --run myrun --reps 1 2 3 --budget 40       # waits out usage limits, resumable
 python harness/summarize.py --run myrun                              # tables -> results/myrun/summary.md
-python harness/make_chart.py --gk-run u --gk-label "gemkeeper 0.2.1"  # results/benchmark.svg
-python harness/make_token_chart.py --gk-run u                        # results/tokens.svg
+python harness/make_charts.py --gk-run u --gk-version 0.2.1          # results/benchmark.svg + tokens.svg
 ```
 
 - `--budget` is a hard cap in USD (API-equivalent `total_cost_usd`) over everything in `results/costs.jsonl`.
