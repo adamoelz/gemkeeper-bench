@@ -1,8 +1,7 @@
 # Results
 
-<p align="center"><img src="results/benchmark.svg" width="640" alt="Recall after a session reset per condition"></p>
-
-<p align="center"><img src="results/tokens.svg" width="640" alt="Tokens carried into the next session vs facts still known"></p>
+Charts and a short summary: [gemkeeper README](https://github.com/adamoelz/gemkeeper#benchmark).
+Runs: `p` pilot and `f` baselines with gemkeeper 0.1.0, `t` 0.2.0, `u` 0.2.1; exact commits in `results/<run>/plugin.json`.
 
 **Bottom line.** With gemkeeper 0.2.1, a fresh session knew all 15 planted facts (30/30 in 3 of 3
 repetitions), also after **two** resets into fresh sessions, while carrying only **~2.6k tokens** into the
