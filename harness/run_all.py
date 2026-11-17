@@ -50,7 +50,7 @@ def main() -> int:
     ap.add_argument("--reps", type=int, nargs="+", required=True)
     ap.add_argument("--budget", type=float, required=True)
     ap.add_argument("--max-waits", type=int, default=8)
-    ap.add_argument("--lineages", nargs="+", default=["base", "gk"], choices=["base", "gk"])
+    ap.add_argument("--lineages", nargs="+", default=["base", "gk"], choices=["base", "gk", "lite"])
     ap.add_argument("--est", type=float, help="expected cost of one rep (default: 1.1x the most expensive finished rep)")
     a = ap.parse_args()
     (run_rep.BENCH / "results" / a.run).mkdir(parents=True, exist_ok=True)

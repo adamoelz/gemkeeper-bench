@@ -36,12 +36,15 @@ import os  # noqa: E402
 PHASE_A_FILE = os.environ.get("BENCH_PHASE_A", "phase_a.json")
 PHASE_A = json.loads((BENCH / "scenario" / PHASE_A_FILE).read_text(encoding="utf-8"))["turns"]
 HANDOFF_SKILL = BENCH / "scenario" / "competitors" / "mattpocock-handoff" / "SKILL.md"
+LITE_DIR = cc.PLUGIN_DIR / "editions" / "skill-only"   # skill-only edition: no hooks, /gemkeeper:resume
+LITE_RESUME = "/gemkeeper:resume"
 PROBE = json.loads((BENCH / "scenario" / "probe.json").read_text(encoding="utf-8"))
 
 BASE_CONDS = ["A_none", "B_compact", "C_handoff", "C2_handoff_skill", "E_noreset", "B2_compact2"]
 GK_CONDS = ["D_gemkeeper", "D2_gemkeeper_sweep"]
 CONDITIONS = ["A_none", "B_compact", "B2_compact2", "C_handoff", "C2_handoff_skill", "D_gemkeeper", "D2_gemkeeper_sweep",
-              "D3_gemkeeper_2sess", "F_compact_gemkeeper", "E_noreset"]
+              "D3_gemkeeper_2sess", "F_compact_gemkeeper", "DL_lite", "DL3_lite_2sess", "DL0_lite_noresume",
+              "E_noreset"]
 PROBES = ["quiz", "trap_legacy", "trap_dependency", "trap_deadend"]
 N_TURNS = len(PHASE_A)
 SPLIT = 10  # two-reset conditions (B2, D3) reset after this many turns
@@ -122,6 +125,10 @@ class Rep:
         self.snap_b2 = WORK / f"{tag}a.b2.snap"
         self.snap_gk10 = WORK / f"{tag}b.snap10"
         self.snap_gk2 = WORK / f"{tag}b.gk2.snap"
+        self.ws_lite = WORK / f"{tag}c" / "parcel-tracker"
+        self.snap_lite = WORK / f"{tag}c.snap"
+        self.snap_lite10 = WORK / f"{tag}c.snap10"
+        self.snap_lite2 = WORK / f"{tag}c.l2.snap"
 
     # ------------------------------------------------------------ helpers
     def step(self, name: str, fn):
@@ -199,8 +206,9 @@ class Rep:
             s = cc.run_session(self.ws_base, [PROBE["handoff_skill_command"]], self.logs / "prep_handoff_skill.jsonl.gz",
                                resume=pa["session_id"], fork=True, parent_cost=pa["cost_cumulative"],
                                env_extra={"TMPDIR": str(tmp), "TEMP": str(tmp), "TMP": str(tmp)})
-            written = [json.loads(t["input"]).get("file_path") for t in s["turns"][0]["tools"]
-                       if t["name"] == "Write" and t["input"].startswith("{")] if s["turns"] else []
+            import re  # tool inputs are stored truncated, so pick the path out with a regex instead of json.loads
+            written = [m.group(1).replace("\\\\", "\\") for t in (s["turns"][0]["tools"] if s["turns"] else [])
+                       if t["name"] == "Write" for m in [re.search(r'"file_path":\s*"([^"]+)"', t["input"])] if m]
             cands = [Path(w) for w in written if w] + sorted(tmp.rglob("*.md"), key=lambda f: f.stat().st_mtime)
             doc = next((c for c in reversed(cands) if c.exists()), None)
             s["handoff_file"] = str(doc) if doc else None
@@ -327,19 +335,76 @@ class Rep:
             self.step(f"probe_F_compact_gemkeeper_{probe}", lambda p=probe: self.run_probe(
                 "F_compact_gemkeeper", p, self.ws_gk, self.snap_gk, f_sess))
 
+    # ------------------------------------------------------------ lineage: skill-only edition ("lite")
+    def lineage_lite(self):
+        lite = str(LITE_DIR)
+        if not (LITE_DIR / ".claude-plugin" / "plugin.json").exists():
+            raise RuntimeError(f"skill-only edition not found at {LITE_DIR}")
+
+        def ledger_now():
+            p = self.ws_lite / ".gemkeeper" / "ledger.md"
+            return p.read_text(encoding="utf-8") if p.exists() else None
+
+        def phase_a():
+            wsm.create(self.ws_lite)
+            ledger_by_turn = []
+
+            def on_turn(i, _turn):
+                ledger_by_turn.append({"turn": i, "text": ledger_now()})
+                if i == SPLIT - 1:
+                    wsm.snapshot(self.ws_lite, self.snap_lite10)
+                if i == N_TURNS - 1:
+                    wsm.snapshot(self.ws_lite, self.snap_lite)
+            s = cc.run_session(self.ws_lite, [t["text"] for t in PHASE_A], self.logs / "phaseA_lite.jsonl.gz",
+                               plugin=lite, on_turn=on_turn)
+            costs = [t["result"]["total_cost_usd"] if t.get("result") else None for t in s["turns"]]
+            s["cost_phase_a"] = costs[N_TURNS - 1] if len(costs) >= N_TURNS else None
+            s["cost_turn10"] = costs[SPLIT - 1] if len(costs) >= SPLIT else None
+            s["ledger_by_turn"] = ledger_by_turn
+            return s
+        pa = self.step("phaseA_lite", phase_a)
+        if not self.snap_lite.exists() or not self.snap_lite10.exists():
+            raise RuntimeError("lite snapshots missing; delete phaseA_lite.json to rerun phase A")
+        for cond, preface in (("DL_lite", [LITE_RESUME]), ("DL0_lite_noresume", None)):
+            for probe in PROBES:
+                self.step(f"probe_{cond}_{probe}", lambda c=cond, p=probe, pf=preface: self.run_probe(
+                    c, p, self.ws_lite, self.snap_lite, {"plugin": lite}, preface=pf))
+
+        # DL3: workspace after turn 10 -> fresh session that starts with /gemkeeper:resume -> turns 11-20
+        def lite2():
+            wsm.restore(self.snap_lite10, self.ws_lite)
+            ledger_by_turn = []
+
+            def on_turn(i, _turn):
+                ledger_by_turn.append({"turn": SPLIT + i - 1, "text": ledger_now()})
+            s = cc.run_session(self.ws_lite, [LITE_RESUME] + [t["text"] for t in PHASE_A[SPLIT:]],
+                               self.logs / "phaseA2_lite2sess.jsonl.gz", plugin=lite, on_turn=on_turn)
+            wsm.snapshot(self.ws_lite, self.snap_lite2)
+            s["ledger_by_turn"] = ledger_by_turn
+            return s
+        self.step("phaseA2_lite2sess", lite2)
+        for probe in PROBES:
+            self.step(f"probe_DL3_lite_2sess_{probe}", lambda p=probe: self.run_probe(
+                "DL3_lite_2sess", p, self.ws_lite, self.snap_lite2, {"plugin": lite}, preface=[LITE_RESUME]))
+
     # ------------------------------------------------------------ one probe
-    def run_probe(self, cond: str, probe: str, ws: Path, snap: Path, sess: dict, handoff: str | None = None) -> dict:
+    def run_probe(self, cond: str, probe: str, ws: Path, snap: Path, sess: dict, handoff: str | None = None,
+                  preface: list[str] | None = None) -> dict:
         wsm.restore(snap, ws)
         prompt = quiz_prompt() if probe == "quiz" else TRAP_TEXT[probe]
         if cond in ("C_handoff", "C2_handoff_skill"):
             prompt = PROBE["handoff_paste_template"].replace("<<<HANDOFF>>>", handoff or "").replace("<<<PROMPT>>>", prompt)
-        s = cc.run_session(ws, [prompt], self.logs / f"probe_{cond}_{probe}.jsonl.gz", turn_timeout=1500, **sess)
+        s = cc.run_session(ws, (preface or []) + [prompt], self.logs / f"probe_{cond}_{probe}.jsonl.gz",
+                           turn_timeout=1500, **sess)
+        if preface and s["turns"] and s["turns"][-1]["ctx"]:
+            s["ctx_first"] = s["turns"][-1]["ctx"][0]   # context when the probe itself starts (after /resume)
+            s["ctx_preface"] = s["turns"][0]["ctx"][0] if s["turns"][0]["ctx"] else None
         out = {"cost": s["cost"], "session": s}
-        tools = [t for turn in s["turns"] for t in turn["tools"]]
+        tools = [t for t in (s["turns"][-1]["tools"] if s["turns"] else [])]
         if probe == "quiz":
             # a Stop-hook continuation can replace the final result text, so take the assistant text
             # of this turn that parses into the most answers
-            t0 = s["turns"][0] if s["turns"] else {}
+            t0 = s["turns"][-1] if s["turns"] else {}
             cands = [c for c in [(t0.get("result") or {}).get("text")] + t0.get("texts", []) if c]
             text = max(cands, key=lambda c: len(score.parse_quiz(c)), default=None)
             out["answer_texts_all"] = cands
@@ -375,6 +440,24 @@ class Rep:
             ex = self.step("judge_quiz_extra", judge_extra)
             jq = {**jq, "scores": {**jq["scores"], **ex["scores"]}}
 
+        if (self.dir / "phaseA_lite.json").exists():
+            pl = json.loads((self.dir / "phaseA_lite.json").read_text(encoding="utf-8"))
+            lite_d = {e["turn"]: e["text"] for e in pl["ledger_by_turn"]}.get(N_TURNS - 1) or ""
+            l2f = self.dir / "phaseA2_lite2sess.json"
+            l2 = json.loads(l2f.read_text(encoding="utf-8")) if l2f.exists() else {}
+            lite_d3 = (l2["ledger_by_turn"][-1]["text"] if l2.get("ledger_by_turn") else None) or ""
+
+            def coverage_lite():
+                out = {"cost": 0.0}
+                for name, text in (("DL", lite_d), ("DL3", lite_d3)):
+                    if text.strip():
+                        r = score.judge_coverage(text, self.dir, name)
+                        out[name] = r["scores"]
+                        out["cost"] += r["cost"] or 0
+                    else:
+                        out[name] = {g["id"]: {"score": 0, "why": "no ledger"} for g in score.GEMS}
+                return out
+            self.step("judge_coverage_lite", coverage_lite)
         if not (self.dir / "phaseA_gk.json").exists():  # base-only rep
             return quiz, jq, None, "", ""
         pa_gk = json.loads((self.dir / "phaseA_gk.json").read_text(encoding="utf-8"))
@@ -411,7 +494,7 @@ class Rep:
                 raise RuntimeError(f"rep{self.rep} was run with {prev.get('phase_a', 'phase_a.json')}, not {PHASE_A_FILE}")
             runner = {**prev, **runner, "lineages": sorted(set(prev.get("lineages", [])) | set(self.lineages))}
         rf.write_text(json.dumps(runner, indent=1) + "\n", encoding="utf-8")
-        if "gk" in self.lineages:
+        if "gk" in self.lineages or "lite" in self.lineages:
             info = check_plugin(self.dir.parent)
             (self.dir / "plugin.json").write_text(json.dumps(info, indent=1) + "\n", encoding="utf-8")
         errors = {}
@@ -441,7 +524,7 @@ def main():
     ap.add_argument("--rep", type=int, required=True)
     ap.add_argument("--budget", type=float, required=True,
                     help="hard cap in USD across ALL runs (pilot + full); spending is tracked in results/costs.jsonl")
-    ap.add_argument("--lineages", nargs="+", default=["base", "gk"], choices=["base", "gk"])
+    ap.add_argument("--lineages", nargs="+", default=["base", "gk"], choices=["base", "gk", "lite"])
     args = ap.parse_args()
     (BENCH / "results" / args.run).mkdir(parents=True, exist_ok=True)
     budget = Budget(BENCH / "results" / "costs.jsonl", args.budget)

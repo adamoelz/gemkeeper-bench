@@ -16,7 +16,8 @@ import time
 from pathlib import Path
 
 BENCH = Path(__file__).resolve().parent.parent
-PLUGIN_DIR = BENCH / "gemkeeper"  # git submodule, pinned to the benchmarked plugin commit
+# git submodule, pinned to the benchmarked plugin commit (BENCH_PLUGIN_DIR: e.g. a worktree of another commit)
+PLUGIN_DIR = Path(os.environ["BENCH_PLUGIN_DIR"]) if os.environ.get("BENCH_PLUGIN_DIR") else BENCH / "gemkeeper"
 SETTINGS = BENCH / "harness" / "settings.bench.json"
 
 MODEL = os.environ.get("BENCH_MODEL", "sonnet")
@@ -43,15 +44,15 @@ def clean_env() -> dict:
     return env
 
 
-def build_cmd(plugin: bool, resume: str | None, fork: bool, extra: list[str] | None = None) -> list[str]:
+def build_cmd(plugin, resume: str | None, fork: bool, extra: list[str] | None = None) -> list[str]:
     cmd = [CLAUDE, "-p", "--input-format", "stream-json", "--output-format", "stream-json",
            "--verbose", "--include-hook-events",
            "--model", MODEL, "--effort", EFFORT,
            "--dangerously-skip-permissions",
            "--settings", str(SETTINGS),
            "--disallowedTools", "Agent"]
-    if plugin:
-        cmd += ["--plugin-dir", str(PLUGIN_DIR)]
+    if plugin:  # True = the full plugin (repo root); a path = another edition, e.g. editions/skill-only
+        cmd += ["--plugin-dir", str(PLUGIN_DIR if plugin is True else plugin)]
     if resume:
         cmd += ["--resume", resume]
         if fork:

@@ -16,11 +16,14 @@ import score  # noqa: E402
 
 BENCH = Path(__file__).resolve().parent.parent
 CONDITIONS = ["A_none", "B_compact", "B2_compact2", "C_handoff", "C2_handoff_skill", "D_gemkeeper", "D2_gemkeeper_sweep",
-              "D3_gemkeeper_2sess", "F_compact_gemkeeper", "E_noreset"]
+              "D3_gemkeeper_2sess", "F_compact_gemkeeper", "DL_lite", "DL3_lite_2sess", "DL0_lite_noresume",
+              "E_noreset"]
 LABEL = {"A_none": "A none (/clear)", "B_compact": "B /compact", "B2_compact2": "B2 /compact twice (after t10 + t20)",
          "C_handoff": "C handoff", "C2_handoff_skill": "C2 handoff skill (mattpocock)", "D_gemkeeper": "D gemkeeper", "D2_gemkeeper_sweep": "D2 gemkeeper + /gems",
          "D3_gemkeeper_2sess": "D3 gemkeeper, fresh session after t10 + t20",
-         "F_compact_gemkeeper": "F /compact + gemkeeper", "E_noreset": "E no reset"}
+         "F_compact_gemkeeper": "F /compact + gemkeeper", "DL_lite": "DL skill-only + /gemkeeper:resume",
+         "DL3_lite_2sess": "DL3 skill-only, 2 fresh sessions + /resume", "DL0_lite_noresume": "DL0 skill-only, no /resume",
+         "E_noreset": "E no reset"}
 SPLIT = 10
 TRAPS = ["trap_legacy", "trap_dependency", "trap_deadend"]
 CATS = {"rules": "Rules /10", "decisions": "Decisions+why /8", "dead_ends": "Dead ends /8", "facts": "Facts /4"}
@@ -64,7 +67,8 @@ def summarize_rep(rep_dir: Path) -> dict:
         ex = _load(rep_dir / "judge_quiz_extra.json")
         jq = {**jq, "scores": {**jq["scores"], **ex["scores"]}, "cost": (jq.get("cost") or 0) + (ex.get("cost") or 0)}
     cov = opt("judge_coverage")
-    pa_base, pa_gk = opt("phaseA_base"), opt("phaseA_gk")
+    pa_base, pa_gk, pa_lite = opt("phaseA_base"), opt("phaseA_gk"), opt("phaseA_lite")
+    l2 = opt("phaseA2_lite2sess")
     comp, ho = opt("prep_compact"), opt("prep_compact") and opt("prep_handoff")
     o = {n: opt(n) for n in ("prep_compact10", "phaseA2_compacted", "prep_compact2", "phaseA2_gk2sess", "prep_compact_gk")}
 
@@ -80,7 +84,11 @@ def summarize_rep(rep_dir: Path) -> dict:
         traps = {t: _load(rep_dir / f"probe_{c}_{t}.json") for t in TRAPS}
         any_rule = {k: any(traps[t]["checks"][k]["violation"] for t in TRAPS) for k in ("legacy", "dependency", "deadend")}
         probe_cost = quiz["cost"] + sum(traps[t]["cost"] for t in TRAPS)
-        if c == "B2_compact2":  # turns 1-10, /compact, turns 11-20 in the compacted session, /compact
+        if c in ("DL_lite", "DL0_lite_noresume"):
+            phase_a, prep = pa_lite["cost_phase_a"], 0
+        elif c == "DL3_lite_2sess":
+            phase_a, prep = pa_lite["cost_turn10"] + l2["cost"], 0
+        elif c == "B2_compact2":  # turns 1-10, /compact, turns 11-20 in the compacted session, /compact
             phase_a = pa_base["cost_a1"] + o["phaseA2_compacted"]["cost"]
             prep = o["prep_compact10"]["cost"] + o["prep_compact2"]["cost"]
         elif c == "D3_gemkeeper_2sess":  # turns 1-10 with plugin, fresh session for turns 11-20
@@ -170,6 +178,24 @@ def summarize_rep(rep_dir: Path) -> dict:
             gk["coverage_D3"] = {k: v["score"] for k, v in cov_d3.items()}
             gk["d3_capture_full"] = sum(1 for v in cov_d3.values() if v["score"] == 2)
 
+    # ---------------- skill-only edition
+    lite = None
+    cov_l = opt("judge_coverage_lite")
+    if pa_lite and cov_l:
+        led_l = {e["turn"]: e["text"] or "" for e in pa_lite["ledger_by_turn"]}
+        ld = led_l.get(N_TURNS - 1, "")
+        ld3 = ((l2["ledger_by_turn"][-1]["text"] if l2 and l2.get("ledger_by_turn") else None) or "")
+        lite = {"phase_a_cost": pa_lite["cost_phase_a"],
+                "phase_a_steps": sum((t["result"] or {}).get("num_turns") or 0 for t in pa_lite["turns"][:N_TURNS]),
+                "ledger_DL": {"lines": len(ld.splitlines()), "tokens_est": tok(len(ld))},
+                "ledger_DL3": {"lines": len(ld3.splitlines()), "tokens_est": tok(len(ld3))},
+                "organic_capture_any": sum(1 for v in cov_l["DL"].values() if v["score"] >= 1),
+                "organic_capture_full": sum(1 for v in cov_l["DL"].values() if v["score"] == 2),
+                "d3_capture_full": sum(1 for v in cov_l["DL3"].values() if v["score"] == 2),
+                "coverage_DL": {k: v["score"] for k, v in cov_l["DL"].items()},
+                "coverage_DL3": {k: v["score"] for k, v in cov_l["DL3"].items()},
+                "turns_with_ledger_write": [t + 1 for t in range(N_TURNS) if led_l.get(t, "") != led_l.get(t - 1, "")]}
+
     # ---------------- leak check: did any model under test touch the answer key?
     leaks = []
     for p in (rep_dir / "logs").glob("*.jsonl.gz"):
@@ -179,13 +205,13 @@ def summarize_rep(rep_dir: Path) -> dict:
             leaks.append(p.name)
 
     summary = {
-        "conditions": conds, "gemkeeper": gk,
+        "conditions": conds, "gemkeeper": gk, "lite": lite,
         "compact": comp.get("compact") if comp else None,
         "handoff_chars": len(ho.get("handoff_text") or "") if ho else None,
         "handoff_wrote_files": ho.get("handoff_wrote_files") if ho else None,
         "phase_a": {k: {"cost": v.get("cost_phase_a", v.get("cost")), "wall_s": v["wall_s"], "error": v["error"]}
-                    for k, v in (("base", pa_base), ("gk", pa_gk)) if v},
-        "judge_cost": jq.get("cost", 0) + (cov.get("cost", 0) if cov else 0),
+                    for k, v in (("base", pa_base), ("gk", pa_gk), ("lite", pa_lite)) if v},
+        "judge_cost": jq.get("cost", 0) + (cov.get("cost", 0) if cov else 0) + (cov_l.get("cost", 0) if cov_l else 0),
         "judge_missing": jq.get("missing"),
         "answer_key_leaks": leaks,
     }
