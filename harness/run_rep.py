@@ -31,12 +31,16 @@ import workspace as wsm  # noqa: E402
 
 BENCH = Path(__file__).resolve().parent.parent
 WORK = BENCH / "w"
-PHASE_A = json.loads((BENCH / "scenario" / "phase_a.json").read_text(encoding="utf-8"))["turns"]
+import os  # noqa: E402
+# which scripted session to run: phase_a.json (explicit gems) or phase_a_implicit.json (same gems, casual phrasing)
+PHASE_A_FILE = os.environ.get("BENCH_PHASE_A", "phase_a.json")
+PHASE_A = json.loads((BENCH / "scenario" / PHASE_A_FILE).read_text(encoding="utf-8"))["turns"]
+HANDOFF_SKILL = BENCH / "scenario" / "competitors" / "mattpocock-handoff" / "SKILL.md"
 PROBE = json.loads((BENCH / "scenario" / "probe.json").read_text(encoding="utf-8"))
 
-BASE_CONDS = ["A_none", "B_compact", "C_handoff", "E_noreset", "B2_compact2"]
+BASE_CONDS = ["A_none", "B_compact", "C_handoff", "C2_handoff_skill", "E_noreset", "B2_compact2"]
 GK_CONDS = ["D_gemkeeper", "D2_gemkeeper_sweep"]
-CONDITIONS = ["A_none", "B_compact", "B2_compact2", "C_handoff", "D_gemkeeper", "D2_gemkeeper_sweep",
+CONDITIONS = ["A_none", "B_compact", "B2_compact2", "C_handoff", "C2_handoff_skill", "D_gemkeeper", "D2_gemkeeper_sweep",
               "D3_gemkeeper_2sess", "F_compact_gemkeeper", "E_noreset"]
 PROBES = ["quiz", "trap_legacy", "trap_dependency", "trap_deadend"]
 N_TURNS = len(PHASE_A)
@@ -183,6 +187,30 @@ class Rep:
                                   resume=pa["session_id"], fork=True, parent_cost=pa["cost_cumulative"])
         comp = self.step("prep_compact", compact)
 
+        # C2: a real competitor, Matt Pocock's handoff skill (writes the document to the OS temp dir)
+        def handoff_skill():
+            wsm.restore(self.snap_base, self.ws_base)
+            skill_dir = self.ws_base / ".claude" / "skills" / "handoff"
+            skill_dir.mkdir(parents=True, exist_ok=True)
+            (skill_dir / "SKILL.md").write_text(HANDOFF_SKILL.read_text(encoding="utf-8"), encoding="utf-8")
+            tmp = WORK / f"{self.run_name}{self.rep}a.handoff-tmp"
+            wsm.rmtree(tmp)
+            tmp.mkdir(parents=True)
+            s = cc.run_session(self.ws_base, [PROBE["handoff_skill_command"]], self.logs / "prep_handoff_skill.jsonl.gz",
+                               resume=pa["session_id"], fork=True, parent_cost=pa["cost_cumulative"],
+                               env_extra={"TMPDIR": str(tmp), "TEMP": str(tmp), "TMP": str(tmp)})
+            written = [json.loads(t["input"]).get("file_path") for t in s["turns"][0]["tools"]
+                       if t["name"] == "Write" and t["input"].startswith("{")] if s["turns"] else []
+            cands = [Path(w) for w in written if w] + sorted(tmp.rglob("*.md"), key=lambda f: f.stat().st_mtime)
+            doc = next((c for c in reversed(cands) if c.exists()), None)
+            s["handoff_file"] = str(doc) if doc else None
+            s["handoff_text"] = doc.read_text(encoding="utf-8") if doc else None
+            wsm.restore(self.snap_base, self.ws_base)
+            if not s["handoff_text"]:
+                s["error"] = s.get("error") or "handoff skill wrote no document"
+            return s
+        ho2 = self.step("prep_handoff_skill", handoff_skill)
+
         # B2 step 1, while the prompt cache of S1's prefix is still warm: compact the session after turn 10
         def compact10():
             wsm.restore(self.snap_base10, self.ws_base)
@@ -195,10 +223,12 @@ class Rep:
             "B_compact": {"resume": comp["session_id"], "fork": True, "parent_cost": comp["cost_cumulative"]},
             "C_handoff": {},
         }
-        for cond in ["B_compact", "C_handoff", "A_none"]:
+        sessions["C2_handoff_skill"] = {}
+        handoffs = {"C_handoff": ho.get("handoff_text"), "C2_handoff_skill": ho2.get("handoff_text")}
+        for cond in ["B_compact", "C_handoff", "C2_handoff_skill", "A_none"]:
             for probe in PROBES:
                 self.step(f"probe_{cond}_{probe}", lambda c=cond, p=probe: self.run_probe(
-                    c, p, self.ws_base, self.snap_base, sessions[c], handoff=ho.get("handoff_text")))
+                    c, p, self.ws_base, self.snap_base, sessions[c], handoff=handoffs.get(c)))
 
         # B2 steps 2-3: turns 11-20 in the compacted session, then compact again
         def a2_compacted():
@@ -301,7 +331,7 @@ class Rep:
     def run_probe(self, cond: str, probe: str, ws: Path, snap: Path, sess: dict, handoff: str | None = None) -> dict:
         wsm.restore(snap, ws)
         prompt = quiz_prompt() if probe == "quiz" else TRAP_TEXT[probe]
-        if cond == "C_handoff":
+        if cond in ("C_handoff", "C2_handoff_skill"):
             prompt = PROBE["handoff_paste_template"].replace("<<<HANDOFF>>>", handoff or "").replace("<<<PROMPT>>>", prompt)
         s = cc.run_session(ws, [prompt], self.logs / f"probe_{cond}_{probe}.jsonl.gz", turn_timeout=1500, **sess)
         out = {"cost": s["cost"], "session": s}
@@ -336,6 +366,14 @@ class Rep:
             res = score.judge_quiz({c: q["answers"] for c, q in quiz.items()}, self.dir, seed=1000 + self.rep)
             return res
         jq = self.step("judge_quiz", judge)
+        missing = [c for c in quiz if c not in jq["scores"]]
+        if missing:  # conditions added to an already judged rep: judge only those, keep the earlier scores
+            def judge_extra():
+                d = self.dir / "judge_extra"
+                d.mkdir(exist_ok=True)
+                return score.judge_quiz({c: quiz[c]["answers"] for c in missing}, d, seed=2000 + self.rep)
+            ex = self.step("judge_quiz_extra", judge_extra)
+            jq = {**jq, "scores": {**jq["scores"], **ex["scores"]}}
 
         if not (self.dir / "phaseA_gk.json").exists():  # base-only rep
             return quiz, jq, None, "", ""
@@ -363,10 +401,15 @@ class Rep:
     def run(self):
         import os
         runner = {"config_dir": os.environ.get("BENCH_CLAUDE_CONFIG_DIR") or "default (~/.claude)", "model": cc.MODEL,
-                  "effort": cc.EFFORT, "lineages": list(self.lineages)}
+                  "effort": cc.EFFORT, "lineages": list(self.lineages), "phase_a": PHASE_A_FILE}
         rf = self.dir / "runner.json"
-        if rf.exists() and json.loads(rf.read_text(encoding="utf-8"))["config_dir"] != runner["config_dir"]:
-            raise RuntimeError(f"rep{self.rep} was started with another Claude config dir; sessions cannot be resumed across accounts")
+        if rf.exists():
+            prev = json.loads(rf.read_text(encoding="utf-8"))
+            if prev["config_dir"] != runner["config_dir"]:
+                raise RuntimeError(f"rep{self.rep} was started with another Claude config dir; sessions cannot be resumed across accounts")
+            if prev.get("phase_a", "phase_a.json") != PHASE_A_FILE:
+                raise RuntimeError(f"rep{self.rep} was run with {prev.get('phase_a', 'phase_a.json')}, not {PHASE_A_FILE}")
+            runner = {**prev, **runner, "lineages": sorted(set(prev.get("lineages", [])) | set(self.lineages))}
         rf.write_text(json.dumps(runner, indent=1) + "\n", encoding="utf-8")
         if "gk" in self.lineages:
             info = check_plugin(self.dir.parent)

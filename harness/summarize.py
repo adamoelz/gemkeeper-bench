@@ -15,10 +15,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import score  # noqa: E402
 
 BENCH = Path(__file__).resolve().parent.parent
-CONDITIONS = ["A_none", "B_compact", "B2_compact2", "C_handoff", "D_gemkeeper", "D2_gemkeeper_sweep",
+CONDITIONS = ["A_none", "B_compact", "B2_compact2", "C_handoff", "C2_handoff_skill", "D_gemkeeper", "D2_gemkeeper_sweep",
               "D3_gemkeeper_2sess", "F_compact_gemkeeper", "E_noreset"]
 LABEL = {"A_none": "A none (/clear)", "B_compact": "B /compact", "B2_compact2": "B2 /compact twice (after t10 + t20)",
-         "C_handoff": "C handoff", "D_gemkeeper": "D gemkeeper", "D2_gemkeeper_sweep": "D2 gemkeeper + /gems",
+         "C_handoff": "C handoff", "C2_handoff_skill": "C2 handoff skill (mattpocock)", "D_gemkeeper": "D gemkeeper", "D2_gemkeeper_sweep": "D2 gemkeeper + /gems",
          "D3_gemkeeper_2sess": "D3 gemkeeper, fresh session after t10 + t20",
          "F_compact_gemkeeper": "F /compact + gemkeeper", "E_noreset": "E no reset"}
 SPLIT = 10
@@ -60,6 +60,9 @@ def summarize_rep(rep_dir: Path) -> dict:
         return _load(f) if f.exists() else None
 
     jq = _load(rep_dir / "judge_quiz.json")
+    if (rep_dir / "judge_quiz_extra.json").exists():
+        ex = _load(rep_dir / "judge_quiz_extra.json")
+        jq = {**jq, "scores": {**jq["scores"], **ex["scores"]}, "cost": (jq.get("cost") or 0) + (ex.get("cost") or 0)}
     cov = opt("judge_coverage")
     pa_base, pa_gk = opt("phaseA_base"), opt("phaseA_gk")
     comp, ho = opt("prep_compact"), opt("prep_compact") and opt("prep_handoff")
@@ -89,7 +92,9 @@ def summarize_rep(rep_dir: Path) -> dict:
             prep = (pa_gk.get("cost_sweep") or 0) if c == "D2_gemkeeper_sweep" else 0
         else:
             phase_a = pa_base["cost"]
-            prep = {"B_compact": comp["cost"] if comp else 0, "C_handoff": ho["cost"] if ho else 0}.get(c, 0)
+            ho2 = opt("prep_handoff_skill")
+            prep = {"B_compact": comp["cost"] if comp else 0, "C_handoff": ho["cost"] if ho else 0,
+                    "C2_handoff_skill": ho2["cost"] if ho2 else 0}.get(c, 0)
         conds[c] = {
             "recall": sum(per_gem.values()),
             "by_cat": by_cat,

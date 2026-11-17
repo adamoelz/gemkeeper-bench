@@ -66,7 +66,8 @@ def _ctx(usage: dict) -> int:
 
 def run_session(cwd: Path, prompts: list[str], log_path: Path, *, plugin: bool = False,
                 resume: str | None = None, fork: bool = False, parent_cost: float = 0.0,
-                turn_timeout: float = 1800, on_turn=None, extra: list[str] | None = None) -> dict:
+                turn_timeout: float = 1800, on_turn=None, extra: list[str] | None = None,
+                env_extra: dict | None = None) -> dict:
     """Runs prompts in one conversation. Returns a summary dict; raw events go to log_path (.jsonl.gz)."""
     cmd = build_cmd(plugin, resume, fork, extra)
     log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -75,7 +76,7 @@ def run_session(cwd: Path, prompts: list[str], log_path: Path, *, plugin: bool =
     with open(stderr_path, "w", encoding="utf-8") as errf:
         proc = subprocess.Popen(cmd, cwd=str(cwd), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                 stderr=errf, text=True, encoding="utf-8", errors="replace",
-                                env=clean_env(), bufsize=1)
+                                env={**clean_env(), **(env_extra or {})}, bufsize=1)
     lines: queue.Queue = queue.Queue()
 
     def reader():
