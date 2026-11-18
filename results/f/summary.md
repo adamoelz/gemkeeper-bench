@@ -28,4 +28,4 @@
 | C handoff | 4 | 4 | 4 | 4 | 4 | 3 | 4 | 4 | 2 | 2 | 2 | 1 | 4 | 4 | 4 |
 | E no reset | 4 | 4 | 4 | 4 | 4 | 4 | 4 | 4 | 4 | 4 | 4 | 2 | 4 | 4 | 4 |
 
-Answer-key leak check: none. Judge cost: $0.13 ± 0.08 per rep.
+Answer-key leak check: none. Judge cost: $0.14 ± 0.06 per rep.

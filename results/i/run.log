@@ -1,0 +1,264 @@
+[rep1] phaseA_base ...
+[rep1] phaseA_gk ...
+[rep1] phaseA_base done  cost=$1.808994  budget spent=$61.42
+[rep1] probe_E_noreset_quiz ...
+[rep1] probe_E_noreset_quiz done  cost=$0.032752  budget spent=$61.46
+[rep1] probe_E_noreset_trap_legacy ...
+[rep1] probe_E_noreset_trap_legacy done  cost=$0.161212  budget spent=$61.62
+[rep1] probe_E_noreset_trap_dependency ...
+[rep1] probe_E_noreset_trap_dependency done  cost=$0.043998  budget spent=$61.66
+[rep1] probe_E_noreset_trap_deadend ...
+[rep1] probe_E_noreset_trap_deadend done  cost=$0.183274  budget spent=$61.85
+[rep1] prep_handoff ...
+[rep1] prep_handoff done  cost=$0.051556  budget spent=$61.90
+[rep1] prep_compact ...
+[rep1] phaseA_gk done  cost=$2.414657  budget spent=$64.31
+[rep1] prep_compact_gk ...
+=== restart Tue, Nov 17, 2026  1:48:13 PM ===
+[rep1] prep_compact_gk ...
+[rep1] prep_compact ...
+[rep1] prep_compact_gk done  cost=$0.081167  budget spent=$64.93
+[rep1] probe_D_gemkeeper_quiz ...
+[rep1] probe_D_gemkeeper_quiz done  cost=$0.060901  budget spent=$64.99
+[rep1] probe_D_gemkeeper_trap_legacy ...
+[rep1] prep_compact done  cost=$0.121916  budget spent=$65.11
+[rep1] prep_handoff_skill ...
+Traceback (most recent call last):
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 505, in run
+    fut.result()
+    ~~~~~~~~~~^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 220, in lineage_base
+    ho2 = self.step("prep_handoff_skill", handoff_skill)
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 141, in step
+    res = fn()
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 206, in handoff_skill
+    s = cc.run_session(self.ws_base, [PROBE["handoff_skill_command"]], self.logs / "prep_handoff_skill.jsonl.gz",
+                       resume=pa["session_id"], fork=True, parent_cost=pa["cost_cumulative"],
+                       env_extra={"TMPDIR": str(tmp), "TEMP": str(tmp), "TMP": str(tmp)})
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\cc.py", line 199, in run_session
+    raise e
+cc.RateLimited: rate limited in turn 0: You've hit your 5-hour limit · resets 5:50pm (Europe/Vienna)
+Traceback (most recent call last):
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 505, in run
+    fut.result()
+    ~~~~~~~~~~^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\_base.py", line 447, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 309, in lineage_gk
+    self.step(f"probe_{cond}_{probe}", lambda c=cond, p=probe: self.run_probe(
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        c, p, self.ws_gk, snaps[c], {"plugin": True}))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 141, in step
+    res = fn()
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 309, in <lambda>
+    self.step(f"probe_{cond}_{probe}", lambda c=cond, p=probe: self.run_probe(
+                                                               ~~~~~~~~~~~~~~^
+        c, p, self.ws_gk, snaps[c], {"plugin": True}))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 397, in run_probe
+    s = cc.run_session(ws, (preface or []) + [prompt], self.logs / f"probe_{cond}_{probe}.jsonl.gz",
+                       turn_timeout=1500, **sess)
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\cc.py", line 199, in run_session
+    raise e
+cc.RateLimited: rate limited in turn 0: You've hit your 5-hour limit · resets 5:50pm (Europe/Vienna)
+[rep1] lineage errors: {'base': "RateLimited: rate limited in turn 0: You've hit your 5-hour limit · resets 5:50pm (Europe/Vienna)", 'gk': "RateLimited: rate limited in turn 0: You've hit your 5-hour limit · resets 5:50pm (Europe/Vienna)"}
+[driver] usage limit hit; sleeping until 2026-11-17 17:53
+=== resume after lite pilot Tue, Nov 17, 2026  6:13:49 PM ===
+[rep1] probe_D_gemkeeper_trap_legacy ...
+[rep1] prep_handoff_skill ...
+[rep1] prep_handoff_skill done  cost=$0.58652  budget spent=$70.43
+[rep1] prep_compact10 ...
+[rep1] probe_D_gemkeeper_trap_legacy done  cost=$0.168875  budget spent=$70.60
+[rep1] probe_D_gemkeeper_trap_dependency ...
+[rep1] probe_D_gemkeeper_trap_dependency done  cost=$0.056027  budget spent=$70.66
+[rep1] probe_D_gemkeeper_trap_deadend ...
+[rep1] prep_compact10 done  cost=$0.271107  budget spent=$70.93
+[rep1] probe_B_compact_quiz ...
+[rep1] probe_D_gemkeeper_trap_deadend done  cost=$0.081029  budget spent=$71.01
+[rep1] probe_D2_gemkeeper_sweep_quiz ...
+[rep1] probe_B_compact_quiz done  cost=$0.120173  budget spent=$71.13
+[rep1] probe_B_compact_trap_legacy ...
+[rep1] probe_D2_gemkeeper_sweep_quiz done  cost=$0.063225  budget spent=$71.19
+[rep1] probe_D2_gemkeeper_sweep_trap_legacy ...
+[rep1] probe_B_compact_trap_legacy done  cost=$0.208642  budget spent=$71.40
+[rep1] probe_B_compact_trap_dependency ...
+[rep1] probe_B_compact_trap_dependency done  cost=$0.113835  budget spent=$71.52
+[rep1] probe_B_compact_trap_deadend ...
+[rep1] probe_D2_gemkeeper_sweep_trap_legacy done  cost=$0.141045  budget spent=$71.66
+[rep1] probe_D2_gemkeeper_sweep_trap_dependency ...
+[rep1] probe_D2_gemkeeper_sweep_trap_dependency done  cost=$0.052892  budget spent=$71.71
+[rep1] probe_D2_gemkeeper_sweep_trap_deadend ...
+[rep1] probe_B_compact_trap_deadend done  cost=$0.21988  budget spent=$71.93
+[rep1] probe_C_handoff_quiz ...
+[rep1] probe_C_handoff_quiz done  cost=$0.056271  budget spent=$71.99
+[rep1] probe_C_handoff_trap_legacy ...
+[rep1] probe_D2_gemkeeper_sweep_trap_deadend done  cost=$0.127127  budget spent=$72.11
+[rep1] phaseA2_gk2sess ...
+[rep1] probe_C_handoff_trap_legacy done  cost=$0.115197  budget spent=$72.23
+[rep1] probe_C_handoff_trap_dependency ...
+[rep1] probe_C_handoff_trap_dependency done  cost=$0.056052  budget spent=$72.28
+[rep1] probe_C_handoff_trap_deadend ...
+[rep1] probe_C_handoff_trap_deadend done  cost=$0.109881  budget spent=$72.39
+[rep1] probe_C2_handoff_skill_quiz ...
+[rep1] probe_C2_handoff_skill_quiz done  cost=$0.051343  budget spent=$72.45
+[rep1] probe_C2_handoff_skill_trap_legacy ...
+=== resume after lite Tue, Nov 17, 2026 11:35:30 PM ===
+[rep1] phaseA2_gk2sess ...
+[rep1] probe_C2_handoff_skill_trap_legacy ...
+[rep1] probe_C2_handoff_skill_trap_legacy done  cost=$0.11484  budget spent=$81.25
+[rep1] probe_C2_handoff_skill_trap_dependency ...
+[rep1] probe_C2_handoff_skill_trap_dependency done  cost=$0.058853  budget spent=$81.31
+[rep1] probe_C2_handoff_skill_trap_deadend ...
+[rep1] probe_C2_handoff_skill_trap_deadend done  cost=$0.125619  budget spent=$81.44
+[rep1] probe_A_none_quiz ...
+[rep1] probe_A_none_quiz done  cost=$0.032695  budget spent=$81.47
+[rep1] probe_A_none_trap_legacy ...
+[rep1] probe_A_none_trap_legacy done  cost=$0.093506  budget spent=$81.56
+[rep1] probe_A_none_trap_dependency ...
+[rep1] probe_A_none_trap_dependency done  cost=$0.154296  budget spent=$81.72
+[rep1] probe_A_none_trap_deadend ...
+[rep1] phaseA2_gk2sess done  cost=$0.760403  budget spent=$82.48
+[rep1] probe_D3_gemkeeper_2sess_quiz ...
+[rep1] probe_A_none_trap_deadend done  cost=$0.195845  budget spent=$82.68
+[rep1] phaseA2_compacted ...
+[rep1] probe_D3_gemkeeper_2sess_quiz done  cost=$0.059113  budget spent=$82.73
+[rep1] probe_D3_gemkeeper_2sess_trap_legacy ...
+[rep1] probe_D3_gemkeeper_2sess_trap_legacy done  cost=$0.136489  budget spent=$82.87
+[rep1] probe_D3_gemkeeper_2sess_trap_dependency ...
+[rep1] probe_D3_gemkeeper_2sess_trap_dependency done  cost=$0.051181  budget spent=$82.92
+[rep1] probe_D3_gemkeeper_2sess_trap_deadend ...
+[rep1] probe_D3_gemkeeper_2sess_trap_deadend done  cost=$0.209816  budget spent=$83.13
+[rep1] probe_F_compact_gemkeeper_quiz ...
+[rep1] probe_F_compact_gemkeeper_quiz done  cost=$0.143309  budget spent=$83.28
+[rep1] probe_F_compact_gemkeeper_trap_legacy ...
+[rep1] probe_F_compact_gemkeeper_trap_legacy done  cost=$0.227369  budget spent=$83.50
+[rep1] probe_F_compact_gemkeeper_trap_dependency ...
+[rep1] probe_F_compact_gemkeeper_trap_dependency done  cost=$0.14099  budget spent=$83.64
+[rep1] probe_F_compact_gemkeeper_trap_deadend ...
+[rep1] probe_F_compact_gemkeeper_trap_deadend done  cost=$0.232705  budget spent=$83.88
+[rep1] phaseA2_compacted done  cost=$1.104937  budget spent=$84.98
+[rep1] prep_compact2 ...
+[rep1] prep_compact2 done  cost=$0.123484  budget spent=$85.10
+[rep1] probe_B2_compact2_quiz ...
+[rep1] probe_B2_compact2_quiz done  cost=$0.119199  budget spent=$85.22
+[rep1] probe_B2_compact2_trap_legacy ...
+[rep1] probe_B2_compact2_trap_legacy done  cost=$0.190544  budget spent=$85.41
+[rep1] probe_B2_compact2_trap_dependency ...
+[rep1] probe_B2_compact2_trap_dependency done  cost=$0.112741  budget spent=$85.53
+[rep1] probe_B2_compact2_trap_deadend ...
+Traceback (most recent call last):
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 505, in run
+    fut.result()
+    ~~~~~~~~~~^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 259, in lineage_base
+    self.step(f"probe_B2_compact2_{probe}", lambda p=probe: self.run_probe(
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "B2_compact2", p, self.ws_base, self.snap_b2, b2_sess))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 141, in step
+    res = fn()
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 259, in <lambda>
+    self.step(f"probe_B2_compact2_{probe}", lambda p=probe: self.run_probe(
+                                                            ~~~~~~~~~~~~~~^
+        "B2_compact2", p, self.ws_base, self.snap_b2, b2_sess))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 397, in run_probe
+    s = cc.run_session(ws, (preface or []) + [prompt], self.logs / f"probe_{cond}_{probe}.jsonl.gz",
+                       turn_timeout=1500, **sess)
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\cc.py", line 199, in run_session
+    raise e
+cc.RateLimited: rate limited in turn 0: You've hit your 5-hour limit · resets 3:50am (Europe/Vienna)
+[rep1] lineage errors: {'base': "RateLimited: rate limited in turn 0: You've hit your 5-hour limit · resets 3:50am (Europe/Vienna)"}
+[driver] usage limit hit; sleeping until 2026-11-18 03:53
+[rep1] probe_B2_compact2_trap_deadend ...
+Traceback (most recent call last):
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\shutil.py", line 707, in _rmtree_unsafe
+    os.rmdir(path)
+    ~~~~~~~~^^^^^^
+PermissionError: [WinError 32] Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird: 'C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\i1a\\parcel-tracker'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 505, in run
+    fut.result()
+    ~~~~~~~~~~^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 259, in lineage_base
+    self.step(f"probe_B2_compact2_{probe}", lambda p=probe: self.run_probe(
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "B2_compact2", p, self.ws_base, self.snap_b2, b2_sess))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 141, in step
+    res = fn()
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 259, in <lambda>
+    self.step(f"probe_B2_compact2_{probe}", lambda p=probe: self.run_probe(
+                                                            ~~~~~~~~~~~~~~^
+        "B2_compact2", p, self.ws_base, self.snap_b2, b2_sess))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\run_rep.py", line 393, in run_probe
+    wsm.restore(snap, ws)
+    ~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\workspace.py", line 63, in restore
+    rmtree(ws)
+    ~~~~~~^^^^
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\workspace.py", line 34, in rmtree
+    shutil.rmtree(path, onexc=_onerror)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\shutil.py", line 859, in rmtree
+    _rmtree_impl(path, dir_fd, onexc)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\shutil.py", line 711, in _rmtree_unsafe
+    onexc(os.rmdir, path, err)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamo\AppData\Local\Python\pythoncore-3.15-64\Lib\shutil.py", line 857, in onexc
+    return _onexc(func, path, err)
+  File "C:\Users\adamo\Entwicklung\gemkeeper-bench\harness\workspace.py", line 25, in _onerror
+    func(path)
+    ~~~~^^^^^^
+PermissionError: [WinError 32] Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird: 'C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\i1a\\parcel-tracker'
+[rep1] lineage errors: {'base': "PermissionError: [WinError 32] Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird: 'C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\i1a\\\\parcel-tracker'"}
+[driver] STOP: non-rate-limit error in rep1: {'base': "PermissionError: [WinError 32] Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird: 'C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\i1a\\\\parcel-tracker'"}
+=== resume rep1 after file lock Wed, Nov 18, 2026  3:54:34 AM ===
+[rep1] probe_B2_compact2_trap_deadend ...
+[rep1] probe_B2_compact2_trap_deadend done  cost=$0.222082  budget spent=$85.90
+[rep1] judge_quiz ...
+[rep1] judge_quiz done  cost=$0.116902  budget spent=$86.02
+[rep1] judge_coverage ...
+[rep1] judge_coverage done  cost=$0.0890116  budget spent=$86.10
+[driver] rep1 complete  cost=$12.67  spent=$86.10
+[driver] all done  spent=$86.10

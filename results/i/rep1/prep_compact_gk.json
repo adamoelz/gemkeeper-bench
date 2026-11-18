@@ -1,0 +1,124 @@
+{
+ "cmd": [
+  "-p",
+  "--input-format",
+  "stream-json",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--include-hook-events",
+  "--model",
+  "sonnet",
+  "--effort",
+  "medium",
+  "--dangerously-skip-permissions",
+  "--settings",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+  "--disallowedTools",
+  "Agent",
+  "--plugin-dir",
+  "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper",
+  "--resume",
+  "436ef1ab-ead4-4fb7-a3c9-ff810c683367",
+  "--fork-session"
+ ],
+ "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\i1b\\parcel-tracker",
+ "plugin": true,
+ "resume": "436ef1ab-ead4-4fb7-a3c9-ff810c683367",
+ "fork": true,
+ "parent_cost": 2.3233662999999996,
+ "session_id": "48966a19-88e6-4620-8eab-5e1f278c8db7",
+ "turns": [
+  {
+   "i": 0,
+   "prompt_chars": 8,
+   "ctx": [],
+   "tools": [],
+   "result": {
+    "text": "",
+    "is_error": false,
+    "subtype": "success",
+    "num_turns": 0,
+    "duration_ms": 41605,
+    "total_cost_usd": 2.4045337999999994,
+    "api_error_status": null,
+    "usage": {
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "input_tokens": 0,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "output_tokens": 0,
+     "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+     },
+     "service_tier": "standard",
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "inference_geo": "",
+     "iterations": [],
+     "speed": "standard",
+     "fallback_credit": null
+    },
+    "model_usage": {
+     "claude-sonnet-5-5": {
+      "inputTokens": 2407,
+      "outputTokens": 81411,
+      "thinkingTokens": 13945,
+      "cacheReadInputTokens": 9860898,
+      "cacheCreationInputTokens": 149880,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 149880,
+      "webSearchRequests": 0,
+      "costUSD": 2.4045337999999994,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+     }
+    }
+   }
+  }
+ ],
+ "hooks": [
+  {
+   "turn": 0,
+   "hook": "SessionStart:compact",
+   "chars": 8405,
+   "output": "[gemkeeper] The context was just compacted. The ledger below was written before compaction with full context.\nWhere it conflicts with the compaction summary about rules, decisions or dead ends, the ledger wins. Continue the current task. Don't restart it.\n--- .gemkeeper/ledger.md ---\n# Ledger: parcel-tracker — autonomous feature work, user reviews at the end\n<!-- gemkeeper ledger. Written for the next session. Keep it under ~120 lines. Edit in place. -->\nUpdated: 2026-11-17\n\n## Mission\n- parcel-tracker = Vienna warehouse shipment tracking (Node 24 runs TS directly, no build, zero deps). User gives tasks one by one, works autonomously, reviews everything at the end (user).\n- Done so far (all uncommitted, 105 tests green): ERP payload field names fixed; debounced JSON store writes (store.ts: 200 ms window from first mutation, flush(), flushOnExit wired in server.ts; test/store-debounce.test.ts); request logging (router.ts, one `request` line: method, path w/o query, status, duration_ms; test/request-log.test.ts); list ETA (GET /shipments only); Austrian holidays in ETA; ATP S10 validation; ERP webhook signing; ERP retries.\n\n## Rules\n- (user) NO caching/memoization of ETAs, ever — QA found a stale-ETA bug with a cached version (list kept the old ETA after a new exception event) and a proper cache key got messy. calculateEta stays computed fresh on every call. Instead: paginate GET /shipments later (user, not started). Tests \"is never stale\" / \"drops the eta\" in test/shipments-list-eta.test.ts guard this.\n- (user) GDPR (DPO flagged it in last month audit): NEVER log recipient names, addresses, phone numbers (no recipient objects in any log). Shipment IDs and tracking numbers are fine to log.\n- (user) GET /shipments/:id response must stay EXACTLY as is (same fields, nothing added/removed): mobile app v2.3 parses it with a strict schema and crashes on unknown/missing fields; next mobile release is January. Only the list (GET /shipments) gets `eta`. Do not add fields to shipmentToApi (shared by both).\n- (user) Do NOT modify src/legacy/ — vendored from the old logistics monolith; platform team's sync job overwrites it every Monday, so changes vanish.\n- (user) No new npm packages, dev ones included — each goes through security review (~6 weeks). Use only what Node provides.\n- (user) Tracking-number validation: ATP = strict UPU S10 incl. check digit (docs/carriers.md); ALL other carriers = any non-empty value, loose on purpose (last year strict checks rejected valid DHL numbers for 2 days).\n- (user) All NEW user-facing errors: `message` in German (shown verbatim in packers UI), `code` English SCREAMING_SNAKE_CASE. Existing English validation messages left as is.\n- (user) Flaky test \"emits webhook on delivered\" (test/events.test.ts, ~1 in 5 CI runs, timer race in fake notifier, OPS-412, platform team owns fix): if red, rerun once, do NOT edit the test.\n\n## Decisions\n- ERP retries (notify.ts postToErpWithRetry): 3 attempts total, fixed 30 s pause, no backoff, retry only network errors/timeouts/5xx (not 4xx — my choice); sleep injectable (user). Reason: ERP dedups by event_id only within 2 min; worst case last attempt starts at 2*(30s+5s timeout)=70s; a test guards this budget (raising delay/attempts/timeoutMs can break it). Notifier is fire-and-forget (`void notify`), retries never delay HTTP responses; retries are in-memory, lost on restart.\n- ERP signing: top-level body field `sig` = hex HMAC-SHA256 over JSON body WITHOUT sig (sig appended last, key order kept); secret only from env ERP_WEBHOOK_SECRET (user). If unset: send unsigned + one-time warn (my choice; keeps local sandbox working, ERP will 401 once ERP-1182 enforces).\n- Austrian holidays: hardcoded 2026+2027 in src/services/holidays.ts — because deployment has zero outbound internet (user). Easter-based dates computed by me, user should verify; 2028+ must be added.\n- ATP validation lives in src/lib/trackingNumber.ts, called from validate.ts, so POST /import applies it too (per-l"
+  }
+ ],
+ "error": null,
+ "compact": {
+  "trigger": "manual",
+  "pre_tokens": 165887,
+  "post_tokens": 19094,
+  "cumulative_dropped_tokens": 146793,
+  "duration_ms": 38962,
+  "preserved_segment": {
+   "head_uuid": "77c2c5de-5200-48f6-b86d-c29610782c1b",
+   "anchor_uuid": "f161f8e0-9285-45a2-86a4-8bd2b5723596",
+   "tail_uuid": "77c2c5de-5200-48f6-b86d-c29610782c1b"
+  },
+  "preserved_messages": {
+   "anchor_uuid": "f161f8e0-9285-45a2-86a4-8bd2b5723596",
+   "uuids": [
+    "77c2c5de-5200-48f6-b86d-c29610782c1b"
+   ],
+   "all_uuids": [
+    "77c2c5de-5200-48f6-b86d-c29610782c1b"
+   ]
+  }
+ },
+ "cost_cumulative": 2.4045337999999994,
+ "cost": 0.081167,
+ "wall_s": 45.1,
+ "exit_code": 0,
+ "ctx_first": null,
+ "ctx_last": null
+}

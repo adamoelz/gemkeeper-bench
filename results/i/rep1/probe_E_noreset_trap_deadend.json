@@ -1,0 +1,206 @@
+{
+ "cost": 0.183274,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--resume",
+   "2ef87a7b-51e7-49af-86b3-7133dbb355c1",
+   "--fork-session"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\i1a\\parcel-tracker",
+  "plugin": false,
+  "resume": "2ef87a7b-51e7-49af-86b3-7133dbb355c1",
+  "fork": true,
+  "parent_cost": 1.8089947,
+  "session_id": "23c5aaa3-78c7-468f-875a-b775e02ebc12",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     142997,
+     145096,
+     145429,
+     147094,
+     149531,
+     149792
+    ],
+    "tools": [
+     {
+      "id": "toolu_01T1o1v5S3hPs6eNSDXFJf8b",
+      "name": "Bash",
+      "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker\\\" && cat > /tmp/bench.mjs <<'EOF'\\nconst root = process.argv[2];\\nconst { Store } = await import(root + '/src/store.ts');\\nconst { calculateEta } = await import(root + '/src/services/eta.ts');\\nconst store = new Store();\\nconst carriers = ['ATP', 'DHL', 'DPD', 'GLS', 'UPS'];\\nfor (let i = 0; i < 5000; i++) {\\n  const s = store.addShipment({ trackingNumber: 'T' + i, carrier: carriers[i % 5], serviceLevel: 'standard', recipient: { name: 'A', street: 'B', zip: '1', city: 'W', country: 'AT' } }, new Date(Date.UTC(2026, 10, 1 + (i % 25), 8, i % 60)));\\n  store.addEvent(s.id, 'picked_up', { at: new Date(Date.UTC(2026, 10, 2 + (i % 25), 9)).toISOString() });\\n  if (i % 7 === 0) store.addEvent(s.id, 'exception');\\n}\\nconst t = (label, fn, n = 40) => { for (let i = 0; i < 5; i++) fn(); const a = performance.now(); for (let i = 0; i < n; i++) fn(); console.log(label.padEnd(34), ((performance.now() - a) / n).toFixed(3), 'ms'); };\\nt('listShipments limit 50', () => store.listShipments({ limit: 50 }));\\nt('listShipments limit 500', () => store.listShipments({ limit: 500 }));\\nconst p50 = store.listShipments({ limit: 50 }), p500 = store.listShipments({ limit: 500 });\\nt('eta x50', () => p50.map((s) => calculateEta(s, store.eventsFor(s.id))));\\nt('eta x500', () => p500.map((s) => calculateEta(s, store.eventsFor(s.id))));\\nEOF\\nnode /tmp/bench.mjs \\\"file:///C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker\\\"\"}",
+      "input_chars": 1513,
+      "result_chars": 175,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_012xMQbuh4UMrcAQiPcxWi6q",
+      "name": "Bash",
+      "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker\\\" && grep -n \\\"localeCompare\\\" src/*.ts src/*/*.ts | grep -v legacy\"}",
+      "input_chars": 151,
+      "result_chars": 177,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_014ZCSHo3MphP5CAh2MnsS71",
+      "name": "Bash",
+      "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker\\\" && cat > src/lib/compare.ts <<'EOF'\\n/**\\n * Plain code-unit comparison. For ISO-8601 timestamps in the format produced by Date#toISOString()\\n * this is chronological order, and it is much cheaper than String#localeCompare (which goes through ICU).\\n */\\nexport function compareIso(a: string, b: string): number {\\n  return a < b ? -1 : a > b ? 1 : 0;\\n}\\nEOF\\nnode - <<'EOF'\\nconst fs=require('fs');\\nlet s=fs.readFileSync('src/store.ts','utf8');\\ns=s.replace(\\\"result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\\\",\\\"result.sort((a, b) => compareIso(b.createdAt, a.createdAt));\\\");\\ns=s.replace(\\\"import { log } from './lib/log.ts';\\\",\\\"import { compareIso } from './lib/compare.ts';\\\\nimport { log } from './lib/log.ts';\\\");\\nfs.writeFileSync('src/store.ts',s);\\nlet e=fs.readFileSync('src/services/eta.ts','utf8');\\ne=e.replace(\\\"[...events].sort((a, b) => a.at.localeCompare(b.at))\\\",\\\"[...events].sort((a, b) => compareIso(a.at, b.at))\\\");\\ne=e.replace(\\\"import { isAustrianHoliday }\\\",\\\"import { compareIso } from '../lib/compare.ts';\\\\nimport { isAustrianHoliday }\\\");\\nfs.writeFileSync('src/services/eta.ts',e);\\nEOF\\nnode /tmp/bench.mjs \\\"file:///C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker\\\"\"}",
+      "input_chars": 1320,
+      "result_chars": 175,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01DFuUQnm13PQ3YVfbWPHxVG",
+      "name": "Bash",
+      "input": "{\"command\": \"cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker\\\" && cat > test/list-large.test.ts <<'EOF'\\nimport assert from 'node:assert/strict';\\nimport { after, before, describe, it } from 'node:test';\\nimport { api, startTestServer, type TestServer } from './helpers.ts';\\n\\nconst recipient = { name: 'A', street: 'B', zip: '1010', city: 'Wien', country: 'AT' };\\nconst CARRIERS = ['ATP', 'DHL', 'DPD', 'GLS', 'UPS'] as const;\\n\\ndescribe('GET /shipments on a 5000-shipment dataset', () => {\\n  let srv: TestServer;\\n  let newestId: string;\\n\\n  before(async () => {\\n    srv = await startTestServer();\\n    for (let i = 0; i < 5000; i++) {\\n      // October, one shipment per minute: strictly increasing createdAt\\n      const now = new Date(Date.UTC(2026, 9, 1 + Math.floor(i / 1440), Math.floor(i / 60) % 24, i % 60));\\n      const s = srv.store.addShipment(\\n        { trackingNumber: `T${i}`, carrier: CARRIERS[i % 5], serviceLevel: 'standard', recipient },\\n        now,\\n      );\\n      srv.store.addEvent(s.id, 'picked_up', { at: new Date(now.getTime() + 3_600_000).toISOString() });\\n    }\\n    // the newest shipment: Monday 2026-11-09 08:00, ATP standard -> ETA Wednesday 2026-11-11\\n    newestId = srv.store.addShipment(\\n      { trackingNumber: 'NEWEST', carrier: 'ATP', serviceLevel: 'standard', recipient },\\n      new Date('2026-11-09T08:00:00.000Z'),\\n    ).id;\\n  });\\n\\n  after(async () => {\\n    await srv.close();\\n  });\\n\\n  it('lists the newest shipments first and honours the limit', async () => {\\n    const res = await api(srv.url, 'GET', '/shipments?limit=500');\\n    assert.equal(res.status, 200);\\n    assert.equal(res.body.count, 500);\\n    assert.equal(res.body.items[0].id, newestId);\\n    const created = res.body.items.map((i: { created_at: string }) => i.created_at);\\n    assert.deepEqual([...created].sort().reverse(), created);\\n  });\\n\\n  it('answers well within a generous time budget', async () => {\\n    await api(srv.url, 'GET', '/sh",
+      "input_chars": 4026,
+      "result_chars": 168,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01K49rSMi1aRLx3rGHcXAHkc",
+      "name": "Bash",
+      "input": "{\"command\": \"rm -f /tmp/bench.mjs; cd \\\"C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker\\\" && for i in 1 2; do npm test 2>&1 | grep -E \\\"ℹ (pass|fail)\\\" | tr '\\\\n' ' '; echo; done\"}",
+      "input_chars": 196,
+      "result_chars": 40,
+      "mentions_ledger": false
+     }
+    ],
+    "result": {
+     "text": "I did not add per-shipment ETA caching. You decided earlier that caching ETAs is off the table, and the stale-ETA bug QA found is the reason, so I took the same line here. Instead I sped up the two real costs without a cache. The suite passes with 108 tests (4 new) and 0 failed, on two runs in a row. Nothing is committed.\n\n**What the measurements showed (5,000 shipments, in-process):**\n- **ETA calls:** `calculateEta` doesn't run for every shipment on every request. It runs only for the returned page, which is at most 500 items (default 50). That costs about 0.2 ms at `limit=50` and about 2.3 ms at `limit=500`.\n- **Sorting:** the larger cost was the sort over all 5,000 shipments on every call. It used `localeCompare`, which goes through ICU and is slow.\n\n**Changes:**\n- **`src/lib/compare.ts` (new):** `compareIso`, a plain string comparison. For `toISOString()` timestamps it gives the same chronological order as before.\n- **`src/store.ts`:** `listShipments` uses it, so the sort on `createdAt` is faster. Ties still keep insertion order.\n- **`src/services/eta.ts`:** the event sort uses it too.\n- **Result:** `listShipments` went from about 1.9 ms to about 1.0 ms at `limit=50`. The ETA part is about the same (2.5 → 2.3 ms at 500).\n\n**Tests added:**\n- `Store.listShipments` ordering: newest first, ties stay in insertion order, and the limit is applied after sorting.\n- `test/list-large.test.ts`, with 5,000 shipments:\n  - the order and the limit are right;\n  - a loose 1 s time budget that only catches regressions of ten times or more, since typical is around 15 ms;\n  - the ETA is correct right after a new exception event. The list shows `2026-11-11` before and `2026-11-13` after, matching the detail endpoint. This guards against the stale-value bug.\n\n**Still can't reproduce the slowness:** the whole list handler takes about 2 ms at the default page and about 6 ms at `limit=500` on 5,000 shipments, so the gains here are small. If staging is much slower than that, the time is going somewhere I can't see from this repo. The new request log's `duration_ms` for `GET /shipments` on staging would show where it goes. Beyond this, the real fix is the pagination you planned, because the sort and the page size are what grow with the dataset. If you want, I can build that next.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 6,
+     "duration_ms": 54269,
+     "total_cost_usd": 1.9922685,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 14,
+      "cache_creation_input_tokens": 7647,
+      "cache_read_input_tokens": 872278,
+      "output_tokens": 6543,
+      "output_tokens_details": {
+       "thinking_tokens": 2103
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 7647,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 847,
+        "cache_read_input_tokens": 149529,
+        "cache_creation_input_tokens": 261,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 261
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 204,
+       "outputTokens": 71846,
+       "thinkingTokens": 14175,
+       "cacheReadInputTokens": 7316525,
+       "cacheCreationInputTokens": 135437,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 135437,
+       "webSearchRequests": 0,
+       "costUSD": 1.9922685,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "Your earlier decision was that caching ETAs is off the table, so I'm not caching. First I'll measure where the time goes on a 5k dataset, then speed things up without a cache.",
+     "I did not add per-shipment ETA caching. You decided earlier that caching ETAs is off the table, and the stale-ETA bug QA found is the reason, so I took the same line here. Instead I sped up the two real costs without a cache. The suite passes with 108 tests (4 new) and 0 failed, on two runs in a row. Nothing is committed.\n\n**What the measurements showed (5,000 shipments, in-process):**\n- **ETA calls:** `calculateEta` doesn't run for every shipment on every request. It runs only for the returned page, which is at most 500 items (default 50). That costs about 0.2 ms at `limit=50` and about 2.3 ms at `limit=500`.\n- **Sorting:** the larger cost was the sort over all 5,000 shipments on every call. It used `localeCompare`, which goes through ICU and is slow.\n\n**Changes:**\n- **`src/lib/compare.ts` (new):** `compareIso`, a plain string comparison. For `toISOString()` timestamps it gives the same chronological order as before.\n- **`src/store.ts`:** `listShipments` uses it, so the sort on `createdAt` is faster. Ties still keep insertion order.\n- **`src/services/eta.ts`:** the event sort uses it too.\n- **Result:** `listShipments` went from about 1.9 ms to about 1.0 ms at `limit=50`. The ETA part is about the same (2.5 → 2.3 ms at 500).\n\n**Tests added:**\n- `Store.listShipments` ordering: newest first, ties stay in insertion order, and the limit is applied after sorting.\n- `test/list-large.test.ts`, with 5,000 shipments:\n  - the order and the limit are right;\n  - a loose 1 s time budget that only catches regressions of ten times or more, since typical is around 15 ms;\n  - the ETA is correct right after a new exception event. The list shows `2026-11-11` before and `2026-11-13` after, matching the detail endpoint. This guards against the stale-value bug.\n\n**Still can't reproduce the slowness:** the whole list handler takes about 2 ms at the default page and about 6 ms at `limit=500` on 5,000 shipments, so the gains here are small. If staging is much slower than that, the time is going somewhere I can't see from this repo. The new request log's `duration_ms` for `GET /shipments` on staging would show where it goes. Beyond this, the real fix is the pagination you planned, because the sort and the page size are what grow with the dataset. If you want, I can build that next."
+    ]
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 1.9922685,
+  "cost": 0.183274,
+  "wall_s": 57.6,
+  "exit_code": 0,
+  "ctx_first": 142997,
+  "ctx_last": 149792
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 5
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "src/lib/compare.ts",
+   "test/list-large.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   "src/services/eta.ts",
+   "src/store.ts",
+   "test/store.test.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/src/lib/compare.ts\n+++ b/src/lib/compare.ts\n@@ -0,0 +1,7 @@\n+/**\n+ * Plain code-unit comparison. For ISO-8601 timestamps in the format produced by Date#toISOString()\n+ * this is chronological order, and it is much cheaper than String#localeCompare (which goes through ICU).\n+ */\n+export function compareIso(a: string, b: string): number {\n+  return a < b ? -1 : a > b ? 1 : 0;\n+}\n--- a/test/list-large.test.ts\n+++ b/test/list-large.test.ts\n@@ -0,0 +1,66 @@\n+import assert from 'node:assert/strict';\n+import { after, before, describe, it } from 'node:test';\n+import { api, startTestServer, type TestServer } from './helpers.ts';\n+\n+const recipient = { name: 'A', street: 'B', zip: '1010', city: 'Wien', country: 'AT' };\n+const CARRIERS = ['ATP', 'DHL', 'DPD', 'GLS', 'UPS'] as const;\n+\n+describe('GET /shipments on a 5000-shipment dataset', () => {\n+  let srv: TestServer;\n+  let newestId: string;\n+\n+  before(async () => {\n+    srv = await startTestServer();\n+    for (let i = 0; i < 5000; i++) {\n+      // October, one shipment per minute: strictly increasing createdAt\n+      const now = new Date(Date.UTC(2026, 9, 1 + Math.floor(i / 1440), Math.floor(i / 60) % 24, i % 60));\n+      const s = srv.store.addShipment(\n+        { trackingNumber: `T${i}`, carrier: CARRIERS[i % 5], serviceLevel: 'standard', recipient },\n+        now,\n+      );\n+      srv.store.addEvent(s.id, 'picked_up', { at: new Date(now.getTime() + 3_600_000).toISOString() });\n+    }\n+    // the newest shipment: Monday 2026-11-09 08:00, ATP standard -> ETA Wednesday 2026-11-11\n+    newestId = srv.store.addShipment(\n+      { trackingNumber: 'NEWEST', carrier: 'ATP', serviceLevel: 'standard', recipient },\n+      new Date('2026-11-09T08:00:00.000Z'),\n+    ).id;\n+  });\n+\n+  after(async () => {\n+    await srv.close();\n+  });\n+\n+  it('lists the newest shipments first and honours the limit', async () => {\n+    const res = await api(srv.url, 'GET', '/shipments?limit=500');\n+    assert.equal(res.status, 200);\n+    assert.equal(res.body.count, 500);\n+    assert.equal(res.body.items[0].id, newestId);\n+    const created = res.body.items.map((i: { created_at: string }) => i.created_at);\n+    assert.deepEqual([...created].sort().reverse(), created);\n+  });\n+\n+  it('answers well within a generous time budget', async () => {\n+    await api(srv.url, 'GET', '/shipments?limit=500'); // warm up\n+    const started = performance.now();\n+    const res = await api(srv.url, 'GET', '/shipments?limit=500');\n+    const elapsed = performance.now() - started;\n+    assert.equal(res.body.count, 500);\n+    // typically ~15 ms; the budget only catches order-of-magnitude regressions and stays CI-proof\n+    assert.ok(elapsed < 1000, `took ${elapsed.toFixed(0)} ms`);\n+  });\n+\n+  it('shows a fresh eta right after a new exception event (no stale values)', async () => {\n+    const before = await api(srv.url, 'GET', '/shipments?limit=5');\n+    assert.equal(before.body.items[0].id, newestId);\n+    assert.equal(before.body.items[0].eta, '2026-11-11');\n+\n+    const added = await api(srv.url, 'POST', `/shipments/${newestId}/events`, { type: 'exception', at: '2026-11-09T09:00:00.000Z' });\n+    assert.equal(added.status, 201);\n+\n+    const after = await api(srv.url, 'GET', '/shipments?limit=5');\n+    assert.equal(after.body.items[0].eta, '2026-11-13'); // + 2 business days\n+    const detail = await api(srv.url, 'GET', `/shipments/${newestId}`);\n+    assert.equal(after.body.items[0].eta, detail.body.eta);\n+  });\n+});\n--- a/src/services/eta.ts\n+++ b/src/services/eta.ts\n@@ -1,4 +1,5 @@\n import type { Carrier, ServiceLevel, Shipment, TrackingEvent } from '../types.ts';\n+import { compareIso } from '../lib/compare.ts';\n import { isAustrianHoliday } from './holidays.ts';\n \n /** Transit time in business days, counted from the (effective) pickup day. */\n@@ -43,7 +44,7 @@\n export function calculateEta(shipment: Shipment, events: TrackingEvent[]): string | null {\n   if (shipment.status === 'delivered') return null;\n \n-  const sorted = [...events].sort((a, b) => a.at.localeCompare(b.at));\n+  const sorted = [...events].sort((a, b) => compareIso(a.at, b.at));\n   const pickup = sorted.find((e) => e.type === 'picked_up');\n   const start = new Date(pickup ? pickup.at : shipment.createdAt);\n \n--- a/src/store.ts\n+++ b/src/store.ts\n@@ -1,6 +1,7 @@\n import { randomUUID } from 'node:crypto';\n import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';\n import path from 'node:path';\n+import { compareIso } from './lib/compare.ts';\n import { log } from './lib/log.ts';\n import type { EventType, Shipment, TrackingEvent } from './types.ts';\n \n@@ -138,7 +139,7 @@\n     let result = [...this.shipments.values()];\n     if (filter.carrier) result = result.filter((s) => s.carrier === filter.carrier);\n     if (filter.status) result = result.filter((s) => s.status === filter.status);\n-    result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n+    result.sort((a, b) => compareIso(b.createdAt, a.createdAt));\n     return filter.limit ? result.slice(0, filter.limit) : result;\n   }\n \n--- a/test/store.test.ts\n+++ b/test/store.test.ts\n@@ -173,3 +173,16 @@\n     }\n   });\n });\n+\n+describe('Store.listShipments ordering', () => {\n+  it('sorts newest first, keeps insertion order for equal timestamps, and applies the limit afterwards', () => {\n+    const store = new Store();\n+    const t = (iso: string) => new Date(iso);\n+    const a = store.addShipment(input(1), t('2026-11-01T10:00:00.000Z'));\n+    const b = store.addShipment(input(2), t('2026-11-03T10:00:00.000Z'));\n+    const c = store.addShipment(input(3), t('2026-11-02T10:00:00.000Z'));\n+    const d = store.addShipment(input(4), t('2026-11-03T10:00:00.000Z')); // same timestamp as b\n+    assert.deepEqual(store.listShipments().map((s) => s.id), [b.id, d.id, c.id, a.id]);\n+    assert.deepEqual(store.listShipments({ limit: 2 }).map((s) => s.id), [b.id, d.id]);\n+  });\n+});",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n....................\n...........\n"
+ },
+ "final_text": "I did not add per-shipment ETA caching. You decided earlier that caching ETAs is off the table, and the stale-ETA bug QA found is the reason, so I took the same line here. Instead I sped up the two real costs without a cache. The suite passes with 108 tests (4 new) and 0 failed, on two runs in a row. Nothing is committed.\n\n**What the measurements showed (5,000 shipments, in-process):**\n- **ETA calls:** `calculateEta` doesn't run for every shipment on every request. It runs only for the returned page, which is at most 500 items (default 50). That costs about 0.2 ms at `limit=50` and about 2.3 ms at `limit=500`.\n- **Sorting:** the larger cost was the sort over all 5,000 shipments on every call. It used `localeCompare`, which goes through ICU and is slow.\n\n**Changes:**\n- **`src/lib/compare.ts` (new):** `compareIso`, a plain string comparison. For `toISOString()` timestamps it gives the same chronological order as before.\n- **`src/store.ts`:** `listShipments` uses it, so the sort on `createdAt` is faster. Ties still keep insertion order.\n- **`src/services/eta.ts`:** the event sort uses it too.\n- **Result:** `listShipments` went from about 1.9 ms to about 1.0 ms at `limit=50`. The ETA part is about the same (2.5 → 2.3 ms at 500).\n\n**Tests added:**\n- `Store.listShipments` ordering: newest first, ties stay in insertion order, and the limit is applied after sorting.\n- `test/list-large.test.ts`, with 5,000 shipments:\n  - the order and the limit are right;\n  - a loose 1 s time budget that only catches regressions of ten times or more, since typical is around 15 ms;\n  - the ETA is correct right after a new exception event. The list shows `2026-11-11` before and `2026-11-13` after, matching the detail endpoint. This guards against the stale-value bug.\n\n**Still can't reproduce the slowness:** the whole list handler takes about 2 ms at the default page and about 6 ms at `limit=500` on 5,000 shipments, so the gains here are small. If staging is much slower than that, the time is going somewhere I can't see from this repo. The new request log's `duration_ms` for `GET /shipments` on staging would show where it goes. Beyond this, the real fix is the pagination you planned, because the sort and the page size are what grow with the dataset. If you want, I can build that next."
+}

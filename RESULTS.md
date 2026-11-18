@@ -2,7 +2,8 @@
 
 Charts and a short summary: [gemkeeper README](https://github.com/adamoelz/gemkeeper#benchmark).
 Runs: `p` pilot and `f` baselines with gemkeeper 0.1.0, `t` 0.2.0, `u` 0.2.1, `l` the skill-only edition
-(`editions/skill-only`, no hooks); exact commits in `results/<run>/plugin.json`.
+(`editions/skill-only`, no hooks), `i` a second scenario without trigger words; exact commits in
+`results/<run>/plugin.json`.
 
 **Bottom line.** With gemkeeper 0.2.1, a fresh session knew all 15 planted facts (30/30 in 3 of 3
 repetitions), also after **two** resets into fresh sessions, while carrying only **~2.6k tokens** into the
@@ -11,7 +12,8 @@ handoff summary that lost the *why* and the dead ends (25/30). `/compact` is a s
 (29–29.5) but only lives inside one session. gemkeeper 0.1.0 did **not** hold up over two sessions (22/30).
 The price of the continuous capture: about **+11% cost** during the work session with 0.2.1 (0.2.0: +21%),
 with a wide spread between runs. The skill-only edition (no hooks) captures just as well at the same cost,
-but only helps if the fresh session starts with `/gemkeeper:resume`; without it, 0/30.
+but only helps if the fresh session starts with `/gemkeeper:resume`; without it, 0/30. A second scenario
+with the same facts said casually, without any trigger word (n=1), gave the same picture.
 
 Model: Sonnet (`claude-sonnet-5-5`, effort medium) via `claude -p`, Claude Code 2.1.325. Costs are the
 API-equivalent `total_cost_usd` reported by the CLI.
@@ -28,6 +30,7 @@ Cost: phase A + reset + the four probes, per condition.
 | B `/compact` | – | 2 | 29.5 ± 0.7 | 10 | 8 | 7.5 | 4 | 0 | 39.0k | $2.52 |
 | B2 `/compact` twice | – | 2 | 29.0 ± 0.0 | 10 | 7.5 | 7.5 | 4 | 0 | 33.2k | $2.49 |
 | C handoff summary | – | 2 | 25.0 ± 0.0 | 10 | 6.5 | **4.5** | 4 | 0 | 24.8k | $2.24 |
+| C2 handoff skill ([mattpocock](scenario/competitors/mattpocock-handoff/)) | – | 1 | 26 | 10 | 6 | 6 | 4 | 0 | 24.5k | $2.32 |
 | D gemkeeper | 0.1.0 | 1 | 28 | 10 | 8 | 8 | **2** | 0 | 24.8k | $2.28 |
 | D2 gemkeeper + `/gems` | 0.1.0 | 1 | 30 | 10 | 8 | 8 | 4 | 0 | 24.9k | $2.35 |
 | D3 gemkeeper, 2 fresh sessions | 0.1.0 | 1 | **22** | **6** | 6 | 8 | 2 | 0 | 24.2k | $2.36 |
@@ -89,6 +92,31 @@ and in one of three reps both touched `src/legacy/` and added `zod`. With the co
 answered the ETA-memoization question with "never built in this repo") and 30/30 over two fresh sessions.
 The resume turn carries ~5.6k tokens instead of ~2.6k: the command text, the ledger read and Claude's reply.
 
+## Second scenario: implicit gems (run `i`, n=1)
+
+`scenario/phase_a_implicit.json`: the same 20 turns, work and 15 gems, but said casually, without any word
+from gemkeeper's trigger list ("never", "because", "tried", "flaky", ...). gemkeeper 0.2.1 plugin code
+(commit 891e72d only changed its README).
+
+| Condition | Recall /30 | Decisions /8 | Dead ends /8 | Traps /3 | Context | Cost |
+|---|---|---|---|---|---|---|
+| A none (`/clear`) | 0 | 0 | 0 | **3** | 21.8k | $2.29 |
+| B `/compact` | 29 | 8 | 7 | 0 | 41.2k | $2.59 |
+| B2 `/compact` twice | 30 | 8 | 8 | 0 | 40.5k | $3.16 |
+| C handoff summary | 26 | 6 | 6 | 0 | 25.1k | $2.20 |
+| C2 handoff skill (mattpocock) | 26 | 7 | 6 | 0 | 24.1k | $2.75 |
+| D gemkeeper | 29 | 8 | 7 | 0 | 25.5k | $2.69 |
+| D2 gemkeeper + `/gems` | 30 | 8 | 8 | 0 | 25.3k | $2.80 |
+| D3 gemkeeper, 2 fresh sessions | **30** | 8 | 8 | 0 | 24.3k | $2.15 |
+| F `/compact` + gemkeeper | 29 | 8 | 7 | 0 | 46.6k | $3.15 |
+| E no reset | 28 | 8 | 6 | 0 | 143.5k | $2.23 |
+
+Rules (10/10) and facts (4/4) were complete everywhere except A. The keyword gem check fired in **0 of 20**
+turns, yet gemkeeper wrote 14 of 15 gems fully into the ledger on its own (the ETA-memoization dead end only
+partly), 15/15 after the second fresh session. So the skill text does the capturing, not the trigger words.
+The price was higher here: phase A $2.32 vs $1.81 without plugin (+28%), context at the end 165k vs 142k,
+ledger 48 lines (~2.0k tokens, ~3.7k carried). One run, so read the cost as a warning, not a number.
+
 ## What was forgotten (failure examples)
 
 - **Handoff summary (C)** lost the reasons and dead ends, not the rules: "where does the HMAC signature go
@@ -113,9 +141,9 @@ replaced before run `f`, which also shortened phase A from ~187k to ~140k tokens
 
 ## Limitations
 
-- **One synthetic scenario** with gems stated quite explicitly ("never", "because", "tried"). Real sessions
-  are messier; the 0.2.0 trigger words suit this phrasing well (they were written before checking, and fire
-  on 11 of the 12 gem-planting turns).
+- **Synthetic scenarios.** The main one states gems quite explicitly ("never", "because", "tried"); the
+  0.2.0 trigger words fire on 11 of its 12 gem-planting turns. The implicit second scenario is n=1. Real
+  sessions are messier than both.
 - **Small n**: 0.1.0 results are n=1, baselines n=2, 0.2.0 n=3. Ceiling effects: most memory conditions sit
   at 29–30, so the quiz can't rank them further.
 - **LLM judge**, blind and shuffled, but an LLM; the per-gem scores are in the raw results.
@@ -130,13 +158,14 @@ replaced before run `f`, which also shortened phase A from ~187k to ~140k tokens
 
 Total spent: **$59.61** API-equivalent (cap raised to $62): CLI checks $0.60, pilot $8.94, run `f` $15.86,
 run `t` $19.48 (incl. two aborted reps), run `u` $14.73. Run `l` (skill-only edition): $13.28 (one rep
-restarted after a usage limit). One full rep costs ~$10, a gemkeeper-only rep ~$4–6.
+restarted after a usage limit), run `i` $12.67, C2 $0.53. Total: **$86.10**. One full rep costs ~$10, a gemkeeper-only rep ~$4–6.
 
 ## What to change in the skill and hooks next (ranked by expected impact)
 
 Done and measured: gem check by content (0.2.0), "the ledger is not read-only" at session start (0.2.0),
 a sweep that walks every user message (0.2.0), one topic = one bullet (0.2.0), no gem check on question
-sentences (0.2.1), Stop hook removed (0.2.1: it never caught a real miss, only fired on questions).
+sentences (0.2.1), Stop hook removed (0.2.1: it never caught a real miss, only fired on questions),
+a scenario with implicit gems (run `i`).
 
 1. **Make the save a side effect, not a step.** The remaining overhead (+11%, wide spread) is the extra model
    step per saved gem. Options: let the UserPromptSubmit hook append a stub the model only has to fill in,
@@ -144,9 +173,9 @@ sentences (0.2.1), Stop hook removed (0.2.1: it never caught a real miss, only f
 2. **Skill-only edition: make the resume hard to forget.** Forgetting `/gemkeeper:resume` costs everything
    (0/30) and the resume turn costs ~3k extra tokens. A one-line CLAUDE.md hint ("read
    `.gemkeeper/ledger.md` first") would load it without a command; the README should say it plainly.
-3. **A messier scenario.** The gems here are stated explicitly ("never", "because", "tried"); real users
-   are vaguer. A second scenario with implicit gems would show how much the keyword trigger misses.
-4. **Bound the ledger size** with a prune step above ~50 lines (0.2.1 stayed at 34–38 lines here, 0.2.0
-   varied 25–74).
+3. **Rethink the keyword trigger.** In the implicit scenario it never fired and capture still worked
+   (14/15), while that run cost +28%. Measure whether the gem check adds anything over the skill text.
+4. **Bound the ledger size** with a prune step above ~50 lines (0.2.1 stayed at 34–38 lines here and 48 in
+   the implicit scenario, 0.2.0 varied 25–74).
 5. **Keep the README honest**: `/compact` keeps the facts (29–30/30); gemkeeper's edge is surviving `/clear`
    and new sessions with ~2.6k instead of ~17k tokens, and beating a handoff summary on the *why*.

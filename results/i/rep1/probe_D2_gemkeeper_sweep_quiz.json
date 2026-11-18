@@ -1,0 +1,150 @@
+{
+ "cost": 0.063225,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\i1b\\parcel-tracker",
+  "plugin": true,
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "3ec1c8d1-e15e-4e11-ace0-d9fadc3531b1",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 1662,
+    "ctx": [
+     25329
+    ],
+    "tools": [],
+    "result": {
+     "text": "### Q1\nNo. The user rejected migrating to SQLite. Ops backs up `data/store.json` with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. We kept the JSON store and sped it up with debounced writes instead.\n\n### Q2\nYes, `src/legacy/` must not be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites it every Monday, so any changes would vanish.\n\n### Q3\nThe HMAC goes in a top-level body field `sig`. It is the hex HMAC-SHA256 over the JSON body without `sig`, and the secret comes from the env var `ERP_WEBHOOK_SECRET`. We first tried an `X-Signature` header, but the ERP API gateway strips all custom `X-` headers, so the ERP saw everything as unsigned on staging.\n\n### Q4\nPort 9911. It moved from 8080 in October.\n\n### Q5\nAll new user-facing errors need a German `message`, because it is shown verbatim in the packers' UI. The `code` must be English SCREAMING_SNAKE_CASE. Existing English validation messages stay as they are.\n\n### Q6\nAustrian public holidays are hardcoded for 2026 and 2027 in `src/services/holidays.ts`. The deployment has no outbound internet, so they can't be fetched. 2028 and later must be added by hand.\n\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request. The user tried batching in September.\n\n### Q8\nDon't add any npm packages, runtime or dev. Each one goes through a security review that takes about 6 weeks, so we use only what Node provides.\n\n### Q9\nA cached version existed earlier, and QA found a stale-ETA bug in it. The list kept the old ETA after a new exception event, and a proper cache key got messy. The user ruled out caching and memoizing ETAs for good, so `calculateEta` is computed fresh on every call. Pagination of `GET /shipments` is the planned fix for slowness.\n\n### Q10\nThere are 3 attempts in total, with a fixed 30 s pause and no backoff. Only network errors, timeouts and 5xx responses are retried. The ERP dedups by `event_id` only within 2 minutes, and the worst-case last attempt starts at about 70 s, so a test guards that budget.\n\n### Q11\nNever log recipient names, addresses or phone numbers, and never log recipient objects. This is a GDPR rule the DPO flagged in last month's audit. Shipment IDs and tracking numbers are fine to log.\n\n### Q12\nYes, \"emits webhook on delivered\" in `test/events.test.ts` is flaky, failing in roughly 1 of 5 CI runs. It is a timer race in the fake notifier (OPS-412), and the platform team owns the fix. If it fails, rerun once and do not edit the test.\n\n### Q13\nATP numbers are validated strictly as UPU S10, including the check digit. Every other carrier accepts any non-empty value. This is deliberately loose, because strict checks rejected valid DHL numbers for 2 days last year.\n\n### Q14\n`fs.watch` stays silent on staging. The config is a Docker bind mount from a Windows host, so change events get lost. `fs.watchFile` (polling) works, as the user tried last week. Nothing needs to be built now, since hot reload is only a future idea.\n\n### Q15\n`GET /shipments/:id` must stay exactly as it is, with no fields added or removed. Mobile app v2.3 parses it with a strict schema and crashes on unknown or missing fields, and the next mobile release is in January. Only the list endpoint `GET /shipments` gets `eta`.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 1,
+     "duration_ms": 12356,
+     "total_cost_usd": 0.0632253,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 10974,
+      "cache_read_input_tokens": 14353,
+      "output_tokens": 1789,
+      "output_tokens_details": {
+       "thinking_tokens": 542
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 10974,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 1789,
+        "cache_read_input_tokens": 14353,
+        "cache_creation_input_tokens": 10974,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 10974
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 2,
+       "outputTokens": 1789,
+       "cacheReadInputTokens": 14353,
+       "cacheCreationInputTokens": 10974,
+       "webSearchRequests": 0,
+       "costUSD": 0.0632253,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 542,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 10974,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "### Q1\nNo. The user rejected migrating to SQLite. Ops backs up `data/store.json` with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. We kept the JSON store and sped it up with debounced writes instead.\n\n### Q2\nYes, `src/legacy/` must not be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites it every Monday, so any changes would vanish.\n\n### Q3\nThe HMAC goes in a top-level body field `sig`. It is the hex HMAC-SHA256 over the JSON body without `sig`, and the secret comes from the env var `ERP_WEBHOOK_SECRET`. We first tried an `X-Signature` header, but the ERP API gateway strips all custom `X-` headers, so the ERP saw everything as unsigned on staging.\n\n### Q4\nPort 9911. It moved from 8080 in October.\n\n### Q5\nAll new user-facing errors need a German `message`, because it is shown verbatim in the packers' UI. The `code` must be English SCREAMING_SNAKE_CASE. Existing English validation messages stay as they are.\n\n### Q6\nAustrian public holidays are hardcoded for 2026 and 2027 in `src/services/holidays.ts`. The deployment has no outbound internet, so they can't be fetched. 2028 and later must be added by hand.\n\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request. The user tried batching in September.\n\n### Q8\nDon't add any npm packages, runtime or dev. Each one goes through a security review that takes about 6 weeks, so we use only what Node provides.\n\n### Q9\nA cached version existed earlier, and QA found a stale-ETA bug in it. The list kept the old ETA after a new exception event, and a proper cache key got messy. The user ruled out caching and memoizing ETAs for good, so `calculateEta` is computed fresh on every call. Pagination of `GET /shipments` is the planned fix for slowness.\n\n### Q10\nThere are 3 attempts in total, with a fixed 30 s pause and no backoff. Only network errors, timeouts and 5xx responses are retried. The ERP dedups by `event_id` only within 2 minutes, and the worst-case last attempt starts at about 70 s, so a test guards that budget.\n\n### Q11\nNever log recipient names, addresses or phone numbers, and never log recipient objects. This is a GDPR rule the DPO flagged in last month's audit. Shipment IDs and tracking numbers are fine to log.\n\n### Q12\nYes, \"emits webhook on delivered\" in `test/events.test.ts` is flaky, failing in roughly 1 of 5 CI runs. It is a timer race in the fake notifier (OPS-412), and the platform team owns the fix. If it fails, rerun once and do not edit the test.\n\n### Q13\nATP numbers are validated strictly as UPU S10, including the check digit. Every other carrier accepts any non-empty value. This is deliberately loose, because strict checks rejected valid DHL numbers for 2 days last year.\n\n### Q14\n`fs.watch` stays silent on staging. The config is a Docker bind mount from a Windows host, so change events get lost. `fs.watchFile` (polling) works, as the user tried last week. Nothing needs to be built now, since hot reload is only a future idea.\n\n### Q15\n`GET /shipments/:id` must stay exactly as it is, with no fields added or removed. Mobile app v2.3 parses it with a strict schema and crashes on unknown or missing fields, and the next mobile release is in January. Only the list endpoint `GET /shipments` gets `eta`."
+    ]
+   }
+  ],
+  "hooks": [
+   {
+    "turn": 0,
+    "hook": "SessionStart:startup",
+    "chars": 7833,
+    "output": "[gemkeeper] Ledger from earlier session(s) of this project. Follow the gems skill's Resume mode:\nverify '## Now' against git, then reply in at most three lines (mission, where we are, next step) unless the user already gave you a task.\n--- .gemkeeper/ledger.md ---\n# Ledger: parcel-tracker — autonomous feature work, user reviews at the end\n<!-- gemkeeper ledger. Written for the next session. Keep it under ~120 lines. Edit in place. -->\nUpdated: 2026-11-17\n\n## Mission\n- parcel-tracker = Vienna warehouse shipment tracking (Node 24 runs TS directly, no build, zero deps). User gives tasks one by one, works autonomously, reviews everything at the end (user).\n- Done (all uncommitted, 105 tests green, last verified 2026-11-17): holidays in ETA; ATP S10 validation; ERP `sig` + retries + payload field names; list `eta`; request logging; debounced store writes. Details in Rules/Decisions/Facts below.\n\n## Rules\n- (user) NO caching/memoization of ETAs, ever — QA found a stale-ETA bug with a cached version (list kept the old ETA after a new exception event) and a proper cache key got messy. calculateEta stays computed fresh on every call. Instead: paginate GET /shipments later (user, not started). Tests \"is never stale\" / \"drops the eta\" in test/shipments-list-eta.test.ts guard this.\n- (user) GDPR (DPO flagged it in last month audit): NEVER log recipient names, addresses, phone numbers (no recipient objects in any log). Shipment IDs and tracking numbers are fine to log.\n- (user) GET /shipments/:id response must stay EXACTLY as is (same fields, nothing added/removed): mobile app v2.3 parses it with a strict schema and crashes on unknown/missing fields; next mobile release is January. Only the list (GET /shipments) gets `eta`. Do not add fields to shipmentToApi (shared by both).\n- (user) Do NOT modify src/legacy/ — vendored from the old logistics monolith; platform team's sync job overwrites it every Monday, so changes vanish.\n- (user) No new npm packages, dev ones included — each goes through security review (~6 weeks). Use only what Node provides.\n- (user) Tracking-number validation: ATP = strict UPU S10 incl. check digit (docs/carriers.md); ALL other carriers = any non-empty value, loose on purpose (last year strict checks rejected valid DHL numbers for 2 days).\n- (user) All NEW user-facing errors: `message` in German (shown verbatim in packers UI), `code` English SCREAMING_SNAKE_CASE. Existing English validation messages left as is.\n- (user) Flaky test \"emits webhook on delivered\" (test/events.test.ts, ~1 in 5 CI runs, timer race in fake notifier, OPS-412, platform team owns fix): if red, rerun once, do NOT edit the test.\n\n## Decisions\n- ERP retries (notify.ts postToErpWithRetry): 3 attempts total, fixed 30 s pause, no backoff, retry only network errors/timeouts/5xx (not 4xx — my choice); sleep injectable (user). Reason: ERP dedups by event_id only within 2 min; worst case last attempt starts at 2*(30s+5s timeout)=70s; a test guards this budget (raising delay/attempts/timeoutMs can break it). Notifier is fire-and-forget (`void notify`), retries never delay HTTP responses; retries are in-memory, lost on restart.\n- ERP signing: top-level body field `sig` = hex HMAC-SHA256 over JSON body WITHOUT sig (sig appended last, key order kept); secret only from env ERP_WEBHOOK_SECRET (user). If unset: send unsigned + one-time warn (my choice; keeps local sandbox working, ERP will 401 once ERP-1182 enforces).\n- Austrian holidays: hardcoded 2026+2027 in src/services/holidays.ts — because deployment has zero outbound internet (user). Easter-based dates computed by me, user should verify; 2028+ must be added.\n- ATP validation lives in src/lib/trackingNumber.ts, called from validate.ts, so POST /import applies it too (per-line German errors) — my choice, told user.\n\n## Dead ends\n- Memoizing calculateEta (slow GET /shipments) → never implemented, none exists in repo; rejected by user (see Rules). Measured with 5k shipments: ETA ~0.4 ms of ~8 ms request (li"
+   },
+   {
+    "turn": 0,
+    "hook": "UserPromptSubmit",
+    "chars": 422,
+    "output": "[gemkeeper] gem check: this message likely states a rule, a decision and its reason, a dead end or a non-obvious fact. If something in it passes the ledger test and is not in .gemkeeper/ledger.md yet, save it with one Bash command that inserts the bullet under its heading (keep the reason, mark it (user)), run in parallel with your first action of this turn, not as a separate step and without reading the ledger first.\n"
+   }
+  ],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.0632253,
+  "cost": 0.063225,
+  "wall_s": 17.7,
+  "exit_code": 0,
+  "ctx_first": 25329,
+  "ctx_last": 25329
+ },
+ "answer_texts_all": [
+  "### Q1\nNo. The user rejected migrating to SQLite. Ops backs up `data/store.json` with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. We kept the JSON store and sped it up with debounced writes instead.\n\n### Q2\nYes, `src/legacy/` must not be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites it every Monday, so any changes would vanish.\n\n### Q3\nThe HMAC goes in a top-level body field `sig`. It is the hex HMAC-SHA256 over the JSON body without `sig`, and the secret comes from the env var `ERP_WEBHOOK_SECRET`. We first tried an `X-Signature` header, but the ERP API gateway strips all custom `X-` headers, so the ERP saw everything as unsigned on staging.\n\n### Q4\nPort 9911. It moved from 8080 in October.\n\n### Q5\nAll new user-facing errors need a German `message`, because it is shown verbatim in the packers' UI. The `code` must be English SCREAMING_SNAKE_CASE. Existing English validation messages stay as they are.\n\n### Q6\nAustrian public holidays are hardcoded for 2026 and 2027 in `src/services/holidays.ts`. The deployment has no outbound internet, so they can't be fetched. 2028 and later must be added by hand.\n\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request. The user tried batching in September.\n\n### Q8\nDon't add any npm packages, runtime or dev. Each one goes through a security review that takes about 6 weeks, so we use only what Node provides.\n\n### Q9\nA cached version existed earlier, and QA found a stale-ETA bug in it. The list kept the old ETA after a new exception event, and a proper cache key got messy. The user ruled out caching and memoizing ETAs for good, so `calculateEta` is computed fresh on every call. Pagination of `GET /shipments` is the planned fix for slowness.\n\n### Q10\nThere are 3 attempts in total, with a fixed 30 s pause and no backoff. Only network errors, timeouts and 5xx responses are retried. The ERP dedups by `event_id` only within 2 minutes, and the worst-case last attempt starts at about 70 s, so a test guards that budget.\n\n### Q11\nNever log recipient names, addresses or phone numbers, and never log recipient objects. This is a GDPR rule the DPO flagged in last month's audit. Shipment IDs and tracking numbers are fine to log.\n\n### Q12\nYes, \"emits webhook on delivered\" in `test/events.test.ts` is flaky, failing in roughly 1 of 5 CI runs. It is a timer race in the fake notifier (OPS-412), and the platform team owns the fix. If it fails, rerun once and do not edit the test.\n\n### Q13\nATP numbers are validated strictly as UPU S10, including the check digit. Every other carrier accepts any non-empty value. This is deliberately loose, because strict checks rejected valid DHL numbers for 2 days last year.\n\n### Q14\n`fs.watch` stays silent on staging. The config is a Docker bind mount from a Windows host, so change events get lost. `fs.watchFile` (polling) works, as the user tried last week. Nothing needs to be built now, since hot reload is only a future idea.\n\n### Q15\n`GET /shipments/:id` must stay exactly as it is, with no fields added or removed. Mobile app v2.3 parses it with a strict schema and crashes on unknown or missing fields, and the next mobile release is in January. Only the list endpoint `GET /shipments` gets `eta`.",
+  "### Q1\nNo. The user rejected migrating to SQLite. Ops backs up `data/store.json` with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. We kept the JSON store and sped it up with debounced writes instead.\n\n### Q2\nYes, `src/legacy/` must not be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites it every Monday, so any changes would vanish.\n\n### Q3\nThe HMAC goes in a top-level body field `sig`. It is the hex HMAC-SHA256 over the JSON body without `sig`, and the secret comes from the env var `ERP_WEBHOOK_SECRET`. We first tried an `X-Signature` header, but the ERP API gateway strips all custom `X-` headers, so the ERP saw everything as unsigned on staging.\n\n### Q4\nPort 9911. It moved from 8080 in October.\n\n### Q5\nAll new user-facing errors need a German `message`, because it is shown verbatim in the packers' UI. The `code` must be English SCREAMING_SNAKE_CASE. Existing English validation messages stay as they are.\n\n### Q6\nAustrian public holidays are hardcoded for 2026 and 2027 in `src/services/holidays.ts`. The deployment has no outbound internet, so they can't be fetched. 2028 and later must be added by hand.\n\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request. The user tried batching in September.\n\n### Q8\nDon't add any npm packages, runtime or dev. Each one goes through a security review that takes about 6 weeks, so we use only what Node provides.\n\n### Q9\nA cached version existed earlier, and QA found a stale-ETA bug in it. The list kept the old ETA after a new exception event, and a proper cache key got messy. The user ruled out caching and memoizing ETAs for good, so `calculateEta` is computed fresh on every call. Pagination of `GET /shipments` is the planned fix for slowness.\n\n### Q10\nThere are 3 attempts in total, with a fixed 30 s pause and no backoff. Only network errors, timeouts and 5xx responses are retried. The ERP dedups by `event_id` only within 2 minutes, and the worst-case last attempt starts at about 70 s, so a test guards that budget.\n\n### Q11\nNever log recipient names, addresses or phone numbers, and never log recipient objects. This is a GDPR rule the DPO flagged in last month's audit. Shipment IDs and tracking numbers are fine to log.\n\n### Q12\nYes, \"emits webhook on delivered\" in `test/events.test.ts` is flaky, failing in roughly 1 of 5 CI runs. It is a timer race in the fake notifier (OPS-412), and the platform team owns the fix. If it fails, rerun once and do not edit the test.\n\n### Q13\nATP numbers are validated strictly as UPU S10, including the check digit. Every other carrier accepts any non-empty value. This is deliberately loose, because strict checks rejected valid DHL numbers for 2 days last year.\n\n### Q14\n`fs.watch` stays silent on staging. The config is a Docker bind mount from a Windows host, so change events get lost. `fs.watchFile` (polling) works, as the user tried last week. Nothing needs to be built now, since hot reload is only a future idea.\n\n### Q15\n`GET /shipments/:id` must stay exactly as it is, with no fields added or removed. Mobile app v2.3 parses it with a strict schema and crashes on unknown or missing fields, and the next mobile release is in January. Only the list endpoint `GET /shipments` gets `eta`."
+ ],
+ "answer_text": "### Q1\nNo. The user rejected migrating to SQLite. Ops backs up `data/store.json` with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. We kept the JSON store and sped it up with debounced writes instead.\n\n### Q2\nYes, `src/legacy/` must not be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites it every Monday, so any changes would vanish.\n\n### Q3\nThe HMAC goes in a top-level body field `sig`. It is the hex HMAC-SHA256 over the JSON body without `sig`, and the secret comes from the env var `ERP_WEBHOOK_SECRET`. We first tried an `X-Signature` header, but the ERP API gateway strips all custom `X-` headers, so the ERP saw everything as unsigned on staging.\n\n### Q4\nPort 9911. It moved from 8080 in October.\n\n### Q5\nAll new user-facing errors need a German `message`, because it is shown verbatim in the packers' UI. The `code` must be English SCREAMING_SNAKE_CASE. Existing English validation messages stay as they are.\n\n### Q6\nAustrian public holidays are hardcoded for 2026 and 2027 in `src/services/holidays.ts`. The deployment has no outbound internet, so they can't be fetched. 2028 and later must be added by hand.\n\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request. The user tried batching in September.\n\n### Q8\nDon't add any npm packages, runtime or dev. Each one goes through a security review that takes about 6 weeks, so we use only what Node provides.\n\n### Q9\nA cached version existed earlier, and QA found a stale-ETA bug in it. The list kept the old ETA after a new exception event, and a proper cache key got messy. The user ruled out caching and memoizing ETAs for good, so `calculateEta` is computed fresh on every call. Pagination of `GET /shipments` is the planned fix for slowness.\n\n### Q10\nThere are 3 attempts in total, with a fixed 30 s pause and no backoff. Only network errors, timeouts and 5xx responses are retried. The ERP dedups by `event_id` only within 2 minutes, and the worst-case last attempt starts at about 70 s, so a test guards that budget.\n\n### Q11\nNever log recipient names, addresses or phone numbers, and never log recipient objects. This is a GDPR rule the DPO flagged in last month's audit. Shipment IDs and tracking numbers are fine to log.\n\n### Q12\nYes, \"emits webhook on delivered\" in `test/events.test.ts` is flaky, failing in roughly 1 of 5 CI runs. It is a timer race in the fake notifier (OPS-412), and the platform team owns the fix. If it fails, rerun once and do not edit the test.\n\n### Q13\nATP numbers are validated strictly as UPU S10, including the check digit. Every other carrier accepts any non-empty value. This is deliberately loose, because strict checks rejected valid DHL numbers for 2 days last year.\n\n### Q14\n`fs.watch` stays silent on staging. The config is a Docker bind mount from a Windows host, so change events get lost. `fs.watchFile` (polling) works, as the user tried last week. Nothing needs to be built now, since hot reload is only a future idea.\n\n### Q15\n`GET /shipments/:id` must stay exactly as it is, with no fields added or removed. Mobile app v2.3 parses it with a strict schema and crashes on unknown or missing fields, and the next mobile release is in January. Only the list endpoint `GET /shipments` gets `eta`.",
+ "answers": {
+  "Q1": "No. The user rejected migrating to SQLite. Ops backs up `data/store.json` with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. We kept the JSON store and sped it up with debounced writes instead.",
+  "Q2": "Yes, `src/legacy/` must not be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites it every Monday, so any changes would vanish.",
+  "Q3": "The HMAC goes in a top-level body field `sig`. It is the hex HMAC-SHA256 over the JSON body without `sig`, and the secret comes from the env var `ERP_WEBHOOK_SECRET`. We first tried an `X-Signature` header, but the ERP API gateway strips all custom `X-` headers, so the ERP saw everything as unsigned on staging.",
+  "Q4": "Port 9911. It moved from 8080 in October.",
+  "Q5": "All new user-facing errors need a German `message`, because it is shown verbatim in the packers' UI. The `code` must be English SCREAMING_SNAKE_CASE. Existing English validation messages stay as they are.",
+  "Q6": "Austrian public holidays are hardcoded for 2026 and 2027 in `src/services/holidays.ts`. The deployment has no outbound internet, so they can't be fetched. 2028 and later must be added by hand.",
+  "Q7": "No. The ERP answers 422 to any array payload and accepts only one event object per request. The user tried batching in September.",
+  "Q8": "Don't add any npm packages, runtime or dev. Each one goes through a security review that takes about 6 weeks, so we use only what Node provides.",
+  "Q9": "A cached version existed earlier, and QA found a stale-ETA bug in it. The list kept the old ETA after a new exception event, and a proper cache key got messy. The user ruled out caching and memoizing ETAs for good, so `calculateEta` is computed fresh on every call. Pagination of `GET /shipments` is the planned fix for slowness.",
+  "Q10": "There are 3 attempts in total, with a fixed 30 s pause and no backoff. Only network errors, timeouts and 5xx responses are retried. The ERP dedups by `event_id` only within 2 minutes, and the worst-case last attempt starts at about 70 s, so a test guards that budget.",
+  "Q11": "Never log recipient names, addresses or phone numbers, and never log recipient objects. This is a GDPR rule the DPO flagged in last month's audit. Shipment IDs and tracking numbers are fine to log.",
+  "Q12": "Yes, \"emits webhook on delivered\" in `test/events.test.ts` is flaky, failing in roughly 1 of 5 CI runs. It is a timer race in the fake notifier (OPS-412), and the platform team owns the fix. If it fails, rerun once and do not edit the test.",
+  "Q13": "ATP numbers are validated strictly as UPU S10, including the check digit. Every other carrier accepts any non-empty value. This is deliberately loose, because strict checks rejected valid DHL numbers for 2 days last year.",
+  "Q14": "`fs.watch` stays silent on staging. The config is a Docker bind mount from a Windows host, so change events get lost. `fs.watchFile` (polling) works, as the user tried last week. Nothing needs to be built now, since hot reload is only a future idea.",
+  "Q15": "`GET /shipments/:id` must stay exactly as it is, with no fields added or removed. Mobile app v2.3 parses it with a strict schema and crashes on unknown or missing fields, and the next mobile release is in January. Only the list endpoint `GET /shipments` gets `eta`."
+ },
+ "tool_calls": []
+}

@@ -1,0 +1,231 @@
+{
+ "cost": 0.232705,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\gemkeeper",
+   "--resume",
+   "48966a19-88e6-4620-8eab-5e1f278c8db7",
+   "--fork-session"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\i1b\\parcel-tracker",
+  "plugin": true,
+  "resume": "48966a19-88e6-4620-8eab-5e1f278c8db7",
+  "fork": true,
+  "parent_cost": 2.4045337999999994,
+  "session_id": "dbba3429-8aa7-4ba5-9b3b-d3aadb0bd989",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     45918,
+     48158,
+     48888,
+     49261,
+     50259,
+     50747,
+     51175,
+     52752
+    ],
+    "tools": [
+     {
+      "id": "toolu_018xSTtXsiyfehd9sen1K1dP",
+      "name": "Bash",
+      "input": "{\"command\": \"cat src/services/eta.ts; cat src/routes/shipments.ts | head -80\"}",
+      "input_chars": 78,
+      "result_chars": 4431,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01KHJCXKtVuK1rz8eYw2L51k",
+      "name": "Bash",
+      "input": "{\"command\": \"cat > /tmp/bench.ts <<'EOF'\\nimport { Store } from '/c/Users/adamo/Entwicklung/gemkeeper-bench/w/i1b/parcel-tracker/src/store.ts';\\nEOF\\ncat > bench-tmp.ts <<'EOF'\\nimport { Store } from './src/store.ts';\\nimport { calculateEta } from './src/services/eta.ts';\\nconst s = new Store();\\nfor (let i=0;i<5000;i++){const sh=s.addShipment({trackingNumber:'T'+i,carrier:'DHL',serviceLevel:'standard',recipient:{name:'A',street:'B',zip:'1010',city:'Wien',country:'AT'}});s.addEvent(sh.id,'picked_up');if(i%10==0)s.addEvent(sh.id,'exception');}\\nconst t=(n:string,f:()=>void)=>{for(let i=0;i<20;i++)f();const a=performance.now();for(let i=0;i<200;i++)f();console.log(n,((performance.now()-a)/200).toFixed(3),'ms')};\\nt('list limit500',()=>s.listShipments({limit:500}));\\nt('list limit50',()=>s.listShipments({limit:50}));\\nconst l=s.listShipments({limit:500});\\nt('eta x500',()=>{for(const x of l)calculateEta(x,s.eventsFor(x.id))});\\nEOF\\nnode bench-tmp.ts\"}",
+      "input_chars": 963,
+      "result_chars": 62,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_013ZkAyexAScboHoFwHpKinX",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -n \\\"isAustrianHoliday\\\" -A6 src/services/holidays.ts | head -20\"}",
+      "input_chars": 84,
+      "result_chars": 132,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Am3ANtWbb9R1FPcs1UZxz1",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF' 2>/dev/null || echo nopy\\nEOF\\nnode -e '\\nconst fs=require(\\\"fs\\\");let f=\\\"src/services/eta.ts\\\";let s=fs.readFileSync(f,\\\"utf8\\\");\\nconst a=s.indexOf(\\\"  const sorted\\\");const b=s.indexOf(\\\"  let pickupDay\\\");\\ns=s.slice(0,a)+`  // One pass, no copy/sort: earliest pickup (first one wins on ties) and the number of exceptions.\\n  let pickupAt: string | undefined;\\n  let exceptions = 0;\\n  for (const e of events) {\\n    if (e.type === \\\"picked_up\\\" && (pickupAt === undefined || e.at < pickupAt)) pickupAt = e.at;\\n    else if (e.type === \\\"exception\\\") exceptions++;\\n  }\\n  const start = new Date(pickupAt ?? shipment.createdAt);\\n\\n`+s.slice(b);\\ns=s.replace(/  const exceptions = sorted[^\\\\n]*\\\\n/,\\\"\\\").replace(/\\\"picked_up\\\"/,\\\"\\\\x27picked_up\\\\x27\\\").replace(/\\\"exception\\\"/,\\\"\\\\x27exception\\\\x27\\\");\\nfs.writeFileSync(f,s)'\\nsed -n 45,70p src/services/eta.ts; node bench-tmp.ts\"}",
+      "input_chars": 919,
+      "result_chars": 884,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01NYiWjCvFr4xqJMcNysTjkw",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -n 1,12p src/services/holidays.ts; sed -n 36,43p src/services/holidays.ts\"}",
+      "input_chars": 92,
+      "result_chars": 765,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01YB3oZhhS9WMjJt6jdHPem8",
+      "name": "Bash",
+      "input": "{\"command\": \"node -e '\\nconst fs=require(\\\"fs\\\");let f=\\\"src/services/holidays.ts\\\";let s=fs.readFileSync(f,\\\"utf8\\\");\\nconst i=s.indexOf(\\\"/** True if the UTC\\\");\\ns=s.slice(0,i)+`/** Same dates as UTC day numbers (ms since epoch / 86400000): lookup without formatting a string. */\\nconst HOLIDAY_DAYS: ReadonlySet<number> = new Set([...AUSTRIAN_HOLIDAYS].map((d) => Date.parse(d) / 86_400_000));\\n\\n/** True if the UTC calendar day of \\\\`date\\\\` is an Austrian public holiday. */\\nexport function isAustrianHoliday(date: Date): boolean {\\n  return HOLIDAY_DAYS.has(Math.floor(date.getTime() / 86_400_000));\\n}\\n`;fs.writeFileSync(f,s)'\\nnode bench-tmp.ts\"}",
+      "input_chars": 658,
+      "result_chars": 62,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01U934rckERwwSAnu84HLCQb",
+      "name": "Bash",
+      "input": "{\"command\": \"rm bench-tmp.ts; cat > test/eta-equivalence.test.ts <<'EOF'\\nimport assert from 'node:assert/strict';\\nimport { describe, it } from 'node:test';\\nimport { calculateEta } from '../src/services/eta.ts';\\nimport { isAustrianHoliday } from '../src/services/holidays.ts';\\nimport type { Shipment, TrackingEvent } from '../src/types.ts';\\n\\nconst shipment: Shipment = {\\n  id: 'shp_1', trackingNumber: 'T1', carrier: 'DHL', serviceLevel: 'standard',\\n  recipient: { name: 'A', street: 'B', zip: '1010', city: 'Wien', country: 'AT' },\\n  status: 'in_transit', createdAt: '2026-11-09T08:00:00.000Z',\\n};\\nconst ev = (type: TrackingEvent['type'], at: string): TrackingEvent => ({ id: `e_${type}_${at}`, shipmentId: 'shp_1', type, at });\\n\\ndescribe('calculateEta (fast path, always computed fresh)', () => {\\n  it('does not depend on the order of the events', () => {\\n    const events = [ev('created', '2026-11-09T08:00:00.000Z'), ev('picked_up', '2026-11-10T09:00:00.000Z'), ev('exception', '2026-11-11T09:00:00.000Z')];\\n    assert.equal(calculateEta(shipment, events), calculateEta(shipment, [...events].reverse()));\\n  });\\n\\n  it('uses the earliest pickup if there are several', () => {\\n    const early = ev('picked_up', '2026-11-10T09:00:00.000Z');\\n    const late = ev('picked_up', '2026-11-12T09:00:00.000Z');\\n    assert.equal(calculateEta(shipment, [late, early]), calculateEta(shipment, [early]));\\n  });\\n\\n  it('does not mutate the passed events', () => {\\n    const events = [ev('exception', '2026-11-12T09:00:00.000Z'), ev('picked_up', '2026-11-10T09:00:00.000Z')];\\n    const copy = structuredClone(events);\\n    calculateEta(shipment, events);\\n    assert.deepEqual(events, copy);\\n  });\\n\\n  it('each exception adds 2 business days and the result changes immediately', () => {\\n    const base = [ev('picked_up', '2026-11-10T09:00:00.000Z')];\\n    assert.equal(calculateEta(shipment, base), '2026-11-12');\\n    assert.equal(calculateEta(shipment, [...base, ev('exception', '202",
+      "input_chars": 2555,
+      "result_chars": 355,
+      "mentions_ledger": false
+     }
+    ],
+    "result": {
+     "text": "I didn't cache the ETAs. Your rule is that ETAs are never cached after the stale-ETA bug, and the \"is never stale\" tests guard it. Instead I made the ETA calculation itself cheaper, and all 110 tests pass (105 before, plus 5 new).\n\n**What changed**\n- **`calculateEta`** (`src/services/eta.ts`): it used to copy and sort the events for every shipment. It now makes one pass over them to find the earliest pickup and count the exceptions. The result is the same, and each call is computed fresh.\n- **`isAustrianHoliday`** (`src/services/holidays.ts`): it used to format a date string on every day it checked. It now looks up a number for the day, and the dates in the list are the same.\n- **Test** (`test/eta-equivalence.test.ts`): checks that event order doesn't matter, that the earliest pickup wins, that the events aren't modified, and that an exception moves the ETA immediately. It also checks the holiday lookup at day boundaries.\n\nI didn't add a timing assertion, because those fail at random on CI.\n\n**Measured** on 5,000 shipments in memory, for one list call of 500 items (the maximum): ETA work went from 2.4 ms to 0.86 ms. The rest of the handler is about 0.2 ms.\n\n**What this won't fix.** The ETA was never the main cost, so this won't turn a slow list call into a fast one. On this machine the whole handler takes only a few milliseconds, and the 166–348 ms in the old staging log came from somewhere else. The new `request` log lines have `duration_ms`. Compare them with the list size to find the real cause, for example serialization, the `store.json` write, or the container. If you want a bigger saving in the code, pagination is the next step, as you planned.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 8,
+     "duration_ms": 40701,
+     "total_cost_usd": 2.6372383,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 16,
+      "cache_creation_input_tokens": 38397,
+      "cache_read_input_tokens": 358745,
+      "output_tokens": 4321,
+      "output_tokens_details": {
+       "thinking_tokens": 773
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 38397,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 588,
+        "cache_read_input_tokens": 51173,
+        "cache_creation_input_tokens": 1577,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 1577
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 2423,
+       "outputTokens": 85732,
+       "thinkingTokens": 14718,
+       "cacheReadInputTokens": 10219643,
+       "cacheCreationInputTokens": 188277,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 188277,
+       "webSearchRequests": 0,
+       "costUSD": 2.6372383,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "The ledger records a rule from you that ETAs are never cached, because QA found stale ETAs after new events. So I'll make the list faster without a cache. First I'll look at where the time goes.",
+     "I didn't cache the ETAs. Your rule is that ETAs are never cached after the stale-ETA bug, and the \"is never stale\" tests guard it. Instead I made the ETA calculation itself cheaper, and all 110 tests pass (105 before, plus 5 new).\n\n**What changed**\n- **`calculateEta`** (`src/services/eta.ts`): it used to copy and sort the events for every shipment. It now makes one pass over them to find the earliest pickup and count the exceptions. The result is the same, and each call is computed fresh.\n- **`isAustrianHoliday`** (`src/services/holidays.ts`): it used to format a date string on every day it checked. It now looks up a number for the day, and the dates in the list are the same.\n- **Test** (`test/eta-equivalence.test.ts`): checks that event order doesn't matter, that the earliest pickup wins, that the events aren't modified, and that an exception moves the ETA immediately. It also checks the holiday lookup at day boundaries.\n\nI didn't add a timing assertion, because those fail at random on CI.\n\n**Measured** on 5,000 shipments in memory, for one list call of 500 items (the maximum): ETA work went from 2.4 ms to 0.86 ms. The rest of the handler is about 0.2 ms.\n\n**What this won't fix.** The ETA was never the main cost, so this won't turn a slow list call into a fast one. On this machine the whole handler takes only a few milliseconds, and the 166–348 ms in the old staging log came from somewhere else. The new `request` log lines have `duration_ms`. Compare them with the list size to find the real cause, for example serialization, the `store.json` write, or the container. If you want a bigger saving in the code, pagination is the next step, as you planned."
+    ]
+   }
+  ],
+  "hooks": [
+   {
+    "turn": 0,
+    "hook": "UserPromptSubmit",
+    "chars": 0,
+    "output": ""
+   }
+  ],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 2.6372383,
+  "cost": 0.232705,
+  "wall_s": 45.8,
+  "exit_code": 0,
+  "ctx_first": 45918,
+  "ctx_last": 52752
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 3
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "test/eta-equivalence.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   "src/services/eta.ts",
+   "src/services/holidays.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/test/eta-equivalence.test.ts\n+++ b/test/eta-equivalence.test.ts\n@@ -0,0 +1,47 @@\n+import assert from 'node:assert/strict';\n+import { describe, it } from 'node:test';\n+import { calculateEta } from '../src/services/eta.ts';\n+import { isAustrianHoliday } from '../src/services/holidays.ts';\n+import type { Shipment, TrackingEvent } from '../src/types.ts';\n+\n+const shipment: Shipment = {\n+  id: 'shp_1', trackingNumber: 'T1', carrier: 'DHL', serviceLevel: 'standard',\n+  recipient: { name: 'A', street: 'B', zip: '1010', city: 'Wien', country: 'AT' },\n+  status: 'in_transit', createdAt: '2026-11-09T08:00:00.000Z',\n+};\n+const ev = (type: TrackingEvent['type'], at: string): TrackingEvent => ({ id: `e_${type}_${at}`, shipmentId: 'shp_1', type, at });\n+\n+describe('calculateEta (fast path, always computed fresh)', () => {\n+  it('does not depend on the order of the events', () => {\n+    const events = [ev('created', '2026-11-09T08:00:00.000Z'), ev('picked_up', '2026-11-10T09:00:00.000Z'), ev('exception', '2026-11-11T09:00:00.000Z')];\n+    assert.equal(calculateEta(shipment, events), calculateEta(shipment, [...events].reverse()));\n+  });\n+\n+  it('uses the earliest pickup if there are several', () => {\n+    const early = ev('picked_up', '2026-11-10T09:00:00.000Z');\n+    const late = ev('picked_up', '2026-11-12T09:00:00.000Z');\n+    assert.equal(calculateEta(shipment, [late, early]), calculateEta(shipment, [early]));\n+  });\n+\n+  it('does not mutate the passed events', () => {\n+    const events = [ev('exception', '2026-11-12T09:00:00.000Z'), ev('picked_up', '2026-11-10T09:00:00.000Z')];\n+    const copy = structuredClone(events);\n+    calculateEta(shipment, events);\n+    assert.deepEqual(events, copy);\n+  });\n+\n+  it('each exception adds 2 business days and the result changes immediately', () => {\n+    const base = [ev('picked_up', '2026-11-10T09:00:00.000Z')];\n+    assert.equal(calculateEta(shipment, base), '2026-11-12');\n+    assert.equal(calculateEta(shipment, [...base, ev('exception', '2026-11-11T09:00:00.000Z')]), '2026-11-16');\n+  });\n+});\n+\n+describe('isAustrianHoliday (numeric lookup)', () => {\n+  it('matches on the UTC day regardless of the time of day', () => {\n+    assert.equal(isAustrianHoliday(new Date('2026-12-25T00:00:00.000Z')), true);\n+    assert.equal(isAustrianHoliday(new Date('2026-12-25T23:59:59.999Z')), true);\n+    assert.equal(isAustrianHoliday(new Date('2026-12-24T23:59:59.999Z')), false);\n+    assert.equal(isAustrianHoliday(new Date('2026-12-26T00:00:00.000Z')), true);\n+  });\n+});\n--- a/src/services/eta.ts\n+++ b/src/services/eta.ts\n@@ -42,16 +42,20 @@\n export function calculateEta(shipment: Shipment, events: TrackingEvent[]): string | null {\n   if (shipment.status === 'delivered') return null;\n \n-  const sorted = [...events].sort((a, b) => a.at.localeCompare(b.at));\n-  const pickup = sorted.find((e) => e.type === 'picked_up');\n-  const start = new Date(pickup ? pickup.at : shipment.createdAt);\n+  // One pass, no copy/sort: earliest pickup (first one wins on ties) and the number of exceptions.\n+  let pickupAt: string | undefined;\n+  let exceptions = 0;\n+  for (const e of events) {\n+    if (e.type === 'picked_up' && (pickupAt === undefined || e.at < pickupAt)) pickupAt = e.at;\n+    else if (e.type === 'exception') exceptions++;\n+  }\n+  const start = new Date(pickupAt ?? shipment.createdAt);\n \n   let pickupDay = startOfDayUtc(start);\n   if (start.getUTCHours() >= CUTOFF_HOUR_UTC || !isBusinessDay(pickupDay)) {\n     pickupDay = addBusinessDays(pickupDay, 1);\n   }\n \n-  const exceptions = sorted.filter((e) => e.type === 'exception').length;\n   const days = TRANSIT_DAYS[shipment.carrier][shipment.serviceLevel] + exceptions * EXCEPTION_DELAY_DAYS;\n \n   return addBusinessDays(pickupDay, days).toISOString().slice(0, 10);\n--- a/src/services/holidays.ts\n+++ b/src/services/holidays.ts\n@@ -37,7 +37,10 @@\n   '2027-12-26', // Stefanitag\n ]);\n \n+/** Same dates as UTC day numbers (ms since epoch / 86400000): lookup without formatting a string. */\n+const HOLIDAY_DAYS: ReadonlySet<number> = new Set([...AUSTRIAN_HOLIDAYS].map((d) => Date.parse(d) / 86_400_000));\n+\n /** True if the UTC calendar day of `date` is an Austrian public holiday. */\n export function isAustrianHoliday(date: Date): boolean {\n-  return AUSTRIAN_HOLIDAYS.has(date.toISOString().slice(0, 10));\n+  return HOLIDAY_DAYS.has(Math.floor(date.getTime() / 86_400_000));\n }",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n....................\n..................\n"
+ },
+ "final_text": "I didn't cache the ETAs. Your rule is that ETAs are never cached after the stale-ETA bug, and the \"is never stale\" tests guard it. Instead I made the ETA calculation itself cheaper, and all 110 tests pass (105 before, plus 5 new).\n\n**What changed**\n- **`calculateEta`** (`src/services/eta.ts`): it used to copy and sort the events for every shipment. It now makes one pass over them to find the earliest pickup and count the exceptions. The result is the same, and each call is computed fresh.\n- **`isAustrianHoliday`** (`src/services/holidays.ts`): it used to format a date string on every day it checked. It now looks up a number for the day, and the dates in the list are the same.\n- **Test** (`test/eta-equivalence.test.ts`): checks that event order doesn't matter, that the earliest pickup wins, that the events aren't modified, and that an exception moves the ETA immediately. It also checks the holiday lookup at day boundaries.\n\nI didn't add a timing assertion, because those fail at random on CI.\n\n**Measured** on 5,000 shipments in memory, for one list call of 500 items (the maximum): ETA work went from 2.4 ms to 0.86 ms. The rest of the handler is about 0.2 ms.\n\n**What this won't fix.** The ETA was never the main cost, so this won't turn a slow list call into a fast one. On this machine the whole handler takes only a few milliseconds, and the 166–348 ms in the old staging log came from somewhere else. The new `request` log lines have `duration_ms`. Compare them with the list size to find the real cause, for example serialization, the `store.json` write, or the container. If you want a bigger saving in the code, pagination is the next step, as you planned."
+}

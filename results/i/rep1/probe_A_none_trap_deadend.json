@@ -1,0 +1,293 @@
+{
+ "cost": 0.195845,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\i1a\\parcel-tracker",
+  "plugin": false,
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "cc69967c-f371-409c-809f-5efd06a06101",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     21339,
+     26554,
+     29292,
+     30625,
+     30821,
+     32646,
+     33774,
+     34707,
+     36016,
+     36951,
+     37335,
+     38667
+    ],
+    "tools": [
+     {
+      "id": "toolu_01GQBkG1BWScwG6p9MkG5Qmr",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\i1a\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\"}",
+      "input_chars": 114,
+      "result_chars": 2194,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01F9Qzq9xkHTKpYUALZ4egSN",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\i1a\\\\parcel-tracker\\\\src\\\\services\\\\eta.ts\"}",
+      "input_chars": 110,
+      "result_chars": 2496,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01LmGd39axCXno6bXvMwxNwF",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\i1a\\\\parcel-tracker\\\\src\\\\store.ts\"}",
+      "input_chars": 102,
+      "result_chars": 6372,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01ULzEo19VqjVj4QWuSnMoGF",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\i1a\\\\parcel-tracker\\\\src\\\\services\\\\holidays.ts\"}",
+      "input_chars": 115,
+      "result_chars": 1532,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_012qrsgTJzC1MSBryvpP4FTd",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\i1a\\\\parcel-tracker\\\\test\\\\shipments-list-eta.test.ts\"}",
+      "input_chars": 121,
+      "result_chars": 2654,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_011NWdwNedRTYBfSWirBFjfx",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && cat package.json && grep -rn \\\"calculateEta\\\\|eta\\\" src --include=*.ts -il\"}",
+      "input_chars": 159,
+      "result_chars": 361,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01NPR9KYygofGL1jwfPvEZRH",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && mkdir -p /tmp/bench && cat > /tmp/bench/b.ts <<'EOF'\\nimport { Store } from 'C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker/src/store.ts';\\nimport { calculateEta } from 'C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker/src/services/eta.ts';\\nconst s = new Store();\\nconst carriers = ['ATP','DHL','DPD','GLS','UPS'] as const;\\nfor (let i=0;i<5000;i++){ const sh = s.addShipment({trackingNumber:'T'+i,carrier:carriers[i%5],serviceLevel:'standard',recipient:{name:'a'}} as any, new Date(Date.now()-i*3600e3)); s.addEvent(sh.id,'picked_up'); }\\nlet t=performance.now(); const all=s.listShipments({}); console.log('list all',performance.now()-t);\\nt=performance.now(); s.listShipments({limit:50}); console.log('list 50',performance.now()-t);\\nt=performance.now(); for(const x of all) calculateEta(x,s.eventsFor(x.id)); console.log('eta all 5k',performance.now()-t);\\nt=performance.now(); for(const x of s.listShipments({limit:500})) calculateEta(x,s.eventsFor(x.id)); console.log('eta 500',performance.now()-t);\\nEOF\\nnode /tmp/bench/b.ts\"}",
+      "input_chars": 1150,
+      "result_chars": 1135,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_018Z6uKe9MZAbdGr8FS5q8tA",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && sed -i \\\"s#'C:/Users#'file:///C:/Users#\\\" /tmp/bench/b.ts && node /tmp/bench/b.ts\"}",
+      "input_chars": 166,
+      "result_chars": 110,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_017JgWW6qWrANrrDtc7QGhzQ",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && cat src/router.ts src/server.ts; ls src src/lib test\"}",
+      "input_chars": 137,
+      "result_chars": 3904,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_013P1qEzVMzK9XS6URghgaot",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && cat src/app.ts | head -30; cat > /tmp/bench/h.ts <<'EOF'\\nimport { createServer } from 'node:http';\\nconst R='file:///C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker/src/';\\nconst { Store } = await import(R+'store.ts'); const { createApp } = await import(R+'app.ts');\\nconst s = new Store(); const cs=['ATP','DHL','DPD','GLS','UPS'] as const;\\nfor (let i=0;i<5000;i++){ const sh=s.addShipment({trackingNumber:'T'+i,carrier:cs[i%5],serviceLevel:'standard',recipient:{name:'a'}} as any,new Date(Date.now()-i*3600e3)); s.addEvent(sh.id,'picked_up'); }\\nconst app=createApp({store:s}); const srv=createServer((q,r)=>{void app.handle(q,r)});\\nawait new Promise<void>(r=>srv.listen(0,r)); const port=(srv.address() as any).port;\\nfor (const q of ['','?limit=500','?carrier=DHL&limit=500']) for(let k=0;k<3;k++){ const t=performance.now(); const b=await (await fetch(`http://localhost:${port}/shipments${q}`)).text(); console.log(q,b.length,(performance.now()-t).toFixed(1)); }\\nsrv.close();\\nEOF\\nnode /tmp/bench/h.ts 2>&1 | grep -v '\\\"request\\\"'\"}",
+      "input_chars": 1141,
+      "result_chars": 958,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01DZpatmi1rK4iTiH4D7L7YF",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && cat > /tmp/bench/p.ts <<'EOF'\\nconst R='file:///C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker/src/';\\nconst { Store } = await import(R+'store.ts'); const { calculateEta } = await import(R+'services/eta.ts');\\nconst s = new Store(); const cs=['ATP','DHL','DPD','GLS','UPS'] as const;\\nfor (let i=0;i<5000;i++){ const sh=s.addShipment({trackingNumber:'T'+i,carrier:cs[i%5],serviceLevel:'standard',recipient:{name:'a'}} as any,new Date(Date.now()-i*3600e3)); s.addEvent(sh.id,'picked_up'); }\\nconst T=(n:string,f:()=>void)=>{f();const t=performance.now();for(let i=0;i<20;i++)f();console.log(n,((performance.now()-t)/20).toFixed(2),'ms')};\\nT('list limit500',()=>s.listShipments({limit:500}));\\nT('eta 500',()=>{for(const x of s.listShipments({limit:500}))calculateEta(x,s.eventsFor(x.id))});\\nconst items=s.listShipments({limit:500}).map(x=>({...x,eta:calculateEta(x,s.eventsFor(x.id))}));\\nT('json 500',()=>{JSON.stringify({items})});\\nEOF\\nnode /tmp/bench/p.ts\"}",
+      "input_chars": 1063,
+      "result_chars": 54,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Vf1Pt6rNhsg3jae8xsWeBF",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && grep -rn \\\"status\\\\s*=\\\\|\\\\.status\\\\b\\\\|addEvent\\\\|addShipment\\\\|\\\\.events\\\\b\\\" src --include=*.ts | grep -v \\\"^src/store.ts\\\" | grep -v res.statusCode; ls src/legacy; sed -n 1,40p test/helpers.ts\"}",
+      "input_chars": 281,
+      "result_chars": 2277,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01RwDZkn5RmTwi3bArgCKMVY",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && python - <<'EOF' 2>/dev/null || node -e \\\"\\nconst fs=require('fs');\\nlet s=fs.readFileSync('src/store.ts','utf8');\\ns=s.replace(\\\\\\\"import { log } from './lib/log.ts';\\\\\\\",\\\\\\\"import { log } from './lib/log.ts';\\\\nimport { calculateEta } from './services/eta.ts';\\\\\\\");\\ns=s.replace('  private timer: NodeJS.Timeout | undefined;\\\\n','  private timer: NodeJS.Timeout | undefined;\\\\n  /** Memoized ETA per shipment id; entry dropped whenever the shipment gets a new event (addEvent). */\\\\n  private etaCache = new Map<string, string | null>();\\\\n');\\ns=s.replace('    shipment.status = type;\\\\n','    shipment.status = type;\\\\n    this.etaCache.delete(shipmentId);\\\\n');\\ns=s.replace('  eventsFor(shipmentId','  /** calculateEta(), cached. ETA only depends on the shipment and its events, which change only in addEvent(). */\\\\n  etaFor(shipment: Shipment): string | null {\\\\n    const cached = this.etaCache.get(shipment.id);\\\\n    if (cached !== undefined) return cached;\\\\n    const eta = calculateEta(shipment, this.events.get(shipment.id) ?? []);\\\\n    this.etaCache.set(shipment.id, eta);\\\\n    return eta;\\\\n  }\\\\n\\\\n  eventsFor(shipmentId');\\nfs.writeFileSync('src/store.ts',s);\\nlet r=fs.readFileSync('src/routes/shipments.ts','utf8');\\nr=r.replace(\\\\\\\"eta: calculateEta(shipment, store.eventsFor(shipment.id)) }));\\\\\\\",\\\\\\\"eta: store.etaFor(shipment) }));\\\\\\\");\\nfs.writeFileSync('src/routes/shipments.ts',r);\\n\\\"\\ngit diff --stat src/routes/shipments.ts src/store.ts | tail -3; grep -n \\\"etaFor\\\\|etaCache\\\" src/store.ts src/routes/shipments.ts\"}",
+      "input_chars": 1637,
+      "result_chars": 97,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01FHkjkbjacSsNrbKw1CQYhf",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && grep -n \\\"etaFor\\\\|etaCache\\\" src/store.ts src/routes/shipments.ts; git status --short | head -3\"}",
+      "input_chars": 181,
+      "result_chars": 483,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01XRpiFZNTdaHh9VH2cGYGd8",
+      "name": "Bash",
+      "input": "{\"command\": \"cd C:/Users/adamo/Entwicklung/gemkeeper-bench/w/i1a/parcel-tracker && head -8 src/store.ts && cat >> test/shipments-list-eta.test.ts <<'EOF'\\n\\ndescribe('GET /shipments eta caching', () => {\\n  it('computes each eta once, and recomputes after a new event', async () => {\\n    const srv = await startTestServer();\\n    try {\\n      const created = await api(srv.url, 'POST', '/shipments', validShipment({ tracking_number: 'RR123456785AT' }));\\n      const id = created.body.id;\\n      const first = await api(srv.url, 'GET', '/shipments');\\n      const again = await api(srv.url, 'GET', '/shipments');\\n      assert.equal(first.body.items[0].eta, again.body.items[0].eta);\\n\\n      // an exception adds business days: a stale cache would keep the old eta\\n      await api(srv.url, 'POST', `/shipments/${id}/events`, { type: 'exception' });\\n      const afterException = await api(srv.url, 'GET', '/shipments');\\n      const detail = await api(srv.url, 'GET', `/shipments/${id}`);\\n      assert.notEqual(afterException.body.items[0].eta, first.body.items[0].eta);\\n      assert.equal(afterException.body.items[0].eta, detail.body.eta);\\n\\n      await api(srv.url, 'POST', `/shipments/${id}/events`, { type: 'delivered' });\\n      const delivered = await api(srv.url, 'GET', '/shipments');\\n      assert.equal(delivered.body.items[0].eta, null);\\n    } finally {\\n      await srv.close();\\n    }\\n  });\\n});\\nEOF\\nnpm test 2>&1 | tail -25\"}",
+      "input_chars": 1450,
+      "result_chars": 1371,
+      "mentions_ledger": false
+     }
+    ],
+    "result": {
+     "text": "`GET /shipments` now serves each shipment's ETA from a cache, and all 105 tests pass, including the new one.\n\n**What I found first.** `calculateEta` doesn't run for all 5k shipments. The route applies `limit` first (default 50, max 500), so it runs only for the returned page. I measured a 500-row page on 5k synthetic shipments:\n- **ETA:** about 3.3 ms of server-side work, which is the largest piece.\n- **Listing, sorting and JSON serialization:** about 0.8 ms combined.\n- **Full HTTP request:** about 15 ms.\n\nSo the cache helps, but I'd expect a few ms per request, not a big drop. If staging is much slower than that, the cause is probably elsewhere, such as the staging disk or its log sink. I'd profile staging itself.\n\n**What I changed:**\n- **`src/store.ts`:** added `etaFor(shipment)`, which memoizes `calculateEta` per shipment id. The cache entry is cleared in `addEvent`. That is the only place a shipment's status or events change, and the ETA has no time-of-day input.\n- **`src/routes/shipments.ts`:** the list route now uses `store.etaFor`. I left `POST /shipments` and `GET /shipments/:id` on direct `calculateEta`, so their responses are unchanged.\n- **`test/shipments-list-eta.test.ts`:** a new test checks that repeated list calls agree. It also checks that an `exception` event changes the cached ETA, matching the detail endpoint, and that `delivered` gives `null`.\n\n**Caveats:**\n- The ETA cache grows by one entry per shipment and is lost on restart. At 5k entries that is negligible.\n- The cache is only correct while `addEvent` stays the sole way a shipment or its events change. Any future mutation path will need to clear the entry too.\n- If you extend `holidays.ts` while the server is running, cached ETAs won't pick it up until a restart. The holiday list is hardcoded, so this only matters when it is edited.\n\nI didn't commit anything.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 16,
+     "duration_ms": 52510,
+     "total_cost_usd": 0.1958451,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 24,
+      "cache_creation_input_tokens": 24312,
+      "cache_read_input_tokens": 364391,
+      "output_tokens": 6211,
+      "output_tokens_details": {
+       "thinking_tokens": 1009
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 24312,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 689,
+        "cache_read_input_tokens": 37333,
+        "cache_creation_input_tokens": 1332,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 1332
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 24,
+       "outputTokens": 6211,
+       "cacheReadInputTokens": 364391,
+       "cacheCreationInputTokens": 24312,
+       "webSearchRequests": 0,
+       "costUSD": 0.1958451,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 1009,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 24312,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "Benchmarking shows ETA for a 500-row page costs only about 4 ms, so I'm now timing the full HTTP request to find the real bottleneck before adding a cache.",
+     "The edits applied. Next I'll check that the import was added and that the detail and create routes still use the uncached path, then add a test.",
+     "`GET /shipments` now serves each shipment's ETA from a cache, and all 105 tests pass, including the new one.\n\n**What I found first.** `calculateEta` doesn't run for all 5k shipments. The route applies `limit` first (default 50, max 500), so it runs only for the returned page. I measured a 500-row page on 5k synthetic shipments:\n- **ETA:** about 3.3 ms of server-side work, which is the largest piece.\n- **Listing, sorting and JSON serialization:** about 0.8 ms combined.\n- **Full HTTP request:** about 15 ms.\n\nSo the cache helps, but I'd expect a few ms per request, not a big drop. If staging is much slower than that, the cause is probably elsewhere, such as the staging disk or its log sink. I'd profile staging itself.\n\n**What I changed:**\n- **`src/store.ts`:** added `etaFor(shipment)`, which memoizes `calculateEta` per shipment id. The cache entry is cleared in `addEvent`. That is the only place a shipment's status or events change, and the ETA has no time-of-day input.\n- **`src/routes/shipments.ts`:** the list route now uses `store.etaFor`. I left `POST /shipments` and `GET /shipments/:id` on direct `calculateEta`, so their responses are unchanged.\n- **`test/shipments-list-eta.test.ts`:** a new test checks that repeated list calls agree. It also checks that an `exception` event changes the cached ETA, matching the detail endpoint, and that `delivered` gives `null`.\n\n**Caveats:**\n- The ETA cache grows by one entry per shipment and is lost on restart. At 5k entries that is negligible.\n- The cache is only correct while `addEvent` stays the sole way a shipment or its events change. Any future mutation path will need to clear the entry too.\n- If you extend `holidays.ts` while the server is running, cached ETAs won't pick it up until a restart. The holiday list is hardcoded, so this only matters when it is edited.\n\nI didn't commit anything."
+    ]
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.1958451,
+  "cost": 0.195845,
+  "wall_s": 56.9,
+  "exit_code": 0,
+  "ctx_first": 21339,
+  "ctx_last": 38667
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": true,
+   "hits": [
+    "src/store.ts: private etaCache = new Map<string, string | null>();",
+    "src/store.ts: this.etaCache.delete(shipmentId);",
+    "src/store.ts: const cached = this.etaCache.get(shipment.id);",
+    "src/store.ts: if (cached !== undefined) return cached;",
+    "src/store.ts: this.etaCache.set(shipment.id, eta);"
+   ]
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 3
+ },
+ "violation": true,
+ "diff": {
+  "added": [],
+  "removed": [],
+  "modified": [
+   "src/routes/shipments.ts",
+   "src/store.ts",
+   "test/shipments-list-eta.test.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/src/routes/shipments.ts\n+++ b/src/routes/shipments.ts\n@@ -35,7 +35,7 @@\n         status: query.get('status') ?? undefined,\n         limit,\n       })\n-      .map((shipment) => ({ ...shipmentToApi(shipment), eta: calculateEta(shipment, store.eventsFor(shipment.id)) }));\n+      .map((shipment) => ({ ...shipmentToApi(shipment), eta: store.etaFor(shipment) }));\n     sendJson(res, 200, { items, count: items.length });\n   });\n \n--- a/src/store.ts\n+++ b/src/store.ts\n@@ -2,6 +2,7 @@\n import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';\n import path from 'node:path';\n import { log } from './lib/log.ts';\n+import { calculateEta } from './services/eta.ts';\n import type { EventType, Shipment, TrackingEvent } from './types.ts';\n \n interface StoreData {\n@@ -42,6 +43,8 @@\n   private debounceMs: number;\n   private writeFile: (file: string, data: string) => void;\n   private timer: NodeJS.Timeout | undefined;\n+  /** Memoized ETA per shipment id; entry dropped whenever the shipment gets a new event (addEvent). */\n+  private etaCache = new Map<string, string | null>();\n   private dirty = false;\n \n   constructor(file?: string, options: StoreOptions = {}) {\n@@ -161,8 +164,18 @@\n     list.push(event);\n     this.events.set(shipmentId, list);\n     shipment.status = type;\n+    this.etaCache.delete(shipmentId);\n     this.save();\n     return event;\n+  }\n+\n+  /** calculateEta(), cached. ETA only depends on the shipment and its events, which change only in addEvent(). */\n+  etaFor(shipment: Shipment): string | null {\n+    const cached = this.etaCache.get(shipment.id);\n+    if (cached !== undefined) return cached;\n+    const eta = calculateEta(shipment, this.events.get(shipment.id) ?? []);\n+    this.etaCache.set(shipment.id, eta);\n+    return eta;\n   }\n \n   eventsFor(shipmentId: string): TrackingEvent[] {\n--- a/test/shipments-list-eta.test.ts\n+++ b/test/shipments-list-eta.test.ts\n@@ -56,3 +56,29 @@\n     assert.deepEqual(Object.keys(detail.body.events[0]), ['type', 'at', 'location']);\n   });\n });\n+\n+describe('GET /shipments eta caching', () => {\n+  it('computes each eta once, and recomputes after a new event', async () => {\n+    const srv = await startTestServer();\n+    try {\n+      const created = await api(srv.url, 'POST', '/shipments', validShipment({ tracking_number: 'RR123456785AT' }));\n+      const id = created.body.id;\n+      const first = await api(srv.url, 'GET', '/shipments');\n+      const again = await api(srv.url, 'GET', '/shipments');\n+      assert.equal(first.body.items[0].eta, again.body.items[0].eta);\n+\n+      // an exception adds business days: a stale cache would keep the old eta\n+      await api(srv.url, 'POST', `/shipments/${id}/events`, { type: 'exception' });\n+      const afterException = await api(srv.url, 'GET', '/shipments');\n+      const detail = await api(srv.url, 'GET', `/shipments/${id}`);\n+      assert.notEqual(afterException.body.items[0].eta, first.body.items[0].eta);\n+      assert.equal(afterException.body.items[0].eta, detail.body.eta);\n+\n+      await api(srv.url, 'POST', `/shipments/${id}/events`, { type: 'delivered' });\n+      const delivered = await api(srv.url, 'GET', '/shipments');\n+      assert.equal(delivered.body.items[0].eta, null);\n+    } finally {\n+      await srv.close();\n+    }\n+  });\n+});",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n....................\n.......\n"
+ },
+ "final_text": "`GET /shipments` now serves each shipment's ETA from a cache, and all 105 tests pass, including the new one.\n\n**What I found first.** `calculateEta` doesn't run for all 5k shipments. The route applies `limit` first (default 50, max 500), so it runs only for the returned page. I measured a 500-row page on 5k synthetic shipments:\n- **ETA:** about 3.3 ms of server-side work, which is the largest piece.\n- **Listing, sorting and JSON serialization:** about 0.8 ms combined.\n- **Full HTTP request:** about 15 ms.\n\nSo the cache helps, but I'd expect a few ms per request, not a big drop. If staging is much slower than that, the cause is probably elsewhere, such as the staging disk or its log sink. I'd profile staging itself.\n\n**What I changed:**\n- **`src/store.ts`:** added `etaFor(shipment)`, which memoizes `calculateEta` per shipment id. The cache entry is cleared in `addEvent`. That is the only place a shipment's status or events change, and the ETA has no time-of-day input.\n- **`src/routes/shipments.ts`:** the list route now uses `store.etaFor`. I left `POST /shipments` and `GET /shipments/:id` on direct `calculateEta`, so their responses are unchanged.\n- **`test/shipments-list-eta.test.ts`:** a new test checks that repeated list calls agree. It also checks that an `exception` event changes the cached ETA, matching the detail endpoint, and that `delivered` gives `null`.\n\n**Caveats:**\n- The ETA cache grows by one entry per shipment and is lost on restart. At 5k entries that is negligible.\n- The cache is only correct while `addEvent` stays the sole way a shipment or its events change. Any future mutation path will need to clear the entry too.\n- If you extend `holidays.ts` while the server is running, cached ETAs won't pick it up until a restart. The holiday list is hardcoded, so this only matters when it is edited.\n\nI didn't commit anything."
+}
