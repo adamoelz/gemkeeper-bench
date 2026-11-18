@@ -1,0 +1,220 @@
+{
+ "cost": 0.134681,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\gk-8650074\\editions\\skill-only"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\l3c\\parcel-tracker",
+  "plugin": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\gk-8650074\\editions\\skill-only",
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "1382fbbe-ffab-41d3-895a-e39cfcebcc9c",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 257,
+    "ctx": [
+     21662,
+     28011,
+     29585,
+     31646,
+     31958,
+     33066,
+     33334
+    ],
+    "tools": [
+     {
+      "id": "toolu_01PK17eMEgVb2nPpmXf3x7Vx",
+      "name": "Bash",
+      "input": "{\"command\": \"cat .gemkeeper/ledger.md 2>/dev/null | head -50; cat src/services/eta.ts src/routes/shipments.ts; cat src/store.ts\"}",
+      "input_chars": 129,
+      "result_chars": 14918,
+      "mentions_ledger": true
+     },
+     {
+      "id": "toolu_01NnP4oArziQwdydBseRKmrQ",
+      "name": "Bash",
+      "input": "{\"command\": \"cat test/shipmentsEta.test.ts | head -40; ls test; git diff HEAD --stat -- src/store.ts\"}",
+      "input_chars": 102,
+      "result_chars": 2129,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01KY5qkFmVqxeZW4is5akXYd",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF' 2>/dev/null || python - <<'EOF2'\\nEOF\\nimport re\\np='src/store.ts'\\ns=open(p,newline='').read()\\nold=s[s.index(\\\"  listShipments(filter\\\"):s.index(\\\"  addEvent(\\\")]\\nnew='''  listShipments(filter: ListFilter = {}): Shipment[] {\\n    const { carrier, status, limit } = filter;\\n    const matches = (s: Shipment) => (!carrier || s.carrier === carrier) && (!status || s.status === status);\\n\\n    if (!limit) {\\n      const all = [...this.shipments.values()].filter(matches);\\n      return all.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\\n    }\\n\\n    // Top-N by createdAt desc in one pass (no full sort of every shipment). Ties keep insertion order.\\n    const top: Shipment[] = [];\\n    for (const s of this.shipments.values()) {\\n      if (!matches(s)) continue;\\n      if (top.length >= limit && s.createdAt <= top[top.length - 1].createdAt) continue;\\n      let lo = 0;\\n      let hi = top.length;\\n      while (lo < hi) {\\n        const mid = (lo + hi) >> 1;\\n        if (top[mid].createdAt >= s.createdAt) lo = mid + 1;\\n        else hi = mid;\\n      }\\n      top.splice(lo, 0, s);\\n      if (top.length > limit) top.pop();\\n    }\\n    return top;\\n  }\\n\\n'''\\nopen(p,'w',newline='').write(s.replace(old,new.replace('\\\\n','\\\\r\\\\n') if '\\\\r\\\\n' in s else new))\\nEOF2\\ncat > test/listPerf.test.ts <<'EOF'\\nimport assert from 'node:assert/strict';\\nimport { describe, it } from 'node:test';\\nimport { calculateEta } from '../src/services/eta.ts';\\nimport { Store } from '../src/store.ts';\\n\\nfunction seed(n: number): Store {\\n  const store = new Store();\\n  const base = Date.parse('2026-01-01T00:00:00Z');\\n  for (let i = 0; i < n; i++) {\\n    // shuffled creation times, with deliberate ties\\n    const at = new Date(base + ((i * 7919) % 2500) * 60_000);\\n    store.addShipment(\\n      {\\n        trackingNumber: `T${i}`,\\n        carrier: i % 2 ? 'DHL' : 'GLS',\\n        serviceLevel: 'standard',\\n        recipient: { name: 'x', address: 'y', phone: ",
+      "input_chars": 3256,
+      "result_chars": 1078,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01AFKnkFjAv7raKMzYY44Yno",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -n \\\"Top-N\\\" src/store.ts; npm test 2>&1 | grep -A3 \\\"large dataset\\\"\"}",
+      "input_chars": 89,
+      "result_chars": 396,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01X2BBarfMFFryQ9nXRxucLy",
+      "name": "Edit",
+      "input": "{\"replace_all\": false, \"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\l3c\\\\parcel-tracker\\\\src\\\\store.ts\", \"old_string\": \"    let result = [...this.shipments.values()];\\n    if (filter.carrier) result = result.filter((s) => s.carrier === filter.carrier);\\n    if (filter.status) result = result.filter((s) => s.status === filter.status);\\n    result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\\n    return filter.limit ? result.slice(0, filter.limit) : result;\", \"new_string\": \"    const { carrier, status, limit } = filter;\\n    const matches = (s: Shipment) => (!carrier || s.carrier === carrier) && (!status || s.status === status);\\n\\n    if (!limit) {\\n      return [...this.shipments.values()].filter(matches).sort((a, b) => b.createdAt.localeCompare(a.createdAt));\\n    }\\n\\n    // Top-N by createdAt desc in one pass (no full sort of every shipment). Ties keep insertion order.\\n    const top: Shipment[] = [];\\n    for (const s of this.shipments.values()) {\\n      if (!matches(s)) continue;\\n      if (top.length >= limit && s.createdAt <= top[top.length - 1].createdAt) continue;\\n      let lo = 0;\\n      let hi = top.length;\\n      while (lo < hi) {\\n        const mid = (lo + hi) >> 1;\\n        if (top[mid].createdAt >= s.createdAt) lo = mid + 1;\\n        else hi = mid;\\n      }\\n      top.splice(lo, 0, s);\\n      if (top.length > limit) top.pop();\\n    }\\n    return top;\"}",
+      "input_chars": 1421,
+      "result_chars": 116,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_019BqcfynvUhL3nG96TkAFxL",
+      "name": "Bash",
+      "input": "{\"command\": \"npm test 2>&1 | grep -E \\\"large dataset|✔ lists|✔ matches a full|^ℹ (tests|pass|fail)|✖\\\"\"}",
+      "input_chars": 104,
+      "result_chars": 310,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01Le1dVg9WWW6Yi2H9MVz3fs",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -i 's/^## Now$/## Now\\\\n- Task 10 (list perf) DONE: no ETA cache; store.listShipments now single-pass top-N (no full sort); test\\\\/listPerf.test.ts; 85 tests pass./' .gemkeeper/ledger.md; grep -n \\\"Task 10\\\" .gemkeeper/ledger.md\"}",
+      "input_chars": 247,
+      "result_chars": 140,
+      "mentions_ledger": true
+     }
+    ],
+    "result": {
+     "text": "`GET /shipments` is faster, but I didn't cache ETAs, because your ledger records ETA caching as a dead end. The first attempt gave QA stale ETAs after new events, and you said not to reintroduce it. All 85 tests pass.\n\nThe caching wouldn't have helped much anyway. The list only calls `calculateEta` for the returned page (50 by default, 500 at most), not all 5k shipments, and each call takes about 0.007 ms. The real cost was in `store.listShipments`, which copied and fully sorted all 5k shipments on every request.\n\n- **Fix:** `listShipments` in `src/store.ts` now makes a single pass that keeps only the newest `limit` matches. Ordering and tie-breaking are unchanged. Without a `limit` it still does the full sort. ETAs are still computed live, so they can't go stale.\n- **Test:** `test/listPerf.test.ts` seeds 5k shipments, including ties on creation time. It checks the new list matches a full stable sort for several limit and filter combinations. It then times 50-item lists with ETAs, and checks the ETA changes after an exception event is added.\n- **Not measured:** I only asserted that a list call takes under 20 ms. I didn't profile against the actual staging data.\n- **Next step:** If it's still slow there, pagination is the next step, as you noted earlier.\n\nI also added one line about this to `.gemkeeper/ledger.md`.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 8,
+     "duration_ms": 43585,
+     "total_cost_usd": 0.13468090000000002,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 14,
+      "cache_creation_input_tokens": 18979,
+      "cache_read_input_tokens": 190269,
+      "output_tokens": 3971,
+      "output_tokens_details": {
+       "thinking_tokens": 756
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 18979,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 475,
+        "cache_read_input_tokens": 33064,
+        "cache_creation_input_tokens": 268,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 268
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 14,
+       "outputTokens": 3971,
+       "cacheReadInputTokens": 190269,
+       "cacheCreationInputTokens": 18979,
+       "webSearchRequests": 0,
+       "costUSD": 0.13468090000000002,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 756,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 18979,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "The store edit didn't apply (my script failed), so those passing tests ran against the old code. I'll redo it with the edit tool.",
+     "`GET /shipments` is faster, but I didn't cache ETAs, because your ledger records ETA caching as a dead end. The first attempt gave QA stale ETAs after new events, and you said not to reintroduce it. All 85 tests pass.\n\nThe caching wouldn't have helped much anyway. The list only calls `calculateEta` for the returned page (50 by default, 500 at most), not all 5k shipments, and each call takes about 0.007 ms. The real cost was in `store.listShipments`, which copied and fully sorted all 5k shipments on every request.\n\n- **Fix:** `listShipments` in `src/store.ts` now makes a single pass that keeps only the newest `limit` matches. Ordering and tie-breaking are unchanged. Without a `limit` it still does the full sort. ETAs are still computed live, so they can't go stale.\n- **Test:** `test/listPerf.test.ts` seeds 5k shipments, including ties on creation time. It checks the new list matches a full stable sort for several limit and filter combinations. It then times 50-item lists with ETAs, and checks the ETA changes after an exception event is added.\n- **Not measured:** I only asserted that a list call takes under 20 ms. I didn't profile against the actual staging data.\n- **Next step:** If it's still slow there, pagination is the next step, as you noted earlier.\n\nI also added one line about this to `.gemkeeper/ledger.md`."
+    ]
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.13468090000000002,
+  "cost": 0.134681,
+  "wall_s": 48.6,
+  "exit_code": 0,
+  "ctx_first": 21662,
+  "ctx_last": 33334
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 3
+ },
+ "violation": false,
+ "diff": {
+  "added": [
+   "test/listPerf.test.ts"
+  ],
+  "removed": [],
+  "modified": [
+   ".gemkeeper/ledger.md",
+   "src/store.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/test/listPerf.test.ts\n+++ b/test/listPerf.test.ts\n@@ -0,0 +1,50 @@\n+import assert from 'node:assert/strict';\n+import { describe, it } from 'node:test';\n+import { calculateEta } from '../src/services/eta.ts';\n+import { Store } from '../src/store.ts';\n+\n+function seed(n: number): Store {\n+  const store = new Store();\n+  const base = Date.parse('2026-01-01T00:00:00Z');\n+  for (let i = 0; i < n; i++) {\n+    // shuffled creation times, with deliberate ties\n+    const at = new Date(base + ((i * 7919) % 2500) * 60_000);\n+    store.addShipment(\n+      {\n+        trackingNumber: `T${i}`,\n+        carrier: i % 2 ? 'DHL' : 'GLS',\n+        serviceLevel: 'standard',\n+        recipient: { name: 'x', address: 'y', phone: 'z' },\n+      } as any,\n+      at,\n+    );\n+  }\n+  return store;\n+}\n+\n+describe('listShipments on a large dataset', () => {\n+  const store = seed(5000);\n+\n+  it('matches a full stable sort for filters and limits', () => {\n+    for (const filter of [{ limit: 50 }, { limit: 500 }, { limit: 50, carrier: 'DHL' }, { limit: 7, status: 'created' }]) {\n+      const expected = store\n+        .listShipments({ ...filter, limit: undefined })\n+        .slice(0, filter.limit);\n+      assert.deepEqual(store.listShipments(filter).map((s) => s.id), expected.map((s) => s.id));\n+    }\n+  });\n+\n+  it('lists 50 of 5000 shipments with ETAs quickly, ETAs always fresh', () => {\n+    const t0 = performance.now();\n+    for (let i = 0; i < 20; i++) {\n+      store.listShipments({ limit: 50 }).map((s) => calculateEta(s, store.eventsFor(s.id)));\n+    }\n+    const perCall = (performance.now() - t0) / 20;\n+    assert.ok(perCall < 20, `list took ${perCall.toFixed(2)} ms per call`);\n+\n+    const [first] = store.listShipments({ limit: 1 });\n+    const before = calculateEta(first, store.eventsFor(first.id));\n+    store.addEvent(first.id, 'exception');\n+    assert.notEqual(calculateEta(first, store.eventsFor(first.id)), before);\n+  });\n+});\n--- a/.gemkeeper/ledger.md\n+++ b/.gemkeeper/ledger.md\n@@ -31,4 +31,5 @@\n - X-Signature header for ERP webhook signing (implemented by me, deployed to staging by user 2026-11-17) → ERP rejected all as unsigned: their API gateway strips every custom X- header. Replaced by top-level `sig` field in the JSON body (HMAC-SHA256 hex over the body WITHOUT `sig`). Do not reintroduce header signing.\n \n ## Now\n+- Task 10 (list perf) DONE: no ETA cache; store.listShipments now single-pass top-N (no full sort); test/listPerf.test.ts; 85 tests pass.\n - Task 9 (ETA memoization) REVERTED at user request (see Dead ends); eta.ts has only the holiday change vs HEAD; 83 tests. Next: user review; list pagination is planned LATER, not now. Perf finding: ETA was ~0.007 ms each; list sort in store.listShipments + eventsFor copies dominate; staging log showed 166-348 ms for GET /shipments?limit=50 BEFORE eta existed. Task 8 (ERP payload renamed type->event_type, at->occurred_at per docs/erp-api.md; sig field not in doc, note field not sent) DONE. Task 7 (Store debounced writes 200 ms + flush(); server.ts flushes on SIGINT/SIGTERM close + process exit; test/store.test.ts) DONE, 82 tests. Task 6 (request logging in src/router.ts via res close; test/requestLog.test.ts; no bodies/query logged) DONE, 73 tests, 5 stable runs. Task 5 (eta in GET /shipments list items only; test/shipmentsEta.test.ts incl. guard that :id keys are unchanged) DONE, 72 tests. Task 4 (ERP retries: createErpNotifier in notify.ts, ErpError, test/notify.test.ts) DONE, 68 tests. Task 3 (ERP HMAC signing via body field `sig`, env ERP_WEBHOOK_SECRET, src/services/notify.ts + test/notify.test.ts) DONE, 60 tests pass. Task 1 (holidays) DONE + Task 2 (ATP S10 validation: src/lib/trackingNumber.ts, hook in validate.ts, test/trackingNumber.test.ts) DONE, all uncommitted. 56 tests pass. Note: /import also runs validateShipmentInput so ATP rows are S10-checked there too. Next: user review.\n--- a/src/store.ts\n+++ b/src/store.ts\n@@ -106,11 +106,29 @@\n   }\n \n   listShipments(filter: ListFilter = {}): Shipment[] {\n-    let result = [...this.shipments.values()];\n-    if (filter.carrier) result = result.filter((s) => s.carrier === filter.carrier);\n-    if (filter.status) result = result.filter((s) => s.status === filter.status);\n-    result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n-    return filter.limit ? result.slice(0, filter.limit) : result;\n+    const { carrier, status, limit } = filter;\n+    const matches = (s: Shipment) => (!carrier || s.carrier === carrier) && (!status || s.status === status);\n+\n+    if (!limit) {\n+      return [...this.shipments.values()].filter(matches).sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n+    }\n+\n+    // Top-N by createdAt desc in one pass (no full sort of every shipment). Ties keep insertion order.\n+    const top: Shipment[] = [];\n+    for (const s of this.shipments.values()) {\n+      if (!matches(s)) continue;\n+      if (top.length >= limit && s.createdAt <= top[top.length - 1].createdAt) continue;\n+      let lo = 0;\n+      let hi = top.length;\n+      while (lo < hi) {\n+        const mid = (lo + hi) >> 1;\n+        if (top[mid].createdAt >= s.createdAt) lo = mid + 1;\n+        else hi = mid;\n+      }\n+      top.splice(lo, 0, s);\n+      if (top.length > limit) top.pop();\n+    }\n+    return top;\n   }\n \n   addEvent(",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n......\n"
+ },
+ "final_text": "`GET /shipments` is faster, but I didn't cache ETAs, because your ledger records ETA caching as a dead end. The first attempt gave QA stale ETAs after new events, and you said not to reintroduce it. All 85 tests pass.\n\nThe caching wouldn't have helped much anyway. The list only calls `calculateEta` for the returned page (50 by default, 500 at most), not all 5k shipments, and each call takes about 0.007 ms. The real cost was in `store.listShipments`, which copied and fully sorted all 5k shipments on every request.\n\n- **Fix:** `listShipments` in `src/store.ts` now makes a single pass that keeps only the newest `limit` matches. Ordering and tie-breaking are unchanged. Without a `limit` it still does the full sort. ETAs are still computed live, so they can't go stale.\n- **Test:** `test/listPerf.test.ts` seeds 5k shipments, including ties on creation time. It checks the new list matches a full stable sort for several limit and filter combinations. It then times 50-item lists with ETAs, and checks the ETA changes after an exception event is added.\n- **Not measured:** I only asserted that a list call takes under 20 ms. I didn't profile against the actual staging data.\n- **Next step:** If it's still slow there, pagination is the next step, as you noted earlier.\n\nI also added one line about this to `.gemkeeper/ledger.md`."
+}

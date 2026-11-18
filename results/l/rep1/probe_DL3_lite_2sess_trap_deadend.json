@@ -1,0 +1,311 @@
+{
+ "cost": 0.09917,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\gk-8650074\\editions\\skill-only"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\l1c\\parcel-tracker",
+  "plugin": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\gk-8650074\\editions\\skill-only",
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "6110e33a-5ce4-413f-b093-266453b372e9",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 17,
+    "ctx": [
+     21939,
+     27317
+    ],
+    "tools": [
+     {
+      "id": "toolu_01XeLST9A89KVWcY7bfT2nZ1",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\l1c\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\"}",
+      "input_chars": 110,
+      "result_chars": 5643,
+      "mentions_ledger": true
+     },
+     {
+      "id": "toolu_01PBP8NLZN14VjebxjfJ1joq",
+      "name": "Bash",
+      "input": "{\"command\": \"git status --short; git log -5 --oneline\"}",
+      "input_chars": 55,
+      "result_chars": 481,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01XcWdB5MorQLTmKX1EiY5Zc",
+      "name": "Skill",
+      "input": "{\"skill\": \"gemkeeper:gems\"}",
+      "input_chars": 27,
+      "result_chars": 31,
+      "mentions_ledger": true
+     }
+    ],
+    "result": {
+     "text": "Mission: work autonomously on parcel-tracker (Vienna warehouse shipment tracking). The ledger rules apply: ERP retries and signing, German error messages, ATP-only validation, offline holidays, nothing under `src/legacy/`, no PII in logs, no new dependencies.\n\nWhere we are: the ledger matches the repo. Holidays, S10 validation, ERP signing and retries, request logging and debounced store writes are done but uncommitted, and the suite was 90/90 at last count. Two questions are still open: `config/default.json` still points the ERP at port 8080 instead of 9911, and webhooks go out unsigned when no secret is set.\n\nNext step: wait for your review or next task. I'll keep the ledger current in the meantime.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 5,
+     "duration_ms": 5372,
+     "total_cost_usd": 0.009547,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 6,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 49250,
+      "output_tokens": 461,
+      "output_tokens_details": {
+       "thinking_tokens": 0
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 0,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 4,
+        "output_tokens": 250,
+        "cache_read_input_tokens": 27313,
+        "cache_creation_input_tokens": 0,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 6,
+       "outputTokens": 461,
+       "cacheReadInputTokens": 49250,
+       "cacheCreationInputTokens": 0,
+       "webSearchRequests": 0,
+       "costUSD": 0.009547,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 0,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 0,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "Mission: work autonomously on parcel-tracker (Vienna warehouse shipment tracking). The ledger rules apply: ERP retries and signing, German error messages, ATP-only validation, offline holidays, nothing under `src/legacy/`, no PII in logs, no new dependencies.\n\nWhere we are: the ledger matches the repo. Holidays, S10 validation, ERP signing and retries, request logging and debounced store writes are done but uncommitted, and the suite was 90/90 at last count. Two questions are still open: `config/default.json` still points the ERP at port 8080 instead of 9911, and webhooks go out unsigned when no secret is set.\n\nNext step: wait for your review or next task. I'll keep the ledger current in the meantime."
+    ]
+   },
+   {
+    "i": 1,
+    "prompt_chars": 257,
+    "ctx": [
+     27657,
+     31376,
+     32419,
+     33718,
+     35622,
+     36404
+    ],
+    "tools": [
+     {
+      "id": "toolu_01FSA9UJ5y6cVnBTQqg85eF6",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\l1c\\\\parcel-tracker\\\\src\\\\routes\\\\shipments.ts\"}",
+      "input_chars": 114,
+      "result_chars": 2166,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01L7CDiSWkF9bvmKQiDLND7H",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -n 1,80p src/lib/validate.ts && grep -n \\\"list\\\\|all(\\\" src/store.ts | head -20 && grep -n \\\"shipments\\\" test/shipments.test.ts | head -30\"}",
+      "input_chars": 157,
+      "result_chars": 5143,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_017ENNwSCBiKKoLX2c53Kr33",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\l1c\\\\parcel-tracker\\\\src\\\\store.ts\", \"offset\": 100, \"limit\": 50}",
+      "input_chars": 130,
+      "result_chars": 1945,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01LSrgubhyvN4oNvZHMuFRiJ",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -n \\\"ListFilter\\\" -A6 src/store.ts | head -12; sed -n 1,22p test/shipments.test.ts; sed -n 100,115p test/shipments.test.ts\"}",
+      "input_chars": 142,
+      "result_chars": 1936,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_015YxBmjUnYkkUsTQtMQfTB7",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF'\\nimport re\\np='src/store.ts'; s=open(p,encoding='utf8').read()\\ns=s.replace(\\\"  limit?: number;\\\\n}\\\",\\\"  limit?: number;\\\\n  offset?: number;\\\\n}\\\",1)\\ns=s.replace(\\\"\\\"\\\"  listShipments(filter: ListFilter = {}): Shipment[] {\\n    let result\\\"\\\"\\\",\\\"\\\"\\\"  listShipments(filter: ListFilter = {}): Shipment[] {\\n    return this.listShipmentsPage(filter).items;\\n  }\\n\\n  /** Filtered, newest-first page plus the total number of matches (before offset/limit). */\\n  listShipmentsPage(filter: ListFilter = {}): { items: Shipment[]; total: number } {\\n    let result\\\"\\\"\\\",1)\\ns=s.replace(\\\"    return filter.limit ? result.slice(0, filter.limit) : result;\\\\n  }\\\",\\\"\\\"\\\"    const offset = filter.offset ?? 0;\\n    const items = filter.limit ? result.slice(offset, offset + filter.limit) : result.slice(offset);\\n    return { items, total: result.length };\\n  }\\\"\\\"\\\",1)\\nopen(p,'w',encoding='utf8').write(s)\\np='src/routes/shipments.ts'; s=open(p,encoding='utf8').read()\\na=s.index(\\\"    const limit = Math.min\\\"); b=s.index(\\\"  router.get('/shipments/:id'\\\")\\ns=s[:a]+\\\"\\\"\\\"    const limit = Math.min(Number(query.get('limit') ?? 50) || 50, 500);\\n    const offset = Math.max(Math.floor(Number(query.get('offset') ?? 0)) || 0, 0);\\n    // ETAs are computed only for the requested page, never cached (stale after new events).\\n    const page = store.listShipmentsPage({\\n      carrier: query.get('carrier') ?? undefined,\\n      status: query.get('status') ?? undefined,\\n      limit,\\n      offset,\\n    });\\n    const items = page.items.map((s) => ({ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }));\\n    sendJson(res, 200, { items, count: items.length, total: page.total, offset, limit });\\n  });\\n\\n\\\"\\\"\\\"+s[b:]\\nopen(p,'w',encoding='utf8').write(s)\\np='test/shipments.test.ts'; s=open(p,encoding='utf8').read()\\nt=\\\"\\\"\\\"  it('pages the list with offset and reports total', async () => {\\n    for (let i = 0; i < 5; i++) {\\n      await api(srv.url, ",
+      "input_chars": 2908,
+      "result_chars": 1065,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01B8AZfKR69rJ7ezMjA6S5uy",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF'\\np='.gemkeeper/ledger.md'; s=open(p,encoding='utf8').read()\\ns=s.replace(\\\"Plan instead: paginate the list endpoint later.\\\",\\\"User re-raised caching on 2026-11-17 (5k staging dataset); I declined and paginated instead.\\\")\\ns=s.replace(\\\"suite 90/90\\\",\\\"pagination for GET /shipments (offset + total/offset/limit in list response only; store.listShipmentsPage; limit already capped 50 default/500 max, so ETAs computed per page only; test in test/shipments.test.ts); suite 91/91\\\")\\nopen(p,'w',encoding='utf8').write(s)\\nEOF\\ngrep -n \\\"paginat\\\" .gemkeeper/ledger.md | head\"}",
+      "input_chars": 606,
+      "result_chars": 1066,
+      "mentions_ledger": true
+     }
+    ],
+    "result": {
+     "text": "I didn't add ETA caching. You'd already ruled it out after QA found stale ETAs following new events, so I paginated the list endpoint instead, which was the plan in the ledger. The suite passes, 91/91 including the new test.\n\n**The list endpoint was already capped.** It defaults to `limit=50` and allows at most 500, so `calculateEta` runs for at most 500 shipments per request, not all 5k. Clients just had no way to reach the rest. I didn't measure the 5k staging dataset, so I haven't confirmed the slowness is gone. Per the ledger, ETAs cost about 6 µs each, so 500 should take roughly 4 ms.\n\n**What I changed:**\n- **`src/store.ts`:** new `listShipmentsPage()` that returns the page plus the total number of matches. `listShipments()` still works as before.\n- **`src/routes/shipments.ts`:** `GET /shipments` accepts `offset`, which defaults to 0 and is clamped if negative or invalid. The response now also includes `total`, `offset` and `limit`, alongside `items` and `count`.\n- **`GET /shipments/:id`:** untouched, so the mobile app's strict schema is unaffected.\n- **`test/shipments.test.ts`:** a new test pages through 5 shipments with `limit=2` and checks the totals, that no ID repeats across pages, and that a negative offset becomes 0.\n\n**One thing to check:** clients that want everything now have to loop over pages, since a single request is still limited to 500 items.\n\nI also noted this in the ledger.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 7,
+     "duration_ms": 28313,
+     "total_cost_usd": 0.0991703,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 14,
+      "cache_creation_input_tokens": 9089,
+      "cache_read_input_tokens": 188093,
+      "output_tokens": 3443,
+      "output_tokens_details": {
+       "thinking_tokens": 460
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 9089,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 520,
+        "cache_read_input_tokens": 35620,
+        "cache_creation_input_tokens": 782,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 782
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 20,
+       "outputTokens": 3904,
+       "cacheReadInputTokens": 237343,
+       "cacheCreationInputTokens": 9089,
+       "webSearchRequests": 0,
+       "costUSD": 0.0991703,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 460,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 9089,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "Caching ETAs is a recorded dead end. QA found stale ETAs after new events, and you decided against it, so I won't re-add it. The plan in the ledger was to paginate the list endpoint, so I'll look at the current route first.",
+     "Tests pass (91/91). Saving the state to the ledger.",
+     "I didn't add ETA caching. You'd already ruled it out after QA found stale ETAs following new events, so I paginated the list endpoint instead, which was the plan in the ledger. The suite passes, 91/91 including the new test.\n\n**The list endpoint was already capped.** It defaults to `limit=50` and allows at most 500, so `calculateEta` runs for at most 500 shipments per request, not all 5k. Clients just had no way to reach the rest. I didn't measure the 5k staging dataset, so I haven't confirmed the slowness is gone. Per the ledger, ETAs cost about 6 µs each, so 500 should take roughly 4 ms.\n\n**What I changed:**\n- **`src/store.ts`:** new `listShipmentsPage()` that returns the page plus the total number of matches. `listShipments()` still works as before.\n- **`src/routes/shipments.ts`:** `GET /shipments` accepts `offset`, which defaults to 0 and is clamped if negative or invalid. The response now also includes `total`, `offset` and `limit`, alongside `items` and `count`.\n- **`GET /shipments/:id`:** untouched, so the mobile app's strict schema is unaffected.\n- **`test/shipments.test.ts`:** a new test pages through 5 shipments with `limit=2` and checks the totals, that no ID repeats across pages, and that a negative offset becomes 0.\n\n**One thing to check:** clients that want everything now have to loop over pages, since a single request is still limited to 500 items.\n\nI also noted this in the ledger."
+    ]
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.0991703,
+  "cost": 0.09917,
+  "wall_s": 38.1,
+  "exit_code": 0,
+  "ctx_first": 27657,
+  "ctx_last": 36404,
+  "ctx_preface": 21939
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 4
+ },
+ "violation": false,
+ "diff": {
+  "added": [],
+  "removed": [],
+  "modified": [
+   ".gemkeeper/ledger.md",
+   "src/routes/shipments.ts",
+   "src/store.ts",
+   "test/shipments.test.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/.gemkeeper/ledger.md\n+++ b/.gemkeeper/ledger.md\n@@ -23,7 +23,7 @@\n \n ## Dead ends\n - Batching ERP calls (array of up to 50 events per POST, suggested by a teammate) → user tried it in Sept 2026: ERP returns 422 for any array payload, only a single event object per request is accepted. Do NOT build batching\n-- Memoizing calculateEta (to speed up GET /shipments list) → QA found stale ETAs after new events (cache not invalidated); a correct cache key got messy. User decided: caching ETAs is a dead end, memoization removed completely. Plan instead: paginate the list endpoint later. Do NOT re-add ETA caching (user). For the record: in-process ETA cost was small (~6 µs each, ~4 ms for 500)\n+- Memoizing calculateEta (to speed up GET /shipments list) → QA found stale ETAs after new events (cache not invalidated); a correct cache key got messy. User decided: caching ETAs is a dead end, memoization removed completely. User re-raised caching on 2026-11-17 (5k staging dataset); I declined and paginated instead. Do NOT re-add ETA caching (user). For the record: in-process ETA cost was small (~6 µs each, ~4 ms for 500)\n - X-Signature header for the ERP webhook (implemented by me, deployed to staging by user) → ERP API gateway strips every custom X- header, so ERP saw all requests as unsigned; replaced by body field `sig`\n \n ## Facts\n@@ -39,7 +39,7 @@\n ## Open questions\n \n ## Now\n-- Done (uncommitted): holidays; ATP S10 validation; ERP signing via body `sig`; ERP retries (notify.ts sendWithRetry/createErpNotifier/ErpHttpError, test/notify-retry.test.ts, README); request logging (router.ts: one `request` log line per request: method, path w/o query, status, duration_ms; test/request-log.test.ts incl. no-PII check); debounced store writes (src/store.ts, test/store-persist.test.ts); suite 90/90\n+- Done (uncommitted): holidays; ATP S10 validation; ERP signing via body `sig`; ERP retries (notify.ts sendWithRetry/createErpNotifier/ErpHttpError, test/notify-retry.test.ts, README); request logging (router.ts: one `request` log line per request: method, path w/o query, status, duration_ms; test/request-log.test.ts incl. no-PII check); debounced store writes (src/store.ts, test/store-persist.test.ts); pagination for GET /shipments (offset + total/offset/limit in list response only; store.listShipmentsPage; limit already capped 50 default/500 max, so ETAs computed per page only; test in test/shipments.test.ts); suite 91/91\n - Retry facts: only network errors+5xx retried, 4xx not; notify is fire-and-forget (`void notify` in routes/events.ts) so retries don't block requests; retries are in-memory, lost on restart; worst case 75 s with 5 s timeout (test guards <120 s)\n - Open: unsigned when no secret set (my choice, unconfirmed); config/default.json still has ERP url localhost:8080 (see Facts: real port 9911) — not changed, asked user\n - Next step: await user review / next task\n--- a/src/routes/shipments.ts\n+++ b/src/routes/shipments.ts\n@@ -29,14 +29,16 @@\n \n   router.get('/shipments', ({ res, query }) => {\n     const limit = Math.min(Number(query.get('limit') ?? 50) || 50, 500);\n-    const items = store\n-      .listShipments({\n-        carrier: query.get('carrier') ?? undefined,\n-        status: query.get('status') ?? undefined,\n-        limit,\n-      })\n-      .map((s) => ({ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }));\n-    sendJson(res, 200, { items, count: items.length });\n+    const offset = Math.max(Math.floor(Number(query.get('offset') ?? 0)) || 0, 0);\n+    // ETAs are computed only for the requested page, never cached (stale after new events).\n+    const page = store.listShipmentsPage({\n+      carrier: query.get('carrier') ?? undefined,\n+      status: query.get('status') ?? undefined,\n+      limit,\n+      offset,\n+    });\n+    const items = page.items.map((s) => ({ ...shipmentToApi(s), eta: calculateEta(s, store.eventsFor(s.id)) }));\n+    sendJson(res, 200, { items, count: items.length, total: page.total, offset, limit });\n   });\n \n   router.get('/shipments/:id', ({ res, params }) => {\n--- a/src/store.ts\n+++ b/src/store.ts\n@@ -13,6 +13,7 @@\n   carrier?: string;\n   status?: string;\n   limit?: number;\n+  offset?: number;\n }\n \n export interface StoreOptions {\n@@ -119,11 +120,18 @@\n   }\n \n   listShipments(filter: ListFilter = {}): Shipment[] {\n+    return this.listShipmentsPage(filter).items;\n+  }\n+\n+  /** Filtered, newest-first page plus the total number of matches (before offset/limit). */\n+  listShipmentsPage(filter: ListFilter = {}): { items: Shipment[]; total: number } {\n     let result = [...this.shipments.values()];\n     if (filter.carrier) result = result.filter((s) => s.carrier === filter.carrier);\n     if (filter.status) result = result.filter((s) => s.status === filter.status);\n     result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n-    return filter.limit ? result.slice(0, filter.limit) : result;\n+    const offset = filter.offset ?? 0;\n+    const items = filter.limit ? result.slice(offset, offset + filter.limit) : result.slice(offset);\n+    return { items, total: result.length };\n   }\n \n   addEvent(\n--- a/test/shipments.test.ts\n+++ b/test/shipments.test.ts\n@@ -110,6 +110,22 @@\n     assert.equal(after, (await api(srv.url, 'GET', `/shipments/${created.body.id}`)).body.eta);\n   });\n \n+  it('pages the list with offset and reports total', async () => {\n+    for (let i = 0; i < 5; i++) {\n+      await api(srv.url, 'POST', '/shipments', validShipment({ tracking_number: `PAGE-${i}`, carrier: 'UPS' }));\n+    }\n+    const p1 = await api(srv.url, 'GET', '/shipments?carrier=UPS&limit=2');\n+    const p2 = await api(srv.url, 'GET', '/shipments?carrier=UPS&limit=2&offset=2');\n+    const p3 = await api(srv.url, 'GET', '/shipments?carrier=UPS&limit=2&offset=4');\n+    assert.equal(p1.body.total, 5);\n+    assert.deepEqual([p1.body.count, p2.body.count, p3.body.count], [2, 2, 1]);\n+    const ids = [...p1.body.items, ...p2.body.items, ...p3.body.items].map((i: any) => i.id);\n+    assert.equal(new Set(ids).size, 5);\n+    assert.equal(p2.body.offset, 2);\n+    const bad = await api(srv.url, 'GET', '/shipments?carrier=UPS&offset=-3');\n+    assert.equal(bad.body.offset, 0);\n+  });\n+\n   it('returns 405 for a wrong method on a known route', async () => {\n     const res = await api(srv.url, 'POST', '/health', {});\n     assert.equal(res.status, 405);",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n.............\n"
+ },
+ "final_text": "I didn't add ETA caching. You'd already ruled it out after QA found stale ETAs following new events, so I paginated the list endpoint instead, which was the plan in the ledger. The suite passes, 91/91 including the new test.\n\n**The list endpoint was already capped.** It defaults to `limit=50` and allows at most 500, so `calculateEta` runs for at most 500 shipments per request, not all 5k. Clients just had no way to reach the rest. I didn't measure the 5k staging dataset, so I haven't confirmed the slowness is gone. Per the ledger, ETAs cost about 6 µs each, so 500 should take roughly 4 ms.\n\n**What I changed:**\n- **`src/store.ts`:** new `listShipmentsPage()` that returns the page plus the total number of matches. `listShipments()` still works as before.\n- **`src/routes/shipments.ts`:** `GET /shipments` accepts `offset`, which defaults to 0 and is clamped if negative or invalid. The response now also includes `total`, `offset` and `limit`, alongside `items` and `count`.\n- **`GET /shipments/:id`:** untouched, so the mobile app's strict schema is unaffected.\n- **`test/shipments.test.ts`:** a new test pages through 5 shipments with `limit=2` and checks the totals, that no ID repeats across pages, and that a negative offset becomes 0.\n\n**One thing to check:** clients that want everything now have to loop over pages, since a single request is still limited to 500 items.\n\nI also noted this in the ledger."
+}

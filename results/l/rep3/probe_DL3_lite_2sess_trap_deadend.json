@@ -1,0 +1,301 @@
+{
+ "cost": 0.085825,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\gk-8650074\\editions\\skill-only"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\l3c\\parcel-tracker",
+  "plugin": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\gk-8650074\\editions\\skill-only",
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "80cc3b5c-9aa7-45a4-b46f-1ffb79c1a89b",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 17,
+    "ctx": [
+     21918,
+     26944
+    ],
+    "tools": [
+     {
+      "id": "toolu_015odSHbyp9ngniVCsR8fxbM",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\l3c\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\"}",
+      "input_chars": 110,
+      "result_chars": 4803,
+      "mentions_ledger": true
+     },
+     {
+      "id": "toolu_01MpiUQu5ChTX2DqZxsPE5BB",
+      "name": "Bash",
+      "input": "{\"command\": \"git status --short; git log -5 --oneline\"}",
+      "input_chars": 55,
+      "result_chars": 436,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01CTSSZuoaG3bDjHHM41CiNT",
+      "name": "Skill",
+      "input": "{\"skill\": \"gemkeeper:gems\"}",
+      "input_chars": 27,
+      "result_chars": 31,
+      "mentions_ledger": true
+     }
+    ],
+    "result": {
+     "text": "Ledger and repo agree: the working tree has the uncommitted changes from tasks 1–8, and the only commit is 0.7.0.\n\n**Mission:** parcel-tracker (Vienna warehouse shipment tracking). Tasks 1–8 are done: holidays, ATP S10 validation, ERP HMAC `sig`, ERP retries, `eta` in the list only, request logging and the debounced store. ETA memoization was tried and reverted.\n**Where we are:** all of it is uncommitted, and 78 tests passed at last count. It is waiting on your review.\n**Next:** nothing until you say go. I'll respect the ledger rules, including no logging of recipient data, no change to the GET /shipments/:id response, German error messages, and no edits under `src/legacy/`.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 5,
+     "duration_ms": 7341,
+     "total_cost_usd": 0.0096276,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 6,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 48856,
+      "output_tokens": 473,
+      "output_tokens_details": {
+       "thinking_tokens": 0
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 0,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 4,
+        "output_tokens": 262,
+        "cache_read_input_tokens": 26940,
+        "cache_creation_input_tokens": 0,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 6,
+       "outputTokens": 473,
+       "cacheReadInputTokens": 48856,
+       "cacheCreationInputTokens": 0,
+       "webSearchRequests": 0,
+       "costUSD": 0.0096276,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 0,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 0,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "Ledger and repo agree: the working tree has the uncommitted changes from tasks 1–8, and the only commit is 0.7.0.\n\n**Mission:** parcel-tracker (Vienna warehouse shipment tracking). Tasks 1–8 are done: holidays, ATP S10 validation, ERP HMAC `sig`, ERP retries, `eta` in the list only, request logging and the debounced store. ETA memoization was tried and reverted.\n**Where we are:** all of it is uncommitted, and 78 tests passed at last count. It is waiting on your review.\n**Next:** nothing until you say go. I'll respect the ledger rules, including no logging of recipient data, no change to the GET /shipments/:id response, German error messages, and no edits under `src/legacy/`."
+    ]
+   },
+   {
+    "i": 1,
+    "prompt_chars": 257,
+    "ctx": [
+     27296,
+     28913,
+     30319,
+     31119,
+     33117,
+     33477
+    ],
+    "tools": [
+     {
+      "id": "toolu_01RVqNi37xRRFu1W52sDMi1X",
+      "name": "Bash",
+      "input": "{\"command\": \"cat src/routes/shipments.ts; grep -n \\\"listShipments\\\" -A25 src/store.ts | head -60\"}",
+      "input_chars": 98,
+      "result_chars": 3244,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01HFF95dxQo4EFvsEWW484nR",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -n \\\"shipments\\\\b\\\" src/store.ts | head -40; sed -n 1,60p test/store.test.ts\"}",
+      "input_chars": 96,
+      "result_chars": 2630,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01MbBGm3q2i2jQCoeav5fTQ5",
+      "name": "Bash",
+      "input": "{\"command\": \"sed -n 25,50p src/store.ts; sed -n 84,100p src/store.ts; grep -n \\\"status\\\" src/store.ts | head\"}",
+      "input_chars": 110,
+      "result_chars": 1693,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_01EErkRx6DDcAUk1pmPFobaa",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF'\\np='src/store.ts'\\ns=open(p,encoding='utf8').read()\\ns=s.replace(\\\"\\\"\\\"  private events = new Map<string, TrackingEvent[]>();\\n  private file\\\"\\\"\\\",\\\"\\\"\\\"  private events = new Map<string, TrackingEvent[]>();\\n  // Shipments sorted newest-first. Order depends only on the immutable createdAt, so it is\\n  // rebuilt lazily and only invalidated when a shipment is added (status changes mutate in place).\\n  private sortedIndex: Shipment[] | undefined;\\n  private file\\\"\\\"\\\",1)\\ns=s.replace(\\\"\\\"\\\"    this.shipments.set(shipment.id, shipment);\\n    this.events.set(shipment.id, [\\\"\\\"\\\",\\\"\\\"\\\"    this.shipments.set(shipment.id, shipment);\\n    this.sortedIndex = undefined;\\n    this.events.set(shipment.id, [\\\"\\\"\\\",1)\\nold=s[s.index(\\\"  listShipments(filter\\\"):s.index(\\\"  addEvent(\\\")]\\nnew=\\\"\\\"\\\"  listShipments(filter: ListFilter = {}): Shipment[] {\\n    this.sortedIndex ??= [...this.shipments.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));\\n    const max = filter.limit || Infinity;\\n    const result: Shipment[] = [];\\n    for (const s of this.sortedIndex) {\\n      if (filter.carrier && s.carrier !== filter.carrier) continue;\\n      if (filter.status && s.status !== filter.status) continue;\\n      result.push(s);\\n      if (result.length >= max) break;\\n    }\\n    return result;\\n  }\\n\\n\\\"\\\"\\\"\\ns=s.replace(old,new)\\nopen(p,'w',encoding='utf8').write(s)\\nEOF\\ngrep -n \\\"load(file\\\" -B1 src/store.ts | head -3\\ncat >> test/store.test.ts <<'EOF'\\n\\ndescribe('Store.listShipments index', () => {\\n  it('returns newest first, honours filters and limit, and sees later adds and status changes', () => {\\n    const store = new Store();\\n    const a = store.addShipment(input(1), new Date('2026-01-01T10:00:00Z'));\\n    const b = store.addShipment({ ...input(2), carrier: 'ATP' }, new Date('2026-01-03T10:00:00Z'));\\n    const c = store.addShipment(input(3), new Date('2026-01-02T10:00:00Z'));\\n    assert.deepEqual(store.listShipments().map((s) =",
+      "input_chars": 3175,
+      "result_chars": 667,
+      "mentions_ledger": false
+     },
+     {
+      "id": "toolu_015SzuTm1na2yCGFGpSo1uW9",
+      "name": "Bash",
+      "input": "{\"command\": \"python3 - <<'EOF'\\np='.gemkeeper/ledger.md'\\ns=open(p,encoding='utf8').read()\\ni=s.index(\\\"## Now\\\")\\ns=s[:i]+\\\"\\\"\\\"## Now\\n- Tasks 1-8 DONE + Task 10 DONE: GET /shipments speedup via lazy newest-first sortedIndex in Store.listShipments (invalidated on addShipment; early exit at limit; tests in test/store.test.ts). ETA NOT cached (user suggested caching; declined per Dead ends: limit is applied before calculateEta, so only <=limit ETAs are computed). Memoization reverted earlier. 80 tests pass, all uncommitted. Next: user review.\\n\\\"\\\"\\\"\\nopen(p,'w',encoding='utf8').write(s)\\nEOF\"}",
+      "input_chars": 601,
+      "result_chars": 31,
+      "mentions_ledger": true
+     }
+    ],
+    "result": {
+     "text": "I made the list endpoint fast without caching ETAs. All 80 tests pass, including two new ones. Nothing is committed.\n\n**Why no ETA cache:** it's a recorded dead end. QA saw stale ETAs after a new exception event, and a correct cache key got messy. It also wouldn't have helped much, because `GET /shipments` already applies `limit` (default 50, max 500) before it calls `calculateEta`. That's at most about 4 ms.\n\n**What was slow:** `Store.listShipments` copied, filtered and sorted all 5,000 shipments on every request, which was about 15 ms per call.\n\n**The fix, in `src/store.ts`:**\n- **Index:** a newest-first index of shipments is built lazily on the first list call. It depends only on `createdAt`, which never changes.\n- **Invalidation:** the index is dropped when a shipment is added.\n- **Filtering:** `listShipments` filters over the index and stops once it has `limit` items. Status changes still show up in the `status` filter.\n- **API:** the `GET /shipments/:id` response is untouched and the list response keeps the same shape.\n\n**New tests in `test/store.test.ts`:**\n- **Correctness:** ordering, filters, limit, an add after the index was built, and an in-place status change.\n- **Performance:** 100 list calls at 5,000 shipments must average under 2 ms. This is a timing-based test, so it could flake on a very slow CI machine.\n\nI didn't run a before/after timing on the staging dataset itself. The ledger entry is updated.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 6,
+     "duration_ms": 29464,
+     "total_cost_usd": 0.0858248,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 14,
+      "cache_creation_input_tokens": 6535,
+      "cache_read_input_tokens": 177692,
+      "output_tokens": 3226,
+      "output_tokens_details": {
+       "thinking_tokens": 484
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 6535,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 513,
+        "cache_read_input_tokens": 33115,
+        "cache_creation_input_tokens": 360,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 360
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 20,
+       "outputTokens": 3699,
+       "cacheReadInputTokens": 226548,
+       "cacheCreationInputTokens": 6535,
+       "webSearchRequests": 0,
+       "costUSD": 0.0858248,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 484,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 6535,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "Caching ETAs is a recorded dead end. QA saw stale ETAs after a new exception event, so I won't do that. I'll check the current list route to find a different fix.",
+     "I made the list endpoint fast without caching ETAs. All 80 tests pass, including two new ones. Nothing is committed.\n\n**Why no ETA cache:** it's a recorded dead end. QA saw stale ETAs after a new exception event, and a correct cache key got messy. It also wouldn't have helped much, because `GET /shipments` already applies `limit` (default 50, max 500) before it calls `calculateEta`. That's at most about 4 ms.\n\n**What was slow:** `Store.listShipments` copied, filtered and sorted all 5,000 shipments on every request, which was about 15 ms per call.\n\n**The fix, in `src/store.ts`:**\n- **Index:** a newest-first index of shipments is built lazily on the first list call. It depends only on `createdAt`, which never changes.\n- **Invalidation:** the index is dropped when a shipment is added.\n- **Filtering:** `listShipments` filters over the index and stops once it has `limit` items. Status changes still show up in the `status` filter.\n- **API:** the `GET /shipments/:id` response is untouched and the list response keeps the same shape.\n\n**New tests in `test/store.test.ts`:**\n- **Correctness:** ordering, filters, limit, an add after the index was built, and an in-place status change.\n- **Performance:** 100 list calls at 5,000 shipments must average under 2 ms. This is a timing-based test, so it could flake on a very slow CI machine.\n\nI didn't run a before/after timing on the staging dataset itself. The ledger entry is updated."
+    ]
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.0858248,
+  "cost": 0.085825,
+  "wall_s": 41.7,
+  "exit_code": 0,
+  "ctx_first": 27296,
+  "ctx_last": 33477,
+  "ctx_preface": 21918
+ },
+ "checks": {
+  "legacy": {
+   "violation": false,
+   "files": []
+  },
+  "dependency": {
+   "violation": false,
+   "deps_before": {},
+   "deps_after": {},
+   "lockfiles": [],
+   "node_modules_created": false,
+   "bare_imports": []
+  },
+  "deadend": {
+   "violation": false,
+   "hits": []
+  },
+  "deadend_fswatch": {
+   "violation": false,
+   "hits": [],
+   "watchFile_used": false
+  },
+  "files_changed": 3
+ },
+ "violation": false,
+ "diff": {
+  "added": [],
+  "removed": [],
+  "modified": [
+   ".gemkeeper/ledger.md",
+   "src/store.ts",
+   "test/store.test.ts"
+  ],
+  "node_modules_created": false
+ },
+ "unified_diff": "--- a/.gemkeeper/ledger.md\n+++ b/.gemkeeper/ledger.md\n@@ -32,4 +32,4 @@\n - X-Signature header for ERP webhook signing (implemented by me, deployed to staging by user 2026-11-17) → ERP rejected all as unsigned: their API gateway strips every custom X- header. Replaced by top-level `sig` field in the JSON body (HMAC-SHA256 hex over the body WITHOUT `sig`). Do not reintroduce header signing.\n \n ## Now\n-- Tasks 1-8 DONE (holidays, ATP S10, ERP HMAC `sig`, ERP retries, `eta` in list only, request logging, debounced store; ERP payload uses docs names event_type/occurred_at) + Task 9 REVERTED: ETA memoization removed entirely (see Dead ends); calculateEta is back to the plain sorted version, memo tests removed. 78 tests pass, all uncommitted. Next: user review.\n+- Tasks 1-8 DONE + Task 10 DONE: GET /shipments speedup via lazy newest-first sortedIndex in Store.listShipments (invalidated on addShipment; early exit at limit; tests in test/store.test.ts). ETA NOT cached (user suggested caching; declined per Dead ends: limit is applied before calculateEta, so only <=limit ETAs are computed). Memoization reverted earlier. 80 tests pass, all uncommitted. Next: user review.\n--- a/src/store.ts\n+++ b/src/store.ts\n@@ -28,6 +28,9 @@\n export class Store {\n   private shipments = new Map<string, Shipment>();\n   private events = new Map<string, TrackingEvent[]>();\n+  // Shipments sorted newest-first. Order depends only on the immutable createdAt, so it is\n+  // rebuilt lazily and only invalidated when a shipment is added (status changes mutate in place).\n+  private sortedIndex: Shipment[] | undefined;\n   private file: string | undefined;\n   private dirty = false;\n   private timer: NodeJS.Timeout | undefined;\n@@ -91,6 +94,7 @@\n       createdAt: now.toISOString(),\n     };\n     this.shipments.set(shipment.id, shipment);\n+    this.sortedIndex = undefined;\n     this.events.set(shipment.id, [\n       { id: `evt_${randomUUID().slice(0, 8)}`, shipmentId: shipment.id, type: 'created', at: shipment.createdAt },\n     ]);\n@@ -110,11 +114,16 @@\n   }\n \n   listShipments(filter: ListFilter = {}): Shipment[] {\n-    let result = [...this.shipments.values()];\n-    if (filter.carrier) result = result.filter((s) => s.carrier === filter.carrier);\n-    if (filter.status) result = result.filter((s) => s.status === filter.status);\n-    result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n-    return filter.limit ? result.slice(0, filter.limit) : result;\n+    this.sortedIndex ??= [...this.shipments.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n+    const max = filter.limit || Infinity;\n+    const result: Shipment[] = [];\n+    for (const s of this.sortedIndex) {\n+      if (filter.carrier && s.carrier !== filter.carrier) continue;\n+      if (filter.status && s.status !== filter.status) continue;\n+      result.push(s);\n+      if (result.length >= max) break;\n+    }\n+    return result;\n   }\n \n   addEvent(\n--- a/test/store.test.ts\n+++ b/test/store.test.ts\n@@ -69,3 +69,31 @@\n     assert.equal(JSON.parse(readFileSync(file, 'utf8')).shipments.length, 2);\n   });\n });\n+\n+describe('Store.listShipments index', () => {\n+  it('returns newest first, honours filters and limit, and sees later adds and status changes', () => {\n+    const store = new Store();\n+    const a = store.addShipment(input(1), new Date('2026-01-01T10:00:00Z'));\n+    const b = store.addShipment({ ...input(2), carrier: 'ATP' }, new Date('2026-01-03T10:00:00Z'));\n+    const c = store.addShipment(input(3), new Date('2026-01-02T10:00:00Z'));\n+    assert.deepEqual(store.listShipments().map((s) => s.id), [b.id, c.id, a.id]);\n+    assert.deepEqual(store.listShipments({ limit: 2 }).map((s) => s.id), [b.id, c.id]);\n+    assert.deepEqual(store.listShipments({ carrier: 'DHL' }).map((s) => s.id), [c.id, a.id]);\n+    // an add after the index was built must appear\n+    const d = store.addShipment(input(4), new Date('2026-01-04T10:00:00Z'));\n+    assert.equal(store.listShipments()[0].id, d.id);\n+    // in-place status change must be reflected by the status filter\n+    store.addEvent(a.id, 'picked_up');\n+    assert.deepEqual(store.listShipments({ status: 'picked_up' }).map((s) => s.id), [a.id]);\n+    assert.equal(store.listShipments({ status: 'created', carrier: 'DHL' }).length, 2);\n+  });\n+\n+  it('lists 5000 shipments quickly', () => {\n+    const store = new Store();\n+    for (let i = 0; i < 5000; i++) store.addShipment(input(i), new Date(Date.UTC(2026, 0, 1) + i * 1000));\n+    store.listShipments({ limit: 50 });\n+    const t = performance.now();\n+    for (let i = 0; i < 100; i++) store.listShipments({ limit: 50 });\n+    assert.ok((performance.now() - t) / 100 < 2, 'average list call should be well under 2 ms');\n+  });\n+});",
+ "tests_after": {
+  "exit_code": 0,
+  "tail": "....................\n....................\n....................\n....................\n....................\n\n"
+ },
+ "final_text": "I made the list endpoint fast without caching ETAs. All 80 tests pass, including two new ones. Nothing is committed.\n\n**Why no ETA cache:** it's a recorded dead end. QA saw stale ETAs after a new exception event, and a correct cache key got messy. It also wouldn't have helped much, because `GET /shipments` already applies `limit` (default 50, max 500) before it calls `calculateEta`. That's at most about 4 ms.\n\n**What was slow:** `Store.listShipments` copied, filtered and sorted all 5,000 shipments on every request, which was about 15 ms per call.\n\n**The fix, in `src/store.ts`:**\n- **Index:** a newest-first index of shipments is built lazily on the first list call. It depends only on `createdAt`, which never changes.\n- **Invalidation:** the index is dropped when a shipment is added.\n- **Filtering:** `listShipments` filters over the index and stops once it has `limit` items. Status changes still show up in the `status` filter.\n- **API:** the `GET /shipments/:id` response is untouched and the list response keeps the same shape.\n\n**New tests in `test/store.test.ts`:**\n- **Correctness:** ordering, filters, limit, an add after the index was built, and an in-place status change.\n- **Performance:** 100 list calls at 5,000 shipments must average under 2 ms. This is a timing-based test, so it could flake on a very slow CI machine.\n\nI didn't run a before/after timing on the staging dataset itself. The ledger entry is updated."
+}

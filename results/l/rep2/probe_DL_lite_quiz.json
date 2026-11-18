@@ -1,0 +1,228 @@
+{
+ "cost": 0.067583,
+ "session": {
+  "cmd": [
+   "-p",
+   "--input-format",
+   "stream-json",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--include-hook-events",
+   "--model",
+   "sonnet",
+   "--effort",
+   "medium",
+   "--dangerously-skip-permissions",
+   "--settings",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\harness\\settings.bench.json",
+   "--disallowedTools",
+   "Agent",
+   "--plugin-dir",
+   "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\gk-8650074\\editions\\skill-only"
+  ],
+  "cwd": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\l2c\\parcel-tracker",
+  "plugin": "C:\\Users\\adamo\\Entwicklung\\gemkeeper-bench\\w\\gk-8650074\\editions\\skill-only",
+  "resume": null,
+  "fork": false,
+  "parent_cost": 0.0,
+  "session_id": "6f7c71ff-cafc-4972-85ca-4334aefd1997",
+  "turns": [
+   {
+    "i": 0,
+    "prompt_chars": 17,
+    "ctx": [
+     21910,
+     24795
+    ],
+    "tools": [
+     {
+      "id": "toolu_01X68qr5pcWnPMtr3GGYG2WH",
+      "name": "Read",
+      "input": "{\"file_path\": \"C:\\\\Users\\\\adamo\\\\Entwicklung\\\\gemkeeper-bench\\\\w\\\\l2c\\\\parcel-tracker\\\\.gemkeeper\\\\ledger.md\"}",
+      "input_chars": 110,
+      "result_chars": 6262,
+      "mentions_ledger": true
+     },
+     {
+      "id": "toolu_01UENzcZUmjMpRFHZcSg2vRF",
+      "name": "Bash",
+      "input": "{\"command\": \"git status --short; git log -5 --oneline\"}",
+      "input_chars": 55,
+      "result_chars": 414,
+      "mentions_ledger": false
+     }
+    ],
+    "result": {
+     "text": "The repo matches the ledger: the same files are modified and untracked, and there are no new commits since 0.7.0.\n\n- **Mission:** parcel-tracker (Vienna warehouse shipment tracking). Node 24 runs TS directly with zero deps, and the plain JSON store, the GDPR logging rules, the frozen `GET /shipments/:id` response and the offline holiday data all stay as they are.\n- **Where we are:** all the work is done but uncommitted (holiday ETAs, ATP S10 validation, ERP signing and retries, request logging, debounced store writes), and `npm test` last passed at 95. The staging list slowness is still unexplained.\n- **Next step:** wait for your review or next task. I'll keep the ledger updated as we go.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 3,
+     "duration_ms": 7581,
+     "total_cost_usd": 0.049504099999999995,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 10440,
+      "cache_read_input_tokens": 36261,
+      "output_tokens": 411,
+      "output_tokens_details": {
+       "thinking_tokens": 0
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 10440,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 2,
+        "output_tokens": 253,
+        "cache_read_input_tokens": 21908,
+        "cache_creation_input_tokens": 2885,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 2885
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 4,
+       "outputTokens": 411,
+       "cacheReadInputTokens": 36261,
+       "cacheCreationInputTokens": 10440,
+       "webSearchRequests": 0,
+       "costUSD": 0.049504099999999995,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 0,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 10440,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "The repo matches the ledger: the same files are modified and untracked, and there are no new commits since 0.7.0.\n\n- **Mission:** parcel-tracker (Vienna warehouse shipment tracking). Node 24 runs TS directly with zero deps, and the plain JSON store, the GDPR logging rules, the frozen `GET /shipments/:id` response and the offline holiday data all stay as they are.\n- **Where we are:** all the work is done but uncommitted (holiday ETAs, ATP S10 validation, ERP signing and retries, request logging, debounced store writes), and `npm test` last passed at 95. The staging list slowness is still unexplained.\n- **Next step:** wait for your review or next task. I'll keep the ledger updated as we go."
+    ]
+   },
+   {
+    "i": 1,
+    "prompt_chars": 1662,
+    "ctx": [
+     25630
+    ],
+    "tools": [],
+    "result": {
+     "text": "### Q1\nNo. The plain JSON file store (data/store.json) stays because ops backs it up with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. Slowness is addressed by debouncing writes (200 ms fixed window) and flushing on shutdown.\n### Q2\nYes, src/legacy/ must never be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites the folder every Monday, so any changes would be silently lost.\n### Q3\nIt goes in a top-level body field `sig`, the last key, as a hex HMAC-SHA256 over the JSON body without `sig`. Earlier I used an X-Signature header, but the ERP API gateway strips all custom X- headers, so the ERP saw everything as unsigned.\n### Q4\nPort 9911, since the October infra move. docs/erp-api.md, the README and config/default.json still say 8080, which is outdated.\n### Q5\nEvery new user-facing error `message` must be German, and `code` stays English SCREAMING_SNAKE_CASE. Existing English messages were left unchanged, and whether to translate them is an open question.\n### Q6\nA hardcoded Set of holidays in src/services/holidays.ts, covering 2026 and 2027, is wired into isBusinessDay() in eta.ts. It's hardcoded because the warehouse deployment has no outbound internet, so no holiday API can be used. Years outside 2026/2027 have no holidays, so the list must be extended before the end of 2027.\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request, so batching must not be built.\n### Q8\nNo new npm dependencies at all, not even devDependencies. Each package needs a security review that takes about 6 weeks.\n### Q9\nYes. I built an EtaCache keyed by shipment id plus Store revision, and QA found the list showing a stale ETA after a new event (e.g. an exception). It was removed completely, including Store.revision(), and must not be reintroduced. The plan is to paginate the list endpoint instead.\n### Q10\nMax 3 attempts in total with a fixed 30 s delay and no backoff. The ERP dedups by event_id only within a 2-minute window, so all attempts must land inside it (3×5 s timeout + 2×30 s = 75 s). Retries happen only on network errors and 5xx.\n### Q11\nNever log the recipient's name, address (street/zip/city) or phone, because the DPO flagged it under GDPR in last month's audit. Shipment IDs and tracking numbers are fine to log.\n### Q12\nYes, \"emits webhook on delivered\" in test/events.test.ts is flaky about 1 in 5 runs because of a timer race in the fake notifier (tracked as OPS-412). If it fails, rerun once and do not try to fix it, because the platform team owns the fix.\n### Q13\nOnly carrier ATP is validated, using UPU S10 with a check digit (see docs/carriers.md). All other carriers accept any non-empty value, deliberately, because formats change often and valid DHL numbers were rejected for 2 days last year.\n### Q14\nHot reload is not built yet. fs.watch never fires because the config is a Docker bind mount from a Windows host and change events don't propagate into the container. fs.watchFile (polling) worked, so use polling when it's needed.\n### Q15\nYes, GET /shipments/:id. The mobile app v2.3 parses it with a strict schema and crashes on added, removed or renamed fields, and the next mobile release is in January. shipmentToApi must not be altered in a way that changes the response.",
+     "is_error": false,
+     "subtype": "success",
+     "num_turns": 1,
+     "duration_ms": 7459,
+     "total_cost_usd": 0.06758339999999999,
+     "api_error_status": null,
+     "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 833,
+      "cache_read_input_tokens": 24793,
+      "output_tokens": 1226,
+      "output_tokens_details": {
+       "thinking_tokens": 0
+      },
+      "server_tool_use": {
+       "web_search_requests": 0,
+       "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 833,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+       {
+        "input_tokens": 4,
+        "output_tokens": 1226,
+        "cache_read_input_tokens": 24793,
+        "cache_creation_input_tokens": 833,
+        "cache_creation": {
+         "ephemeral_5m_input_tokens": 0,
+         "ephemeral_1h_input_tokens": 833
+        },
+        "type": "message"
+       }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+     },
+     "model_usage": {
+      "claude-sonnet-5-5": {
+       "inputTokens": 8,
+       "outputTokens": 1637,
+       "cacheReadInputTokens": 61054,
+       "cacheCreationInputTokens": 11273,
+       "webSearchRequests": 0,
+       "costUSD": 0.06758339999999999,
+       "contextWindow": 1000000,
+       "maxOutputTokens": 128000,
+       "thinkingTokens": 0,
+       "cacheCreationEphemeral5mInputTokens": 0,
+       "cacheCreationEphemeral1hInputTokens": 11273,
+       "canonicalModel": "claude-sonnet-5-5",
+       "provider": "firstParty",
+       "costBasis": "list"
+      }
+     }
+    },
+    "texts": [
+     "### Q1\nNo. The plain JSON file store (data/store.json) stays because ops backs it up with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. Slowness is addressed by debouncing writes (200 ms fixed window) and flushing on shutdown.\n### Q2\nYes, src/legacy/ must never be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites the folder every Monday, so any changes would be silently lost.\n### Q3\nIt goes in a top-level body field `sig`, the last key, as a hex HMAC-SHA256 over the JSON body without `sig`. Earlier I used an X-Signature header, but the ERP API gateway strips all custom X- headers, so the ERP saw everything as unsigned.\n### Q4\nPort 9911, since the October infra move. docs/erp-api.md, the README and config/default.json still say 8080, which is outdated.\n### Q5\nEvery new user-facing error `message` must be German, and `code` stays English SCREAMING_SNAKE_CASE. Existing English messages were left unchanged, and whether to translate them is an open question.\n### Q6\nA hardcoded Set of holidays in src/services/holidays.ts, covering 2026 and 2027, is wired into isBusinessDay() in eta.ts. It's hardcoded because the warehouse deployment has no outbound internet, so no holiday API can be used. Years outside 2026/2027 have no holidays, so the list must be extended before the end of 2027.\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request, so batching must not be built.\n### Q8\nNo new npm dependencies at all, not even devDependencies. Each package needs a security review that takes about 6 weeks.\n### Q9\nYes. I built an EtaCache keyed by shipment id plus Store revision, and QA found the list showing a stale ETA after a new event (e.g. an exception). It was removed completely, including Store.revision(), and must not be reintroduced. The plan is to paginate the list endpoint instead.\n### Q10\nMax 3 attempts in total with a fixed 30 s delay and no backoff. The ERP dedups by event_id only within a 2-minute window, so all attempts must land inside it (3×5 s timeout + 2×30 s = 75 s). Retries happen only on network errors and 5xx.\n### Q11\nNever log the recipient's name, address (street/zip/city) or phone, because the DPO flagged it under GDPR in last month's audit. Shipment IDs and tracking numbers are fine to log.\n### Q12\nYes, \"emits webhook on delivered\" in test/events.test.ts is flaky about 1 in 5 runs because of a timer race in the fake notifier (tracked as OPS-412). If it fails, rerun once and do not try to fix it, because the platform team owns the fix.\n### Q13\nOnly carrier ATP is validated, using UPU S10 with a check digit (see docs/carriers.md). All other carriers accept any non-empty value, deliberately, because formats change often and valid DHL numbers were rejected for 2 days last year.\n### Q14\nHot reload is not built yet. fs.watch never fires because the config is a Docker bind mount from a Windows host and change events don't propagate into the container. fs.watchFile (polling) worked, so use polling when it's needed.\n### Q15\nYes, GET /shipments/:id. The mobile app v2.3 parses it with a strict schema and crashes on added, removed or renamed fields, and the next mobile release is in January. shipmentToApi must not be altered in a way that changes the response."
+    ]
+   }
+  ],
+  "hooks": [],
+  "error": null,
+  "compact": null,
+  "cost_cumulative": 0.06758339999999999,
+  "cost": 0.067583,
+  "wall_s": 19.9,
+  "exit_code": 0,
+  "ctx_first": 25630,
+  "ctx_last": 25630,
+  "ctx_preface": 21910
+ },
+ "answer_texts_all": [
+  "### Q1\nNo. The plain JSON file store (data/store.json) stays because ops backs it up with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. Slowness is addressed by debouncing writes (200 ms fixed window) and flushing on shutdown.\n### Q2\nYes, src/legacy/ must never be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites the folder every Monday, so any changes would be silently lost.\n### Q3\nIt goes in a top-level body field `sig`, the last key, as a hex HMAC-SHA256 over the JSON body without `sig`. Earlier I used an X-Signature header, but the ERP API gateway strips all custom X- headers, so the ERP saw everything as unsigned.\n### Q4\nPort 9911, since the October infra move. docs/erp-api.md, the README and config/default.json still say 8080, which is outdated.\n### Q5\nEvery new user-facing error `message` must be German, and `code` stays English SCREAMING_SNAKE_CASE. Existing English messages were left unchanged, and whether to translate them is an open question.\n### Q6\nA hardcoded Set of holidays in src/services/holidays.ts, covering 2026 and 2027, is wired into isBusinessDay() in eta.ts. It's hardcoded because the warehouse deployment has no outbound internet, so no holiday API can be used. Years outside 2026/2027 have no holidays, so the list must be extended before the end of 2027.\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request, so batching must not be built.\n### Q8\nNo new npm dependencies at all, not even devDependencies. Each package needs a security review that takes about 6 weeks.\n### Q9\nYes. I built an EtaCache keyed by shipment id plus Store revision, and QA found the list showing a stale ETA after a new event (e.g. an exception). It was removed completely, including Store.revision(), and must not be reintroduced. The plan is to paginate the list endpoint instead.\n### Q10\nMax 3 attempts in total with a fixed 30 s delay and no backoff. The ERP dedups by event_id only within a 2-minute window, so all attempts must land inside it (3×5 s timeout + 2×30 s = 75 s). Retries happen only on network errors and 5xx.\n### Q11\nNever log the recipient's name, address (street/zip/city) or phone, because the DPO flagged it under GDPR in last month's audit. Shipment IDs and tracking numbers are fine to log.\n### Q12\nYes, \"emits webhook on delivered\" in test/events.test.ts is flaky about 1 in 5 runs because of a timer race in the fake notifier (tracked as OPS-412). If it fails, rerun once and do not try to fix it, because the platform team owns the fix.\n### Q13\nOnly carrier ATP is validated, using UPU S10 with a check digit (see docs/carriers.md). All other carriers accept any non-empty value, deliberately, because formats change often and valid DHL numbers were rejected for 2 days last year.\n### Q14\nHot reload is not built yet. fs.watch never fires because the config is a Docker bind mount from a Windows host and change events don't propagate into the container. fs.watchFile (polling) worked, so use polling when it's needed.\n### Q15\nYes, GET /shipments/:id. The mobile app v2.3 parses it with a strict schema and crashes on added, removed or renamed fields, and the next mobile release is in January. shipmentToApi must not be altered in a way that changes the response.",
+  "### Q1\nNo. The plain JSON file store (data/store.json) stays because ops backs it up with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. Slowness is addressed by debouncing writes (200 ms fixed window) and flushing on shutdown.\n### Q2\nYes, src/legacy/ must never be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites the folder every Monday, so any changes would be silently lost.\n### Q3\nIt goes in a top-level body field `sig`, the last key, as a hex HMAC-SHA256 over the JSON body without `sig`. Earlier I used an X-Signature header, but the ERP API gateway strips all custom X- headers, so the ERP saw everything as unsigned.\n### Q4\nPort 9911, since the October infra move. docs/erp-api.md, the README and config/default.json still say 8080, which is outdated.\n### Q5\nEvery new user-facing error `message` must be German, and `code` stays English SCREAMING_SNAKE_CASE. Existing English messages were left unchanged, and whether to translate them is an open question.\n### Q6\nA hardcoded Set of holidays in src/services/holidays.ts, covering 2026 and 2027, is wired into isBusinessDay() in eta.ts. It's hardcoded because the warehouse deployment has no outbound internet, so no holiday API can be used. Years outside 2026/2027 have no holidays, so the list must be extended before the end of 2027.\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request, so batching must not be built.\n### Q8\nNo new npm dependencies at all, not even devDependencies. Each package needs a security review that takes about 6 weeks.\n### Q9\nYes. I built an EtaCache keyed by shipment id plus Store revision, and QA found the list showing a stale ETA after a new event (e.g. an exception). It was removed completely, including Store.revision(), and must not be reintroduced. The plan is to paginate the list endpoint instead.\n### Q10\nMax 3 attempts in total with a fixed 30 s delay and no backoff. The ERP dedups by event_id only within a 2-minute window, so all attempts must land inside it (3×5 s timeout + 2×30 s = 75 s). Retries happen only on network errors and 5xx.\n### Q11\nNever log the recipient's name, address (street/zip/city) or phone, because the DPO flagged it under GDPR in last month's audit. Shipment IDs and tracking numbers are fine to log.\n### Q12\nYes, \"emits webhook on delivered\" in test/events.test.ts is flaky about 1 in 5 runs because of a timer race in the fake notifier (tracked as OPS-412). If it fails, rerun once and do not try to fix it, because the platform team owns the fix.\n### Q13\nOnly carrier ATP is validated, using UPU S10 with a check digit (see docs/carriers.md). All other carriers accept any non-empty value, deliberately, because formats change often and valid DHL numbers were rejected for 2 days last year.\n### Q14\nHot reload is not built yet. fs.watch never fires because the config is a Docker bind mount from a Windows host and change events don't propagate into the container. fs.watchFile (polling) worked, so use polling when it's needed.\n### Q15\nYes, GET /shipments/:id. The mobile app v2.3 parses it with a strict schema and crashes on added, removed or renamed fields, and the next mobile release is in January. shipmentToApi must not be altered in a way that changes the response."
+ ],
+ "answer_text": "### Q1\nNo. The plain JSON file store (data/store.json) stays because ops backs it up with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. Slowness is addressed by debouncing writes (200 ms fixed window) and flushing on shutdown.\n### Q2\nYes, src/legacy/ must never be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites the folder every Monday, so any changes would be silently lost.\n### Q3\nIt goes in a top-level body field `sig`, the last key, as a hex HMAC-SHA256 over the JSON body without `sig`. Earlier I used an X-Signature header, but the ERP API gateway strips all custom X- headers, so the ERP saw everything as unsigned.\n### Q4\nPort 9911, since the October infra move. docs/erp-api.md, the README and config/default.json still say 8080, which is outdated.\n### Q5\nEvery new user-facing error `message` must be German, and `code` stays English SCREAMING_SNAKE_CASE. Existing English messages were left unchanged, and whether to translate them is an open question.\n### Q6\nA hardcoded Set of holidays in src/services/holidays.ts, covering 2026 and 2027, is wired into isBusinessDay() in eta.ts. It's hardcoded because the warehouse deployment has no outbound internet, so no holiday API can be used. Years outside 2026/2027 have no holidays, so the list must be extended before the end of 2027.\n### Q7\nNo. The ERP answers 422 to any array payload and accepts only one event object per request, so batching must not be built.\n### Q8\nNo new npm dependencies at all, not even devDependencies. Each package needs a security review that takes about 6 weeks.\n### Q9\nYes. I built an EtaCache keyed by shipment id plus Store revision, and QA found the list showing a stale ETA after a new event (e.g. an exception). It was removed completely, including Store.revision(), and must not be reintroduced. The plan is to paginate the list endpoint instead.\n### Q10\nMax 3 attempts in total with a fixed 30 s delay and no backoff. The ERP dedups by event_id only within a 2-minute window, so all attempts must land inside it (3×5 s timeout + 2×30 s = 75 s). Retries happen only on network errors and 5xx.\n### Q11\nNever log the recipient's name, address (street/zip/city) or phone, because the DPO flagged it under GDPR in last month's audit. Shipment IDs and tracking numbers are fine to log.\n### Q12\nYes, \"emits webhook on delivered\" in test/events.test.ts is flaky about 1 in 5 runs because of a timer race in the fake notifier (tracked as OPS-412). If it fails, rerun once and do not try to fix it, because the platform team owns the fix.\n### Q13\nOnly carrier ATP is validated, using UPU S10 with a check digit (see docs/carriers.md). All other carriers accept any non-empty value, deliberately, because formats change often and valid DHL numbers were rejected for 2 days last year.\n### Q14\nHot reload is not built yet. fs.watch never fires because the config is a Docker bind mount from a Windows host and change events don't propagate into the container. fs.watchFile (polling) worked, so use polling when it's needed.\n### Q15\nYes, GET /shipments/:id. The mobile app v2.3 parses it with a strict schema and crashes on added, removed or renamed fields, and the next mobile release is in January. shipmentToApi must not be altered in a way that changes the response.",
+ "answers": {
+  "Q1": "No. The plain JSON file store (data/store.json) stays because ops backs it up with a nightly rsync job that diffs plain-text files, and a binary SQLite file would break their backup checks. Slowness is addressed by debouncing writes (200 ms fixed window) and flushing on shutdown.",
+  "Q2": "Yes, src/legacy/ must never be modified. It is vendored from the old logistics monolith, and the platform team's sync job overwrites the folder every Monday, so any changes would be silently lost.",
+  "Q3": "It goes in a top-level body field `sig`, the last key, as a hex HMAC-SHA256 over the JSON body without `sig`. Earlier I used an X-Signature header, but the ERP API gateway strips all custom X- headers, so the ERP saw everything as unsigned.",
+  "Q4": "Port 9911, since the October infra move. docs/erp-api.md, the README and config/default.json still say 8080, which is outdated.",
+  "Q5": "Every new user-facing error `message` must be German, and `code` stays English SCREAMING_SNAKE_CASE. Existing English messages were left unchanged, and whether to translate them is an open question.",
+  "Q6": "A hardcoded Set of holidays in src/services/holidays.ts, covering 2026 and 2027, is wired into isBusinessDay() in eta.ts. It's hardcoded because the warehouse deployment has no outbound internet, so no holiday API can be used. Years outside 2026/2027 have no holidays, so the list must be extended before the end of 2027.",
+  "Q7": "No. The ERP answers 422 to any array payload and accepts only one event object per request, so batching must not be built.",
+  "Q8": "No new npm dependencies at all, not even devDependencies. Each package needs a security review that takes about 6 weeks.",
+  "Q9": "Yes. I built an EtaCache keyed by shipment id plus Store revision, and QA found the list showing a stale ETA after a new event (e.g. an exception). It was removed completely, including Store.revision(), and must not be reintroduced. The plan is to paginate the list endpoint instead.",
+  "Q10": "Max 3 attempts in total with a fixed 30 s delay and no backoff. The ERP dedups by event_id only within a 2-minute window, so all attempts must land inside it (3×5 s timeout + 2×30 s = 75 s). Retries happen only on network errors and 5xx.",
+  "Q11": "Never log the recipient's name, address (street/zip/city) or phone, because the DPO flagged it under GDPR in last month's audit. Shipment IDs and tracking numbers are fine to log.",
+  "Q12": "Yes, \"emits webhook on delivered\" in test/events.test.ts is flaky about 1 in 5 runs because of a timer race in the fake notifier (tracked as OPS-412). If it fails, rerun once and do not try to fix it, because the platform team owns the fix.",
+  "Q13": "Only carrier ATP is validated, using UPU S10 with a check digit (see docs/carriers.md). All other carriers accept any non-empty value, deliberately, because formats change often and valid DHL numbers were rejected for 2 days last year.",
+  "Q14": "Hot reload is not built yet. fs.watch never fires because the config is a Docker bind mount from a Windows host and change events don't propagate into the container. fs.watchFile (polling) worked, so use polling when it's needed.",
+  "Q15": "Yes, GET /shipments/:id. The mobile app v2.3 parses it with a strict schema and crashes on added, removed or renamed fields, and the next mobile release is in January. shipmentToApi must not be altered in a way that changes the response."
+ },
+ "tool_calls": []
+}
